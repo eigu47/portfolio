@@ -3,29 +3,45 @@ import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 
 import Keyboard from "~/components/Keyboard";
+import Layout from "~/components/Layout";
+import Navbar from "~/components/Navbar";
 
-function App() {
+export default function App() {
   return (
     <>
-      <main className="h-80">
-        <Canvas shadows camera={{ position: [0, 0, 3] }}>
-          {/* <color attach="background" args={["slategray"]} /> */}
-          <ambientLight intensity={0.5} />
-          <spotLight
-            castShadow
-            intensity={0.5}
-            position={[10, 15, 10]}
-            angle={0.2}
-            penumbra={1}
-          />
-          <Suspense fallback={null}>
+      <Navbar />
+      <main className="h-screen">
+        <div className="absolute bottom-0 h-[50vh] w-full">
+          <Scene>
             <Keyboard />
-          </Suspense>
-        </Canvas>
+          </Scene>
+        </div>
       </main>
-      <div className="h-screen"></div>
+      <div className="h-screen" />
+      <Layout />
     </>
   );
 }
 
-export default App;
+function Scene({
+  children,
+  cameraPos = [0, 0, 4],
+}: {
+  children: React.ReactNode;
+  cameraPos?: [number, number, number];
+}) {
+  return (
+    <Canvas shadows camera={{ position: cameraPos }}>
+      {/* <color attach="background" args={["slategray"]} /> */}
+      <ambientLight intensity={0.5} />
+      <spotLight
+        castShadow
+        intensity={0.5}
+        position={[10, 15, 10]}
+        angle={0.2}
+        penumbra={1}
+      />
+      <Suspense fallback={null}>{children}</Suspense>
+    </Canvas>
+  );
+}
