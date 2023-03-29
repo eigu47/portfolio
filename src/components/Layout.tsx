@@ -1,7 +1,7 @@
 export default function Layout() {
   return (
     <>
-      <div className="fixed bottom-0 mx-12 after:mx-auto after:mt-6 after:block after:h-20 after:w-[1px] after:bg-slate-300">
+      <div className="fixed bottom-0 mx-12 hidden after:mx-auto after:mt-6 after:block after:h-20 after:w-[1px] after:bg-slate-300 sm:block">
         <a
           className="block h-6 w-6 stroke-slate-300 transition duration-200 hover:-translate-y-0.5 hover:stroke-emerald-400 focus:-translate-y-0.5 focus:stroke-emerald-400"
           href="https://github.com/eigu47"
@@ -12,7 +12,7 @@ export default function Layout() {
         </a>
       </div>
 
-      <div className="fixed bottom-0 right-0 mx-12 after:mx-auto after:mt-6 after:block after:h-20 after:w-[1px] after:bg-slate-300">
+      <div className="fixed bottom-0 right-0 mx-12 hidden after:mx-auto after:mt-6 after:block after:h-20 after:w-[1px] after:bg-slate-300 sm:block">
         <a
           className="font-mono text-sm tracking-wider text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:text-emerald-400 focus:-translate-y-0.5 focus:text-emerald-400"
           style={{ writingMode: "vertical-rl" }}
