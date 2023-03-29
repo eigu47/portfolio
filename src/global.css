@@ -3,8 +3,12 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
   body {
     /* background-color: #0a192f; */
-    @apply bg-gray-900;
+    @apply bg-slate-900;
   }
 }
