@@ -4,7 +4,6 @@ const NAVITEMS = [
   {
     name: "Home",
     href: "#",
-    className: "grow",
   },
   {
     name: "About",
@@ -26,24 +25,28 @@ const NAVITEMS = [
 
 export default function Navbar() {
   const [showMenu, setShowMenu] = useState(false);
+  // const scroll = useScroll();
 
   return (
     <>
       <nav
-        className={`fixed top-0 z-10 w-full bg-slate-950/50 shadow-lg backdrop-blur duration-200 sm:translate-y-0 sm:transition sm:transition-none ${
-          showMenu ? "-translate-y-[calc(100%-80px)]" : ""
+        className={`fixed top-0 z-10 w-full bg-slate-900/80 shadow-lg backdrop-blur duration-200 sm:translate-y-0 sm:transition-none ${
+          showMenu ? "" : "-translate-y-[calc(100%-72px)]"
         }`}
       >
         <ul
-          className={`container mx-auto my-6 flex flex-col items-center gap-10 text-slate-300 transition duration-200 sm:translate-y-0 sm:flex-row sm:transition-none ${
-            showMenu ? "-translate-y-[80px]" : ""
+          className={`container mx-auto my-6 flex flex-col items-center gap-10 text-slate-300 duration-200 sm:translate-y-0 sm:flex-row sm:transition-none ${
+            showMenu ? "" : "-translate-y-[72px]"
           }`}
         >
-          {NAVITEMS.map(({ name, href, className = "" }) => (
-            <li key={name} className={className}>
+          {NAVITEMS.map(({ name, href }, i) => (
+            <li key={name} className="first:grow">
               <a
-                className="relative p-3 duration-300 after:absolute after:bottom-1 after:right-1/2 after:h-[2px] after:w-4/6 after:origin-center after:translate-x-1/2 after:scale-x-0 after:bg-emerald-400 after:transition hover:text-white hover:after:scale-x-100 focus:text-white focus:after:scale-x-100"
+                className="relative p-3 after:absolute after:bottom-1 after:right-1/2 after:h-[2px] after:w-4/6 after:origin-center after:translate-x-1/2 after:scale-x-0 after:bg-emerald-400 after:transition hover:text-white hover:after:scale-x-100 focus:text-white focus:after:scale-x-100"
                 href={href}
+                onClick={() => {
+                  setShowMenu(false);
+                }}
               >
                 {name}
               </a>
@@ -58,15 +61,15 @@ export default function Navbar() {
         <HamburgerIcon
           className={`absolute duration-300 ${
             showMenu
-              ? "scale-100 opacity-100"
-              : "-rotate-[360deg] scale-0 opacity-0"
+              ? "rotate-[360deg] scale-0 opacity-0"
+              : "scale-100 opacity-100"
           }`}
         />
         <CloseIcon
           className={`duration-300 ${
             showMenu
-              ? "rotate-[360deg] scale-0 opacity-0"
-              : "scale-100 opacity-100"
+              ? "scale-100 opacity-100"
+              : "-rotate-[360deg] scale-0 opacity-0"
           }`}
         />
       </button>

@@ -41,14 +41,8 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
 
   return (
     <>
-      <Float
-        rotation={[Math.PI * 0.3, Math.PI * 0, 0]}
-        position={[0, 1, 0]}
-        dispose={null}
-        speed={2}
-        floatIntensity={2}
-      >
-        <group {...props} ref={keyboardRef} castShadow>
+      <Float rotation={[Math.PI * 0.3, 0, 0]} speed={2} floatIntensity={2}>
+        <group {...props} ref={keyboardRef} castShadow scale={0.5}>
           <mesh
             geometry={nodes.Case.geometry}
             // material={nodes.Case.material}
@@ -71,7 +65,7 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
           />
         </group>
       </Float>
-      <ContactShadows position={[0, -0.7, 0]} blur={2} far={2} />
+      <ContactShadows position={[0, -2, 0]} blur={2} far={2} />
     </>
   );
 }

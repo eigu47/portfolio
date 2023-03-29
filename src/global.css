@@ -2,13 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  html {
-    @apply scroll-smooth;
-  }
+body,
+html,
+#root {
+  /* background-color: #0a192f; */
+  @apply h-full w-full scroll-smooth bg-slate-900;
+}
 
-  body {
-    /* background-color: #0a192f; */
-    @apply bg-slate-900;
-  }
+:root {
+  --slate-400: #94a3b8;
+  --slate-900: #0f172a;
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--slate-400) var(--slate-900);
+}
+::-webkit-scrollbar {
+  width: 16px;
+}
+
+::-webkit-scrollbar-track {
+  margin-top: 72px;
+  background-color: var(--slate-900);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--slate-400);
+  border: 6px solid var(--slate-900);
+  border-radius: 10px;
 }
