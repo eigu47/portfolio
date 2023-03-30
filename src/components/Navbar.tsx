@@ -33,12 +33,12 @@ export default function Navbar() {
     <>
       <nav
         className={`fixed top-0 z-10 w-full bg-slate-900/80 shadow-lg backdrop-blur duration-200 sm:translate-y-0 sm:transition-none ${
-          showMenu ? "" : "-translate-y-[calc(100%-72px)]"
+          showMenu ? "" : "-translate-y-[calc(100%-80px)]"
         }`}
       >
         <ul
           className={`container mx-auto my-6 flex flex-col items-center gap-10 text-slate-300 duration-200 sm:translate-y-0 sm:flex-row sm:transition-none ${
-            showMenu ? "" : "-translate-y-[72px]"
+            showMenu ? "" : "-translate-y-[80px]"
           }`}
         >
           {NAVITEMS.map(({ name, href }, i) => (

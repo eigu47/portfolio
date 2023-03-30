@@ -24,7 +24,6 @@ html {
 
 ::-webkit-scrollbar-track {
   background-color: var(--slate-900);
-  opacity: 1;
 }
 
 ::-webkit-scrollbar-thumb {

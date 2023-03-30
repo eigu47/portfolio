@@ -24,6 +24,7 @@ type GLTFResult = GLTF & {
 
 const lerpedPos = new Vector3();
 const position = new Vector3();
+let isLoaded = false;
 
 export default function Model(props: JSX.IntrinsicElements["group"]) {
   const { nodes, materials } = useGLTF("/keyboard.gltf") as GLTFResult;
@@ -31,15 +32,17 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
   const { x, y } = useGetMousePos();
 
   useFrame((_, delta) => {
+    if (!keyboardRef.current) return;
+
     lerpedPos.lerp(position.set(x - 0.5, -y - 2, 4), delta * 2);
 
-    keyboardRef.current?.lookAt(lerpedPos);
+    keyboardRef.current.lookAt(lerpedPos);
   });
 
   return (
-    <>
+    <group {...props}>
       <Float rotation={[Math.PI * 0.3, 0, 0]} speed={2} floatIntensity={2}>
-        <group {...props} ref={keyboardRef} castShadow>
+        <group ref={keyboardRef}>
           <mesh
             geometry={nodes.Case.geometry}
             // material={nodes.Case.material}
@@ -62,8 +65,8 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
           />
         </group>
       </Float>
-      <ContactShadows position={[0, -2.2, 0]} scale={15} blur={2} />
-    </>
+      <ContactShadows position={[0, -1.5, 0]} scale={20} blur={2} />
+    </group>
   );
 }
 
