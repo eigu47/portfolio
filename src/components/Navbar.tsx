@@ -1,8 +1,10 @@
 import { useState } from "react";
 
+import useGetScrollPos from "~/utils/useGetScrollPos";
+
 const NAVITEMS = [
   {
-    name: "Home",
+    name: "Hello",
     href: "#",
   },
   {
@@ -25,7 +27,7 @@ const NAVITEMS = [
 
 export default function Navbar() {
   const [showMenu, setShowMenu] = useState(false);
-  // const scroll = useScroll();
+  const scrollPos = useGetScrollPos();
 
   return (
     <>
@@ -42,11 +44,11 @@ export default function Navbar() {
           {NAVITEMS.map(({ name, href }, i) => (
             <li key={name} className="first:grow">
               <a
-                className="relative p-3 after:absolute after:bottom-1 after:right-1/2 after:h-[2px] after:w-4/6 after:origin-center after:translate-x-1/2 after:scale-x-0 after:bg-emerald-400 after:transition hover:text-white hover:after:scale-x-100 focus:text-white focus:after:scale-x-100"
+                className={`relative p-3 after:absolute after:bottom-1 after:right-1/2 after:h-[2px] after:w-4/6 after:origin-center after:translate-x-1/2 after:scale-x-0 after:bg-emerald-400 after:transition hover:text-white hover:after:scale-x-100 focus:text-white focus:after:scale-x-100 ${
+                  scrollPos >= i && scrollPos < i + 1 ? "after:scale-x-100" : ""
+                }`}
                 href={href}
-                onClick={() => {
-                  setShowMenu(false);
-                }}
+                onClick={() => setShowMenu(false)}
               >
                 {name}
               </a>

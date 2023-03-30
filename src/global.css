@@ -23,8 +23,8 @@ html {
 }
 
 ::-webkit-scrollbar-track {
-  margin-top: 72px;
   background-color: var(--slate-900);
+  opacity: 1;
 }
 
 ::-webkit-scrollbar-thumb {
