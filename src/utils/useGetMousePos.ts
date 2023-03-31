@@ -18,3 +18,11 @@ export default function useGetMousePos() {
 
   return mousePos;
 }
+
+// const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+// function mouseMove(e: MouseEvent) {
+//   setMousePos({
+//     x: e.pageX / document.documentElement.clientWidth,
+//     y: e.pageY / document.documentElement.clientHeight,
+//   });
+// }
