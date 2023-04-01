@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 
 export default function useGetMousePos() {
-  const [mousePos, setMousePos] = useState({ pageX: 0, pageY: 0 });
+  const [mousePos, setMousePos] = useState({
+    clientX: 0,
+    clientY: 0,
+    pageX: 0,
+    pageY: 0,
+  });
 
-  function mouseMove({ pageX, pageY }: MouseEvent) {
-    setMousePos({ pageX, pageY });
+  function mouseMove({ clientX, clientY, pageX, pageY }: MouseEvent) {
+    setMousePos({ clientX, clientY, pageX, pageY });
   }
 
   useEffect(() => {
@@ -14,7 +19,7 @@ export default function useGetMousePos() {
 
   return {
     ...mousePos,
-    x: mousePos.pageX / document.documentElement.clientWidth,
-    y: mousePos.pageY / document.documentElement.clientHeight,
+    posX: mousePos.pageX / document.documentElement.clientWidth,
+    posY: mousePos.pageY / document.documentElement.clientHeight,
   };
 }

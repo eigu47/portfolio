@@ -56,23 +56,22 @@ const objectPos = new Vector3();
 function ObjectPosition() {
   const transformActive = useStore((state) => state.transformActive);
   const selectedObject = useStore((state) => state.selectedObject);
-  const { pageX, pageY } = useGetMousePos();
+  const { clientX, clientY } = useGetMousePos();
 
   if (!transformActive || !selectedObject) return null;
   return (
-    <p
+    <div
       className="fixed rounded-md bg-[#151520] p-2 text-sm text-slate-100"
-      style={{ top: pageY + 24, left: pageX }}
+      style={{ top: clientY + 24, left: clientX }}
     >
       {selectedObject
         .getWorldPosition(objectPos)
         .toArray()
         .map((n, i) => (
-          <>
+          <p key={i}>
             {i === 0 ? "x" : i === 1 ? "y" : "z"}: {n.toFixed(2)}
-            <br />
-          </>
+          </p>
         ))}
-    </p>
+    </div>
   );
 }

@@ -29,13 +29,13 @@ const to = new Vector3();
 export default function Model(props: JSX.IntrinsicElements["group"]) {
   const { nodes, materials } = useGLTF("/keyboard.gltf") as GLTFResult;
   const ref = useRef<Group>(null);
-  const { x, y } = useGetMousePos();
+  const { posX, posY } = useGetMousePos();
   const [{ ...clicks }, { ...hover }] = useDebug();
 
   useFrame((_, delta) => {
     if (!ref.current) return;
 
-    ref.current.lookAt(pos.lerp(to.set(x - 0.5, -y - 2, 4), delta * 2));
+    ref.current.lookAt(pos.lerp(to.set(posX - 0.5, -posY - 2, 4), delta * 2));
   });
 
   return (
