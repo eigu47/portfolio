@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 
 export default function useGetScrollPos() {
-  const [scrollPos, setScrollPos] = useState(0);
+  const [scrollY, setScrollY] = useState(0);
 
   function handleScroll() {
-    setScrollPos(window.scrollY / document.documentElement.clientHeight);
+    setScrollY(window.scrollY);
   }
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
-
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  return scrollPos;
+  const scrollPos = scrollY / document.documentElement.clientHeight;
+  const scrollPage = Math.floor(scrollPos);
+
+  return { scrollY, scrollPos, scrollPage };
 }

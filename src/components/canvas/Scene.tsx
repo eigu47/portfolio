@@ -1,9 +1,12 @@
+import { Suspense } from "react";
+
+import { Preload } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Leva } from "leva";
 
+import Camera from "~/components/canvas/Camera";
 import Debugs from "~/components/canvas/Debugs";
 import Keyboard from "~/components/canvas/Keyboard";
-
 export default function Scene() {
   const isDebug =
     new URLSearchParams(window.location.search).get("debug") != null;
@@ -11,14 +14,13 @@ export default function Scene() {
   return (
     <>
       <Canvas className="!fixed top-0">
-        <ambientLight intensity={0.2} />
-        <spotLight
-          intensity={0.5}
-          position={[10, 15, 10]}
-          angle={0.2}
-          penumbra={0.5}
-        />
-        <Keyboard />
+        <Camera />
+
+        <Suspense fallback={null}>
+          <Keyboard />
+        </Suspense>
+
+        <Preload all />
         {isDebug && <Debugs />}
       </Canvas>
       {!isDebug && <Leva hidden={!isDebug} />}

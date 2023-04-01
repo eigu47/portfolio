@@ -1,28 +1,20 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 
 export default function useGetMousePos() {
-  const mousePos = useRef({ x: 0, y: 0 });
+  const [mousePos, setMousePos] = useState({ pageX: 0, pageY: 0 });
 
-  function mouseMove(e: MouseEvent) {
-    mousePos.current = {
-      x: e.pageX / document.documentElement.clientWidth,
-      y: e.pageY / document.documentElement.clientHeight,
-    };
+  function mouseMove({ pageX, pageY }: MouseEvent) {
+    setMousePos({ pageX, pageY });
   }
 
   useEffect(() => {
     window.addEventListener("mousemove", mouseMove);
-
     return () => window.removeEventListener("mousemove", mouseMove);
   }, []);
 
-  return mousePos;
+  return {
+    ...mousePos,
+    x: mousePos.pageX / document.documentElement.clientWidth,
+    y: mousePos.pageY / document.documentElement.clientHeight,
+  };
 }
-
-// const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-// function mouseMove(e: MouseEvent) {
-//   setMousePos({
-//     x: e.pageX / document.documentElement.clientWidth,
-//     y: e.pageY / document.documentElement.clientHeight,
-//   });
-// }

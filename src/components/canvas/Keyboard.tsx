@@ -23,31 +23,25 @@ type GLTFResult = GLTF & {
   };
 };
 
-const lerpedPos = new Vector3();
-const position = new Vector3();
+const pos = new Vector3();
+const to = new Vector3();
 
 export default function Model(props: JSX.IntrinsicElements["group"]) {
   const { nodes, materials } = useGLTF("/keyboard.gltf") as GLTFResult;
+  const ref = useRef<Group>(null);
+  const { x, y } = useGetMousePos();
   const [{ ...clicks }, { ...hover }] = useDebug();
 
-  const keyboardRef = useRef<Group>(null);
-  const mouse = useGetMousePos();
-
   useFrame((_, delta) => {
-    if (!keyboardRef.current) return;
+    if (!ref.current) return;
 
-    lerpedPos.lerp(
-      position.set(mouse.current.x - 0.5, -mouse.current.y - 2, 4),
-      delta * 2
-    );
-
-    keyboardRef.current.lookAt(lerpedPos);
+    ref.current.lookAt(pos.lerp(to.set(x - 0.5, -y - 2, 4), delta * 2));
   });
 
   return (
     <group {...props}>
       <Float rotation={[Math.PI * 0.3, 0, 0]} speed={2} floatIntensity={2}>
-        <group ref={keyboardRef} dispose={null} {...clicks}>
+        <group ref={ref} dispose={null} {...clicks}>
           <mesh
             geometry={nodes.Case.geometry}
             material={materials["Black rubber"]}
@@ -64,7 +58,7 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
           />
         </group>
       </Float>
-      <ContactShadows position={[0, -1.5, 0]} scale={20} blur={2} />
+      <ContactShadows position={[0, -1.5, 0]} far={5} blur={5} />
     </group>
   );
 }

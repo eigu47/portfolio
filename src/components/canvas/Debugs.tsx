@@ -11,6 +11,7 @@ import {
 import { type ThreeEvent, useThree } from "@react-three/fiber";
 import { useControls } from "leva";
 import { Perf } from "r3f-perf";
+import { type Vector3Tuple } from "three";
 
 import { useStore } from "~/utils/store";
 
@@ -18,19 +19,18 @@ export default function Debugs() {
   const { camera } = useThree();
   const selectedObject = useStore((state) => state.selectedObject);
   const transformMode = useStore((state) => state.transformMode);
+  const setTransformActive = useStore((state) => state.setTransformActive);
   const [{ debugOn }, set] = useControls(() => ({
     debugOn: false,
     cameraPos: {
-      value: [0, 0, 5],
-      onChange: (value: [number, number, number]) =>
-        camera.position.set(...value),
+      value: camera.position.toArray(),
+      onEditEnd: (value: Vector3Tuple) => camera.position.set(...value),
       step: 0.1,
       render: (get) => get("debugOn") as boolean,
     },
   }));
 
   if (!debugOn) return null;
-
   return (
     <>
       <OrbitControls
@@ -43,7 +43,12 @@ export default function Debugs() {
       </GizmoHelper>
       <PivotControls annotations />
       {selectedObject && transformMode !== "disable" && (
-        <TransformControls object={selectedObject} mode={transformMode} />
+        <TransformControls
+          object={selectedObject}
+          mode={transformMode}
+          onMouseDown={() => setTransformActive(true)}
+          onMouseUp={() => setTransformActive(false)}
+        />
       )}
     </>
   );
@@ -52,11 +57,12 @@ export default function Debugs() {
 export function useDebug() {
   const selectedObject = useStore((state) => state.selectedObject);
   const transformMode = useStore((state) => state.transformMode);
+  const transformActive = useStore((state) => state.transformActive);
   const setSelectedObject = useStore((state) => state.setSelectedObject);
   const cylceTransformType = useStore((state) => state.cylceTransformType);
   const { debugOn } = useControls({ debugOn: false });
   const [hovered, setHovered] = useState(false);
-  useCursor(debugOn && hovered);
+  useCursor((debugOn && hovered) || transformActive);
 
   function onClick(e: ThreeEvent<MouseEvent>) {
     e.stopPropagation();
