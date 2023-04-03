@@ -1,4 +1,3 @@
-import type { Event, Object3D } from "three";
 import { create } from "zustand";
 
 import { type IndexUnion } from "~/utils/types";
@@ -12,24 +11,24 @@ export const TRANSFORM_MODES = [
 let modeId: IndexUnion<typeof TRANSFORM_MODES> = 0;
 
 type Store = {
-  selectedObject: Object3D<Event> | null;
-  transformMode: (typeof TRANSFORM_MODES)[number];
+  selectedObject: THREE.Object3D<THREE.Event> | null;
   transformActive: boolean;
+  transformMode: (typeof TRANSFORM_MODES)[number];
 
-  setSelectedObject: (object: Object3D<Event>) => void;
-  cylceTransformType: () => void;
+  setSelectedObject: (object: THREE.Object3D<THREE.Event>) => void;
   setTransformActive: (active: boolean) => void;
+  cycleTransformMode: () => void;
 };
 
-export const useStore = create<Store>((set) => ({
+export const useDebugStore = create<Store>((set) => ({
   selectedObject: null,
-  transformMode: TRANSFORM_MODES[modeId],
   transformActive: false,
+  transformMode: TRANSFORM_MODES[modeId],
 
   setSelectedObject: (selectedObject) => set({ selectedObject }),
-  cylceTransformType: () => {
+  setTransformActive: (transformActive) => set({ transformActive }),
+  cycleTransformMode: () => {
     modeId = ((modeId + 1) % TRANSFORM_MODES.length) as typeof modeId;
     set({ transformMode: TRANSFORM_MODES[modeId] });
   },
-  setTransformActive: (transformActive) => set({ transformActive }),
 }));

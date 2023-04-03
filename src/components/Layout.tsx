@@ -1,6 +1,6 @@
 import { useControls } from "leva";
 
-import { ObjectPosition } from "~/components/canvas/Debugs";
+import { ObjectPosition } from "~/components/canvas/Debug";
 
 export default function Layout() {
   const { debugOn } = useControls({ debugOn: false });

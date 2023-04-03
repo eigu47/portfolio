@@ -1,11 +1,11 @@
 import { Text } from "@react-three/drei";
 
-import { useDebug } from "~/components/canvas/Debugs";
+import { useDebug } from "~/components/canvas/Debug";
 import { COLORS } from "~/utils/constants";
-import { useBlock } from "~/utils/useBlock";
+import useGetSizes from "~/utils/useGetSizes";
 
 export default function Hero() {
-  const { width, height, mobile } = useBlock();
+  const { width, height, mobile } = useGetSizes();
   const { ...debug } = useDebug();
 
   return (

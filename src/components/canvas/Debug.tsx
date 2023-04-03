@@ -11,21 +11,19 @@ import {
 import { type ThreeEvent, useThree } from "@react-three/fiber";
 import { useControls } from "leva";
 import { Perf } from "r3f-perf";
-import { type Vector3Tuple } from "three";
 
-import { useStore } from "~/utils/store";
+import { useDebugStore } from "~/utils/debugStore";
 import useGetMousePos from "~/utils/useGetMousePos";
 
-export default function Debugs() {
+export default function Debug() {
   const camera = useThree((state) => state.camera);
-  const selectedObject = useStore((state) => state.selectedObject);
-  const transformMode = useStore((state) => state.transformMode);
-  const setTransformActive = useStore((state) => state.setTransformActive);
+  const { selectedObject, transformMode } = useDebugStore();
+  const setTransformActive = useDebugStore((state) => state.setTransformActive);
   const [{ debugOn }, set] = useControls(() => ({
     debugOn: false,
     cameraPos: {
       value: camera.position.toArray(),
-      onEditEnd: (value: Vector3Tuple) => camera.position.set(...value),
+      onEditEnd: (value: THREE.Vector3Tuple) => camera.position.set(...value),
       step: 0.1,
       render: (get) => get("debugOn") as boolean,
     },
@@ -51,53 +49,16 @@ export default function Debugs() {
           onMouseUp={() => setTransformActive(false)}
         />
       )}
+
+      {/* <mesh scale={[width * 1.25, height, 0]} position={[0, 0, 0]}>
+        <planeGeometry />
+      </mesh> */}
     </>
   );
 }
 
-export function useDebug() {
-  const selectedObject = useStore((state) => state.selectedObject);
-  const transformMode = useStore((state) => state.transformMode);
-  const transformActive = useStore((state) => state.transformActive);
-  const setSelectedObject = useStore((state) => state.setSelectedObject);
-  const cylceTransformType = useStore((state) => state.cylceTransformType);
-  const { debugOn } = useControls({ debugOn: false });
-  const [hovered, setHovered] = useState(false);
-  useCursor((debugOn && hovered) || transformActive);
-
-  function onClick(e: ThreeEvent<MouseEvent>) {
-    e.stopPropagation();
-    if (debugOn) {
-      setSelectedObject(e.eventObject);
-      if (transformMode === "disable") cylceTransformType();
-    }
-  }
-
-  function onContextMenu(e: ThreeEvent<MouseEvent>) {
-    e.stopPropagation();
-    if (debugOn && e.eventObject === selectedObject) cylceTransformType();
-  }
-
-  function onPointerEnter() {
-    setHovered(true);
-  }
-
-  function onPointerOut() {
-    setHovered(false);
-  }
-
-  return {
-    onClick,
-    onContextMenu,
-    onPointerEnter: debugOn ? onPointerEnter : undefined,
-    onPointerOut: debugOn ? onPointerOut : undefined,
-  } satisfies JSX.IntrinsicElements["group"];
-}
-
 export function ObjectPosition() {
-  const transformActive = useStore((state) => state.transformActive);
-  const selectedObject = useStore((state) => state.selectedObject);
-  const transformMode = useStore((state) => state.transformMode);
+  const { selectedObject, transformActive, transformMode } = useDebugStore();
   const { clientX, clientY } = useGetMousePos();
 
   if (!transformActive || !selectedObject) return null;
@@ -130,4 +91,44 @@ export function ObjectPosition() {
         ))}
     </div>
   );
+}
+
+export function useDebug(): JSX.IntrinsicElements["group"] {
+  const {
+    selectedObject,
+    transformActive,
+    transformMode,
+    setSelectedObject,
+    cycleTransformMode,
+  } = useDebugStore();
+  const { debugOn } = useControls({ debugOn: false });
+  const [hovered, setHovered] = useState(false);
+  useCursor((debugOn && hovered) || transformActive);
+
+  function onClick(e: ThreeEvent<MouseEvent>) {
+    e.stopPropagation();
+    setSelectedObject(e.eventObject);
+    if (transformMode === "disable") cycleTransformMode();
+  }
+
+  function onContextMenu(e: ThreeEvent<MouseEvent>) {
+    e.stopPropagation();
+    if (e.eventObject === selectedObject) cycleTransformMode();
+  }
+
+  function onPointerEnter() {
+    setHovered(true);
+  }
+
+  function onPointerOut() {
+    setHovered(false);
+  }
+
+  if (!debugOn) return {};
+  return {
+    onClick,
+    onContextMenu,
+    onPointerEnter,
+    onPointerOut,
+  };
 }

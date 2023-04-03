@@ -1,16 +1,7 @@
 import { useFrame } from "@react-three/fiber";
-import { useControls } from "leva";
-
-import useGetScrollPos from "~/utils/useGetScrollPos";
 
 export default function Camera() {
-  const { scrollPos } = useGetScrollPos();
-  const { debugOn } = useControls({ debugOn: false });
-
   useFrame(({ camera, scene }, delta) => {
-    if (debugOn) return null;
-
-    camera.position.z = 5 - scrollPos * 10;
     // camera.position.y = -scrollPos * 10;
   });
 
