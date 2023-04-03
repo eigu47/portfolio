@@ -13,7 +13,7 @@ import { useControls } from "leva";
 import { Perf } from "r3f-perf";
 
 import { useDebugStore } from "~/utils/debugStore";
-import useGetMousePos from "~/utils/useGetMousePos";
+import useMousePos from "~/utils/useMousePos";
 
 export default function Debug() {
   const camera = useThree((state) => state.camera);
@@ -59,7 +59,7 @@ export default function Debug() {
 
 export function ObjectPosition() {
   const { selectedObject, transformActive, transformMode } = useDebugStore();
-  const { clientX, clientY } = useGetMousePos();
+  const { clientX, clientY } = useMousePos();
 
   if (!transformActive || !selectedObject) return null;
   return (
@@ -93,7 +93,7 @@ export function ObjectPosition() {
   );
 }
 
-export function useDebug(): JSX.IntrinsicElements["group"] {
+export function useDebug() {
   const {
     selectedObject,
     transformActive,
@@ -130,5 +130,5 @@ export function useDebug(): JSX.IntrinsicElements["group"] {
     onContextMenu,
     onPointerEnter,
     onPointerOut,
-  };
+  } satisfies JSX.IntrinsicElements["group"];
 }

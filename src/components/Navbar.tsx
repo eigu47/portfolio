@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { useControls } from "leva";
 
-import useGetScrollPos from "~/utils/useGetScrollPos";
+import useScrollPos from "~/utils/useScrollPos";
 
 const NAVITEMS = [
   {
@@ -31,7 +31,7 @@ export default function Navbar() {
   const { debugOn } = useControls({ debugOn: false });
 
   const [showMenu, setShowMenu] = useState(false);
-  const { scrollPage } = useGetScrollPos();
+  const { scrollPage } = useScrollPos();
 
   if (debugOn) return null;
   return (

@@ -2,10 +2,10 @@ import { Text } from "@react-three/drei";
 
 import { useDebug } from "~/components/canvas/Debug";
 import { COLORS } from "~/utils/constants";
-import useGetSizes from "~/utils/useGetSizes";
+import useViewport from "~/utils/useViewport";
 
 export default function Hero() {
-  const { width, height, mobile } = useGetSizes();
+  const { width, height, mobile } = useViewport();
   const { ...debug } = useDebug();
 
   return (
@@ -25,7 +25,6 @@ export default function Hero() {
         anchorX={mobile ? "center" : "left"}
         position={[mobile ? 0 : -width * 0.35, height * 0.1, 0]}
         color={COLORS.slate300}
-        {...debug}
       >
         Eiguchi Pablo
       </Text>
@@ -34,7 +33,6 @@ export default function Hero() {
         anchorX="left"
         position={[-width * 0.45, 0, -1]}
         color={COLORS.slate300}
-        {...debug}
       >
         - Web Developer -
       </Text>

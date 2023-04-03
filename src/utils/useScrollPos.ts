@@ -1,13 +1,15 @@
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function useGetScrollPos() {
+export default function useScrollPos() {
   const [scrollY, setScrollY] = useState(0);
 
   function handleScroll() {
     setScrollY(window.scrollY);
   }
 
-  useLayoutEffect(() => {
+  console.log("scrollY", scrollY);
+
+  useEffect(() => {
     handleScroll();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);

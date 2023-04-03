@@ -3,42 +3,51 @@ import { createContext, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Vector3 } from "three";
 
-import useGetScrollPos from "~/utils/useGetScrollPos";
-import useGetSizes from "~/utils/useGetSizes";
-
-export const offsetContext = createContext(0);
+import useScrollPos from "~/utils/useScrollPos";
+import useViewport from "~/utils/useViewport";
 
 type Props = {
   children: React.ReactNode;
-  offset?: number;
-  factor?: number;
+  page?: number;
+  scrollFactor?: number;
+  offsetX?: number;
+  offsetZ?: number;
 } & JSX.IntrinsicElements["group"];
 
+export const pageContext = createContext(0);
 const position = new Vector3();
 
 export default function Block({
   children,
-  offset: parentOffset,
-  factor = 1,
+  page: parentPage,
+  scrollFactor = 1,
+  offsetX = 0,
+  offsetZ = 0,
   ...props
 }: Props) {
-  const { scrollPos } = useGetScrollPos();
-  const { height, offset: contextOffset } = useGetSizes();
-  const offset = parentOffset ?? contextOffset;
+  const { scrollPos } = useScrollPos();
+  const { height, page: contextPage } = useViewport();
+  const page = parentPage ?? contextPage;
   const ref = useRef<THREE.Group>(null);
 
-  useFrame(() => {
+  const relativePage = scrollPos - page;
+
+  useFrame((_, delta) => {
     ref.current?.position.lerp(
-      position.set(0, height * scrollPos * factor, 0),
-      0.1
+      position.set(
+        offsetX * relativePage,
+        relativePage * height * scrollFactor,
+        offsetZ * relativePage
+      ),
+      delta * 4
     );
   });
 
   return (
-    <offsetContext.Provider value={offset}>
-      <group {...props} position={[0, -height * offset, 0]}>
-        <group ref={ref}>{children}</group>
+    <pageContext.Provider value={page}>
+      <group ref={ref} position={[0, -height * page, 0]} {...props}>
+        {children}
       </group>
-    </offsetContext.Provider>
+    </pageContext.Provider>
   );
 }

@@ -9,8 +9,8 @@ import { Vector3 } from "three";
 import type { GLTF } from "three-stdlib";
 
 import { useDebug } from "~/components/canvas/Debug";
-import useGetMousePos from "~/utils/useGetMousePos";
-import useGetSizes from "~/utils/useGetSizes";
+import useMousePos from "~/utils/useMousePos";
+import useViewport from "~/utils/useViewport";
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -30,8 +30,8 @@ const lerpTo = new Vector3();
 export default function Model({ ...props }: JSX.IntrinsicElements["group"]) {
   const { nodes, materials } = useGLTF("/keyboard.gltf") as GLTFResult;
   const keyboardRef = useRef<THREE.Group>(null);
-  const { width, height, mobile } = useGetSizes();
-  const { posX, posY } = useGetMousePos();
+  const { width, height, mobile } = useViewport();
+  const { posX, posY } = useMousePos();
   const { ...debug } = useDebug();
 
   useFrame((_, delta) => {
@@ -46,7 +46,7 @@ export default function Model({ ...props }: JSX.IntrinsicElements["group"]) {
         <group
           ref={keyboardRef}
           position={[mobile ? 0 : width * 0.15, -height * 0.2, -0.5]}
-          rotation={[Math.PI * 0.3, 0, 0]}
+          rotation={[Math.PI * 0.15, -Math.PI * 0.1, 0]}
           scale={mobile ? width * 0.18 : 1}
           dispose={null}
           {...debug}

@@ -20,10 +20,15 @@ export default function Scene() {
         <Camera />
 
         <Suspense fallback={null}>
-          <Block offset={0}>
+          <Block page={0}>
             <Keyboard />
+            <Hero />
           </Block>
-          <Hero />
+
+          <Block page={1}>
+            <Keyboard />
+            <Hero />
+          </Block>
         </Suspense>
 
         <Preload all />
