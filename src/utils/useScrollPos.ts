@@ -7,8 +7,6 @@ export default function useScrollPos() {
     setScrollY(window.scrollY);
   }
 
-  console.log("scrollY", scrollY);
-
   useEffect(() => {
     handleScroll();
     window.addEventListener("scroll", handleScroll);

@@ -5,6 +5,7 @@ import { Canvas } from "@react-three/fiber";
 import { Leva } from "leva";
 
 import Block from "~/components/canvas/Block";
+import Cable from "~/components/canvas/Cable";
 import Camera from "~/components/canvas/Camera";
 import Debug from "~/components/canvas/Debug";
 import Hero from "~/components/canvas/Hero";
@@ -20,14 +21,17 @@ export default function Scene() {
         <Camera />
 
         <Suspense fallback={null}>
-          <Block page={0}>
+          <Block offset={0}>
             <Keyboard />
             <Hero />
+            {/* <Cable /> */}
           </Block>
 
-          <Block page={1}>
+          <Block offset={1}>
             <Keyboard />
-            <Hero />
+            <Block>
+              <Hero />
+            </Block>
           </Block>
         </Suspense>
 

@@ -8,46 +8,38 @@ import useViewport from "~/utils/useViewport";
 
 type Props = {
   children: React.ReactNode;
-  page?: number;
-  scrollFactor?: number;
-  offsetX?: number;
-  offsetZ?: number;
+  offset?: number;
+  factor?: number;
 } & JSX.IntrinsicElements["group"];
 
-export const pageContext = createContext(0);
+export const offsetContext = createContext(0);
 const position = new Vector3();
 
 export default function Block({
   children,
-  page: parentPage,
-  scrollFactor = 1,
-  offsetX = 0,
-  offsetZ = 0,
+  offset: parentOffset,
+  factor = 1,
   ...props
 }: Props) {
   const { scrollPos } = useScrollPos();
-  const { height, page: contextPage } = useViewport();
-  const page = parentPage ?? contextPage;
+  const { height, offset: contextOffset } = useViewport();
   const ref = useRef<THREE.Group>(null);
 
-  const relativePage = scrollPos - page;
+  const offset = parentOffset ?? contextOffset;
+  const relativeOffset = scrollPos - offset;
 
   useFrame((_, delta) => {
     ref.current?.position.lerp(
-      position.set(
-        offsetX * relativePage,
-        relativePage * height * scrollFactor,
-        offsetZ * relativePage
-      ),
+      position.set(0, relativeOffset * height * factor, 0),
       delta * 4
     );
   });
 
   return (
-    <pageContext.Provider value={page}>
-      <group ref={ref} position={[0, -height * page, 0]} {...props}>
+    <offsetContext.Provider value={offset}>
+      <group ref={ref} position={[0, -height * offset, 0]} {...props}>
         {children}
       </group>
-    </pageContext.Provider>
+    </offsetContext.Provider>
   );
 }

@@ -27,7 +27,7 @@ type GLTFResult = GLTF & {
 const lookTo = new Vector3();
 const lerpTo = new Vector3();
 
-export default function Model({ ...props }: JSX.IntrinsicElements["group"]) {
+export default function Keyboard({ ...props }: JSX.IntrinsicElements["group"]) {
   const { nodes, materials } = useGLTF("/keyboard.gltf") as GLTFResult;
   const keyboardRef = useRef<THREE.Group>(null);
   const { width, height, mobile } = useViewport();
@@ -57,9 +57,10 @@ export default function Model({ ...props }: JSX.IntrinsicElements["group"]) {
             material={materials["Black rubber"]}
           />
           <mesh
-            // position={[0.7, 0.25, 0.55]}
-            geometry={nodes.Keyboard_cable.geometry}
-            material={materials["Black rubber"]}
+            name="cable"
+            position={[0.7, 0.25, 0.55]}
+            // geometry={nodes.Keyboard_cable.geometry}
+            // material={materials["Black rubber"]}
           />
           <mesh
             geometry={nodes.Keycaps.geometry}
