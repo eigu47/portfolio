@@ -13,7 +13,10 @@ export default function useGetScrollPos() {
   }, []);
 
   const scrollPos = scrollY / document.documentElement.clientHeight;
-  const scrollPage = Math.floor(scrollPos);
 
-  return { scrollY, scrollPos, scrollPage };
+  return {
+    scrollY,
+    scrollPos,
+    scrollPage: Math.floor(scrollY / document.documentElement.clientHeight),
+  };
 }

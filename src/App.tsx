@@ -8,10 +8,11 @@ export default function App() {
     <>
       <Navbar />
       <Scene />
-      <Hero />
-      <div className="h-screen" />
-      <div className="h-screen" />
-      <div className="h-screen" />
+      {/* <Hero /> */}
+      <div id="#" className="h-screen" />
+      <div id="about" className="h-screen" />
+      <div id="projects" className="h-screen" />
+      <div id="contact" className="h-screen" />
       <Layout />
     </>
   );

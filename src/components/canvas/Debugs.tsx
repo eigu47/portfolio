@@ -14,9 +14,10 @@ import { Perf } from "r3f-perf";
 import { type Vector3Tuple } from "three";
 
 import { useStore } from "~/utils/store";
+import useGetMousePos from "~/utils/useGetMousePos";
 
 export default function Debugs() {
-  const { camera } = useThree();
+  const camera = useThree((state) => state.camera);
   const selectedObject = useStore((state) => state.selectedObject);
   const transformMode = useStore((state) => state.transformMode);
   const setTransformActive = useStore((state) => state.setTransformActive);
@@ -85,8 +86,48 @@ export function useDebug() {
     setHovered(false);
   }
 
-  return [
-    { onClick, onContextMenu },
-    debugOn ? { onPointerEnter, onPointerOut } : {},
-  ] satisfies [JSX.IntrinsicElements["group"], JSX.IntrinsicElements["group"]];
+  return {
+    onClick,
+    onContextMenu,
+    onPointerEnter: debugOn ? onPointerEnter : undefined,
+    onPointerOut: debugOn ? onPointerOut : undefined,
+  } satisfies JSX.IntrinsicElements["group"];
+}
+
+export function ObjectPosition() {
+  const transformActive = useStore((state) => state.transformActive);
+  const selectedObject = useStore((state) => state.selectedObject);
+  const transformMode = useStore((state) => state.transformMode);
+  const { clientX, clientY } = useGetMousePos();
+
+  if (!transformActive || !selectedObject) return null;
+  return (
+    <div
+      className="fixed rounded-md bg-[#151520] p-2 text-sm text-slate-100"
+      style={{ top: clientY + 24, left: clientX }}
+    >
+      {transformMode === "translate" &&
+        selectedObject.position.toArray().map((pos, i) => (
+          <p key={i}>
+            {i === 0 ? "x" : i === 1 ? "y" : "z"}: {pos.toFixed(2)}
+          </p>
+        ))}
+      {transformMode === "rotate" &&
+        selectedObject.rotation
+          .toArray()
+          .filter((val): val is number => typeof val === "number")
+          .map((rot, i) => (
+            <p key={i}>
+              {i === 0 ? "x" : i === 1 ? "y" : "z"}:{" "}
+              {(rot / Math.PI).toFixed(2)}
+            </p>
+          ))}
+      {transformMode === "scale" &&
+        selectedObject.scale.toArray().map((scale, i) => (
+          <p key={i}>
+            {i === 0 ? "x" : i === 1 ? "y" : "z"}: {scale.toFixed(2)}
+          </p>
+        ))}
+    </div>
+  );
 }

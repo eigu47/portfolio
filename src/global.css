@@ -9,7 +9,7 @@
 body,
 html,
 #root {
-  @apply h-full w-full scroll-smooth bg-slate-900;
+  @apply h-full w-full scroll-smooth bg-slate-900 text-slate-300;
 }
 
 html {

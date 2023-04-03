@@ -42,14 +42,14 @@ export default function Navbar() {
         }`}
       >
         <ul
-          className={`container mx-auto my-6 flex flex-col items-center gap-10 text-slate-300 duration-200 sm:translate-y-0 sm:flex-row sm:transition-none ${
+          className={`container mx-auto my-6 flex flex-col items-center gap-10 duration-200 sm:translate-y-0 sm:flex-row sm:transition-none ${
             showMenu ? "" : "-translate-y-[80px]"
           }`}
         >
           {NAVITEMS.map(({ name, href }, i) => (
             <li key={name} className="first:grow">
               <a
-                className={`relative p-3 after:absolute after:bottom-1 after:right-1/2 after:h-[2px] after:w-4/6 after:origin-center after:translate-x-1/2 after:scale-x-0 after:bg-emerald-400 after:transition hover:text-white hover:after:scale-x-100 focus:text-white focus:after:scale-x-100 ${
+                className={`relative p-3 after:absolute after:bottom-1 after:right-1/2 after:h-[2px] after:w-4/6 after:origin-center after:translate-x-1/2 after:scale-x-0 after:bg-emerald-400 after:transition hover:text-white hover:after:scale-x-100 ${
                   scrollPage === i ? "after:scale-x-100" : ""
                 }`}
                 href={href}
@@ -62,7 +62,7 @@ export default function Navbar() {
         </ul>
       </nav>
       <button
-        className="fixed right-3 top-3 z-10 p-3 text-slate-300 sm:hidden"
+        className="fixed right-3 top-3 z-10 p-3 sm:hidden"
         onClick={() => setShowMenu((state) => !state)}
       >
         <HamburgerIcon
