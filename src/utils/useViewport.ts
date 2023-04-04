@@ -1,19 +1,28 @@
-import { useContext } from "react";
+import { useMemo } from "react";
 
 import { useThree } from "@react-three/fiber";
+import { Vector3 } from "three";
 
-import { offsetContext } from "~/components/canvas/Block";
+const cameraPos = new Vector3();
+const cameraDistance = new Vector3(0, 0, 5);
 
 export default function useViewport() {
-  const viewport = useThree((state) => state.viewport);
+  const getCurrentViewport = useThree(
+    (state) => state.viewport.getCurrentViewport
+  );
+  const camera = useThree((state) => state.camera);
   const size = useThree((state) => state.size);
-  const offset = useContext(offsetContext);
+
+  const { width, height } = useMemo(() => {
+    return getCurrentViewport(
+      camera,
+      camera.getWorldPosition(cameraPos).clone().add(cameraDistance)
+    );
+  }, [size]);
 
   return {
-    viewport,
-    offset,
-    width: viewport.width,
-    height: viewport.height,
+    width,
+    height,
     mobile: size.width < 640,
   };
 }

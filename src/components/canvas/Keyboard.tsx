@@ -44,9 +44,13 @@ export default function Keyboard({ ...props }: JSX.IntrinsicElements["group"]) {
       <Float>
         <group
           ref={keyboardRef}
-          position={[mobile ? 0 : width * 0.15, -height * 0.2, -0.5]}
+          scale={mobile ? width * 0.18 : 0.9}
+          position={[
+            mobile ? 0 : width * 0.2,
+            mobile ? -height * 0.25 : -height * 0.2,
+            -0.5,
+          ]}
           rotation={[Math.PI * 0.15, -Math.PI * 0.1, 0]}
-          scale={mobile ? width * 0.18 : 1}
           dispose={null}
           {...debug}
           {...props}

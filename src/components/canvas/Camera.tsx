@@ -36,8 +36,8 @@ export default function Camera() {
 
     const [rx, ry, rz] = PAGES[scrollPage].rotation ?? [0, 0, 0];
     const [prx, pry, prz] = PAGES[scrollPage + 1]?.rotation ?? [rx, ry, rz];
-    rotFrom.set(rx, ry, rz);
-    rotTo.set(prx, pry, prz);
+    rotFrom.set(Math.PI * rx, Math.PI * ry, Math.PI * rz);
+    rotTo.set(Math.PI * prx, Math.PI * pry, Math.PI * prz);
   }, [scrollPage]);
 
   useFrame(({ camera }, delta) => {
@@ -51,12 +51,12 @@ export default function Camera() {
     );
 
     rotation.lerpVectors(rotFrom, rotTo, scrollPos - scrollPage);
-    ref.current?.rotation.setFromVector3(rotation);
+    ref.current.rotation.setFromVector3(rotation);
   });
 
   return (
     <group ref={ref}>
-      <PerspectiveCamera makeDefault fov={75} position={[0, 0, 5]} />
+      <PerspectiveCamera makeDefault fov={60} position={[0, 0, 5]} />
       <ambientLight intensity={0.2} />
       <directionalLight position={[10, 15, 10]} intensity={0.5} />
       <fog attach="fog" args={["#0f172a", 0, 60]} />

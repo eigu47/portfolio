@@ -38,12 +38,12 @@ export default function Navbar() {
     <>
       <nav
         className={`fixed top-0 z-10 w-full bg-slate-900/80 shadow-lg backdrop-blur duration-200 sm:translate-y-0 sm:transition-none ${
-          showMenu ? "" : "-translate-y-[calc(100%-80px)]"
+          showMenu ? "" : "-translate-y-[calc(100%-56px)]"
         }`}
       >
         <ul
           className={`container mx-auto my-6 flex flex-col items-center gap-10 duration-200 sm:translate-y-0 sm:flex-row sm:transition-none ${
-            showMenu ? "" : "-translate-y-[80px]"
+            showMenu ? "" : "-translate-y-[56px]"
           }`}
         >
           {NAVITEMS.map(({ name, href }, i) => (
@@ -62,7 +62,7 @@ export default function Navbar() {
         </ul>
       </nav>
       <button
-        className="fixed right-3 top-3 z-10 p-3 sm:hidden"
+        className="fixed right-2 top-0 z-10 p-3 sm:hidden"
         onClick={() => setShowMenu((state) => !state)}
       >
         <HamburgerIcon

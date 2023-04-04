@@ -15,6 +15,7 @@ import { Perf } from "r3f-perf";
 
 import { useDebugStore } from "~/utils/debugStore";
 import useMousePos from "~/utils/useMousePos";
+import useViewport from "~/utils/useViewport";
 
 export default function Debug({
   cameraGroup,
@@ -97,7 +98,7 @@ export function ObjectPosition() {
 }
 
 export function FullViewport({ ...props }: ComponentProps<typeof Plane>) {
-  const { width, height } = useThree((state) => state.viewport);
+  const { width, height } = useViewport();
 
   return <Plane scale={[width, height, 0]} {...props} />;
 }
