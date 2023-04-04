@@ -4,39 +4,41 @@ import { Preload } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Leva } from "leva";
 
-import Block from "~/components/canvas/Block";
-import Cable from "~/components/canvas/Cable";
 import Camera from "~/components/canvas/Camera";
-import Debug from "~/components/canvas/Debug";
+import { FullViewport } from "~/components/canvas/Debug";
 import Hero from "~/components/canvas/Hero";
 import Keyboard from "~/components/canvas/Keyboard";
+import Page from "~/components/canvas/Page";
+
+const isDebug =
+  new URLSearchParams(window.location.search).get("debug") != null;
 
 export default function Scene() {
-  const isDebug =
-    new URLSearchParams(window.location.search).get("debug") != null;
-
   return (
     <>
       <Canvas className="!fixed top-0">
         <Camera />
 
         <Suspense fallback={null}>
-          <Block offset={0}>
+          <Page>
             <Keyboard />
             <Hero />
-            {/* <Cable /> */}
-          </Block>
+          </Page>
 
-          <Block offset={1}>
-            <Keyboard />
-            <Block>
-              <Hero />
-            </Block>
-          </Block>
+          <Page page={1}>
+            <FullViewport />
+          </Page>
+
+          <Page page={2}>
+            <FullViewport />
+          </Page>
+
+          <Page page={3}>
+            <FullViewport />
+          </Page>
         </Suspense>
 
         <Preload all />
-        {isDebug && <Debug />}
       </Canvas>
       {!isDebug && <Leva hidden={!isDebug} />}
     </>

@@ -1,15 +1,67 @@
+import { useEffect, useRef } from "react";
+
+import { PerspectiveCamera } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
+import { useControls } from "leva";
+import { Vector3 } from "three";
+
+import Debug from "~/components/canvas/Debug";
+import { PAGES } from "~/utils/store";
+import useScrollPos from "~/utils/useScrollPos";
+import useViewport from "~/utils/useViewport";
+
+const isDebug =
+  new URLSearchParams(window.location.search).get("debug") != null;
+
+const position = new Vector3();
+const posFrom = new Vector3();
+const posTo = new Vector3();
+const lookAt = new Vector3();
+
+const rotation = new Vector3();
+const rotFrom = new Vector3();
+const rotTo = new Vector3();
 
 export default function Camera() {
-  useFrame(({ camera, scene }, delta) => {
-    // camera.position.y = -scrollPos * 10;
+  const { scrollPos, scrollPage, scrollDown } = useScrollPos();
+  const { width, height } = useViewport();
+  const ref = useRef<THREE.Group>(null);
+  const { debugOn } = useControls({ debugOn: false });
+
+  useEffect(() => {
+    const [x, y, z] = PAGES[scrollPage].position ?? [0, 0, 0];
+    const [px, py, pz] = PAGES[scrollPage + 1]?.position ?? [x, y, z];
+    posFrom.set(x * width, y * height, z);
+    posTo.set(px * width, py * height, pz);
+
+    const [rx, ry, rz] = PAGES[scrollPage].rotation ?? [0, 0, 0];
+    const [prx, pry, prz] = PAGES[scrollPage + 1]?.rotation ?? [rx, ry, rz];
+    rotFrom.set(rx, ry, rz);
+    rotTo.set(prx, pry, prz);
+  }, [scrollPage]);
+
+  useFrame(({ camera }, delta) => {
+    if (debugOn || !ref.current) return null;
+
+    position.lerpVectors(posFrom, posTo, scrollPos - scrollPage);
+    ref.current.position.lerp(position, delta * 4);
+
+    camera.lookAt(
+      lookAt.lerp(scrollDown ? position : ref.current.position, delta * 8)
+    );
+
+    rotation.lerpVectors(rotFrom, rotTo, scrollPos - scrollPage);
+    ref.current?.rotation.setFromVector3(rotation);
   });
 
   return (
-    <>
+    <group ref={ref}>
+      <PerspectiveCamera makeDefault fov={75} position={[0, 0, 5]} />
       <ambientLight intensity={0.2} />
       <directionalLight position={[10, 15, 10]} intensity={0.5} />
       <fog attach="fog" args={["#0f172a", 0, 60]} />
-    </>
+
+      {isDebug && <Debug cameraGroup={ref} />}
+    </group>
   );
 }

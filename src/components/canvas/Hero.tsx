@@ -1,7 +1,7 @@
 import { Text } from "@react-three/drei";
 
 import { useDebug } from "~/components/canvas/Debug";
-import { COLORS } from "~/utils/constants";
+import { COLORS } from "~/utils/store";
 import useViewport from "~/utils/useViewport";
 
 export default function Hero() {

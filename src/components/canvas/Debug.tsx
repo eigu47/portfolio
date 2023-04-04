@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { type ComponentProps, useState } from "react";
 
 import {
   GizmoHelper,
   GizmoViewport,
   OrbitControls,
   PivotControls,
+  Plane,
   TransformControls,
   useCursor,
 } from "@react-three/drei";
@@ -15,7 +16,11 @@ import { Perf } from "r3f-perf";
 import { useDebugStore } from "~/utils/debugStore";
 import useMousePos from "~/utils/useMousePos";
 
-export default function Debug() {
+export default function Debug({
+  cameraGroup,
+}: {
+  cameraGroup: React.RefObject<THREE.Group>;
+}) {
   const camera = useThree((state) => state.camera);
   const { selectedObject, transformMode } = useDebugStore();
   const setTransformActive = useDebugStore((state) => state.setTransformActive);
@@ -23,7 +28,8 @@ export default function Debug() {
     debugOn: false,
     cameraPos: {
       value: camera.position.toArray(),
-      onEditEnd: (value: THREE.Vector3Tuple) => camera.position.set(...value),
+      onEditEnd: (value: THREE.Vector3Tuple) =>
+        cameraGroup.current?.position.set(...value),
       step: 0.1,
       render: (get) => get("debugOn") as boolean,
     },
@@ -32,11 +38,12 @@ export default function Debug() {
   if (!debugOn) return null;
   return (
     <>
+      <Perf position="top-left" className={debugOn ? "m-3" : "hidden"} />
       <OrbitControls
         makeDefault
         onEnd={() => set({ cameraPos: camera.position.toArray() })}
+        target={cameraGroup.current?.position}
       />
-      <Perf position="top-left" className="top-10" />
       <GizmoHelper>
         <GizmoViewport />
       </GizmoHelper>
@@ -49,10 +56,6 @@ export default function Debug() {
           onMouseUp={() => setTransformActive(false)}
         />
       )}
-
-      {/* <mesh scale={[width * 1.25, height, 0]} position={[0, 0, 0]}>
-        <planeGeometry />
-      </mesh> */}
     </>
   );
 }
@@ -91,6 +94,12 @@ export function ObjectPosition() {
         ))}
     </div>
   );
+}
+
+export function FullViewport({ ...props }: ComponentProps<typeof Plane>) {
+  const { width, height } = useThree((state) => state.viewport);
+
+  return <Plane scale={[width, height, 0]} {...props} />;
 }
 
 export function useDebug() {
