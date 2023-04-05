@@ -14,15 +14,17 @@ const rotation = new Vector3();
 const lookAt = new Vector3();
 
 export default function Camera() {
+  const { debugOn, enableZoom } = useControls({
+    debugOn: false,
+    enableZoom: { value: true, render: (get) => get("debugOn") as boolean },
+  });
   const { scrollPos, scrollPage, scrollDown } = useScrollPos();
   const { position: posFrom, rotation: rotFrom } = usePage(scrollPage);
   const { position: posTo, rotation: rotTo } = usePage(scrollPage + 1);
-
-  const { debugOn } = useControls({ debugOn: false });
   const ref = useRef<THREE.Group>(null);
 
   useFrame(({ camera }, delta) => {
-    if (debugOn || !ref.current) return null;
+    if ((debugOn && enableZoom) || !ref.current) return null;
 
     position.lerpVectors(posFrom, posTo, scrollPos - scrollPage);
     ref.current.position.lerp(position, delta * 4);

@@ -2,8 +2,10 @@ import { Suspense } from "react";
 
 import { Preload } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { Leva } from "leva";
 
+import Atom from "~/components/canvas/Atom";
 import Camera from "~/components/canvas/Camera";
 import Debug, { FullViewport } from "~/components/canvas/Debug";
 import Hero from "~/components/canvas/Hero";
@@ -21,12 +23,12 @@ export default function Scene() {
 
         <Suspense fallback={null}>
           <Page>
-            <Keyboard />
             <Hero />
+            <Keyboard />
           </Page>
 
           <Page page={1}>
-            <FullViewport />
+            <Atom />
           </Page>
 
           <Page page={2}>
@@ -38,6 +40,9 @@ export default function Scene() {
           </Page>
         </Suspense>
 
+        <EffectComposer>
+          <Bloom mipmapBlur luminanceThreshold={1} radius={0.5} />
+        </EffectComposer>
         <Preload all />
         {isDebug && <Debug />}
       </Canvas>

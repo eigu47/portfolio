@@ -14,7 +14,7 @@ export const PAGES = [
   },
   {
     id: "about",
-    position: [-1, -2, -5],
+    position: [-1, -2, -3],
     rotation: [0, 0.5, 0],
   },
   {

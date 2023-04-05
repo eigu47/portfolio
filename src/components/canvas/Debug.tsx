@@ -23,8 +23,12 @@ const cameraTarget = new Vector3();
 export default function Debug() {
   const camera = useThree((state) => state.camera);
   const { selectedObject, transformMode, setTransformActive } = useDebugStore();
-  const [{ debugOn }, set] = useControls(() => ({
+  const [{ debugOn, enableZoom }, set] = useControls(() => ({
     debugOn: false,
+    enableZoom: {
+      value: true,
+      render: (get) => get("debugOn") as boolean,
+    },
     cameraPos: {
       value: camera.position.toArray(),
       onEditEnd: (value: THREE.Vector3Tuple) => camera.position.set(...value),
@@ -49,6 +53,7 @@ export default function Debug() {
       <Perf position="top-left" className={debugOn ? "m-3" : "hidden"} />
       <OrbitControls
         makeDefault
+        enableZoom={enableZoom}
         onEnd={() => set({ cameraPos: camera.position.toArray() })}
         target={cameraTarget}
       />
