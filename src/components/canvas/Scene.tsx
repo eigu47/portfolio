@@ -2,7 +2,6 @@ import { Suspense } from "react";
 
 import { Preload } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { Leva } from "leva";
 
 import Atom from "~/components/canvas/Atom";
@@ -40,9 +39,6 @@ export default function Scene() {
           </Page>
         </Suspense>
 
-        <EffectComposer>
-          <Bloom mipmapBlur luminanceThreshold={1} radius={0.5} />
-        </EffectComposer>
         <Preload all />
         {isDebug && <Debug />}
       </Canvas>

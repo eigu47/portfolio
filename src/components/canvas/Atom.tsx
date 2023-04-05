@@ -1,8 +1,8 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
-import { Float, Line, Sphere, Trail } from "@react-three/drei";
+import { Float, Line, Sphere, Trail, useCursor } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { Color, EllipseCurve, type Mesh } from "three";
+import { Color, EllipseCurve, Vector3, type Mesh } from "three";
 
 const points = new EllipseCurve(
   0,
@@ -15,50 +15,77 @@ const points = new EllipseCurve(
   0
 ).getPoints(100);
 
-export default function Atom({ ...props }: JSX.IntrinsicElements["group"]) {
+const atomColor = new Color("#1fb2f5");
+const tomato = new Color("tomato");
+
+export default function Atom({
+  scale = 0.2,
+  ...props
+}: { scale?: number } & JSX.IntrinsicElements["group"]) {
+  const [hover, setHover] = useState(false);
+  const materialRef = useRef<THREE.MeshPhysicalMaterial>(null);
+  const sphereRef = useRef<THREE.Group>(null);
+
+  // useCursor(hover);
+
+  useFrame((_, delta) => {
+    materialRef.current?.color.lerp(hover ? tomato : atomColor, delta * 8);
+  });
+
   return (
-    <Float speed={4} rotationIntensity={1} floatIntensity={2}>
-      <group {...props}>
-        <Line worldUnits points={points} color="turquoise" lineWidth={0.3} />
+    <group {...props} ref={sphereRef} scale={scale}>
+      <Float speed={2} rotationIntensity={20} floatIntensity={1}>
         <Line
           worldUnits
           points={points}
-          color="turquoise"
-          lineWidth={0.3}
+          color={atomColor}
+          lineWidth={0.3 * scale}
+        />
+        <Line
+          worldUnits
+          points={points}
+          color={atomColor}
+          lineWidth={0.3 * scale}
           rotation={[0, 0, 1]}
         />
         <Line
           worldUnits
           points={points}
-          color="turquoise"
-          lineWidth={0.3}
+          color={atomColor}
+          lineWidth={0.3 * scale}
           rotation={[0, 0, -1]}
         />
-        <Electron position={[0, 0, 0.5]} speed={4} />
-        <Electron
-          position={[0, 0, 0.5]}
-          rotation={[0, 0, Math.PI / 3]}
-          speed={3.4}
-        />
-        <Electron
-          position={[0, 0, 0.5]}
-          rotation={[0, 0, -Math.PI / 3]}
-          speed={5}
-        />
-        <Sphere args={[0.55, 64, 64]}>
-          <meshBasicMaterial color={[6, 0.5, 2]} toneMapped={false} />
+        <Electron speed={3} />
+        <Electron rotation={[0, 0, Math.PI / 3]} speed={4} />
+        <Electron rotation={[0, 0, -Math.PI / 3]} speed={3.5} />
+        <Sphere
+          args={[0.55, 64, 64]}
+          onPointerEnter={() => setHover(true)}
+          onPointerLeave={() => setHover(false)}
+        >
+          <meshPhysicalMaterial
+            ref={materialRef}
+            roughness={0.5}
+            color={atomColor}
+          />
         </Sphere>
-      </group>
-    </Float>
+      </Float>
+    </group>
   );
 }
 
 type ElectronProps = {
   radius?: number;
   speed?: number;
+  scale?: number;
 } & JSX.IntrinsicElements["group"];
 
-function Electron({ radius = 2.75, speed = 6, ...props }: ElectronProps) {
+function Electron({
+  radius = 2.75,
+  speed = 4,
+  scale = 0.2,
+  ...props
+}: ElectronProps) {
   const ref = useRef<Mesh>(null);
 
   useFrame(({ clock }) => {
@@ -74,8 +101,8 @@ function Electron({ radius = 2.75, speed = 6, ...props }: ElectronProps) {
   return (
     <group {...props}>
       <Trail
-        width={5}
-        length={6}
+        width={5 * scale}
+        length={6 * scale}
         color={new Color(2, 1, 10)}
         attenuation={(t) => t * t}
       >
