@@ -5,13 +5,13 @@ import { COLORS } from "~/utils/store";
 import useViewport from "~/utils/useViewport";
 
 export default function Hero() {
-  const { width, height, mobile } = useViewport();
+  const { width, height, size } = useViewport();
   const { ...debug } = useDebug();
 
   return (
     <>
       <Text
-        scale={mobile ? 0.5 : 0.7}
+        scale={size.sm ? 0.7 : 0.5}
         anchorX="left"
         position={[-width * 0.7, height * 0.3, -3]}
         rotation={[0, Math.PI * 0.1, 0]}
@@ -22,9 +22,9 @@ export default function Hero() {
         Hello, I am
       </Text>
       <Text
-        scale={mobile ? width * 0.15 : 0.7}
-        anchorX={mobile ? "center" : "left"}
-        position={[mobile ? 0 : -width * 0.35, height * 0.05, 0]}
+        scale={size.sm ? 0.7 : width * 0.15}
+        anchorX={size.sm ? "left" : "center"}
+        position={[size.sm ? -width * 0.35 : 0, height * 0.05, 0]}
         color={COLORS.slate300}
         {...debug}
       >
@@ -32,8 +32,8 @@ export default function Hero() {
       </Text>
       <Text
         scale={0.35}
-        anchorX={mobile ? "center" : "left"}
-        position={[mobile ? 0 : -width * 0.55, -height * 0.1, -3]}
+        anchorX={size.sm ? "left" : "center"}
+        position={[size.sm ? -width * 0.55 : 0, -height * 0.1, -3]}
         color={COLORS.slate300}
         {...debug}
       >

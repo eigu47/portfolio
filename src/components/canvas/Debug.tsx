@@ -1,4 +1,4 @@
-import { type ComponentProps, useState } from "react";
+import { type ComponentProps, useState, useRef } from "react";
 
 import {
   GizmoHelper,
@@ -12,16 +12,15 @@ import {
 import { type ThreeEvent, useThree } from "@react-three/fiber";
 import { useControls } from "leva";
 import { Perf } from "r3f-perf";
+import { Vector3 } from "three";
 
 import { useDebugStore } from "~/utils/debugStore";
 import useMousePos from "~/utils/useMousePos";
 import useViewport from "~/utils/useViewport";
 
-export default function Debug({
-  cameraGroup,
-}: {
-  cameraGroup: React.RefObject<THREE.Group>;
-}) {
+const cameraTarget = new Vector3();
+
+export default function Debug() {
   const camera = useThree((state) => state.camera);
   const { selectedObject, transformMode } = useDebugStore();
   const setTransformActive = useDebugStore((state) => state.setTransformActive);
@@ -29,26 +28,37 @@ export default function Debug({
     debugOn: false,
     cameraPos: {
       value: camera.position.toArray(),
-      onEditEnd: (value: THREE.Vector3Tuple) =>
-        cameraGroup.current?.position.set(...value),
+      onEditEnd: (value: THREE.Vector3Tuple) => camera.position.set(...value),
       step: 0.1,
       render: (get) => get("debugOn") as boolean,
     },
   }));
+  // Adds 5 units in the direction the camera is facing
+  cameraTarget.copy(
+    camera
+      .getWorldPosition(cameraTarget.clone())
+      .add(camera.getWorldDirection(cameraTarget.clone()).multiplyScalar(5))
+  );
 
-  if (!debugOn) return null;
+  if (!debugOn) {
+    camera.position.set(0, 0, 5);
+    return null;
+  }
+
   return (
     <>
       <Perf position="top-left" className={debugOn ? "m-3" : "hidden"} />
       <OrbitControls
         makeDefault
         onEnd={() => set({ cameraPos: camera.position.toArray() })}
-        target={cameraGroup.current?.position}
+        target={cameraTarget}
       />
+      <group position={cameraTarget}>
+        <PivotControls annotations />
+      </group>
       <GizmoHelper>
         <GizmoViewport />
       </GizmoHelper>
-      <PivotControls annotations />
       {selectedObject && transformMode !== "disable" && (
         <TransformControls
           object={selectedObject}
@@ -113,6 +123,7 @@ export function useDebug() {
   } = useDebugStore();
   const { debugOn } = useControls({ debugOn: false });
   const [hovered, setHovered] = useState(false);
+  const selected = useRef<THREE.Group | null>(null);
   useCursor((debugOn && hovered) || transformActive);
 
   function onClick(e: ThreeEvent<MouseEvent>) {

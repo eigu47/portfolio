@@ -1,10 +1,10 @@
 import { PAGES } from "~/utils/store";
-import { type IndexUnion } from "~/utils/types";
+import { type ValidIndex } from "~/utils/types";
 import useViewport from "~/utils/useViewport";
 
 type Props = {
   children: React.ReactNode;
-  page?: IndexUnion<typeof PAGES>;
+  page?: ValidIndex<typeof PAGES>;
 } & JSX.IntrinsicElements["group"];
 
 export default function Page({ children, page = 0, ...props }: Props) {

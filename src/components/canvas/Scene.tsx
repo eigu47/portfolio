@@ -5,7 +5,7 @@ import { Canvas } from "@react-three/fiber";
 import { Leva } from "leva";
 
 import Camera from "~/components/canvas/Camera";
-import { FullViewport } from "~/components/canvas/Debug";
+import Debug, { FullViewport } from "~/components/canvas/Debug";
 import Hero from "~/components/canvas/Hero";
 import Keyboard from "~/components/canvas/Keyboard";
 import Page from "~/components/canvas/Page";
@@ -39,6 +39,7 @@ export default function Scene() {
         </Suspense>
 
         <Preload all />
+        {isDebug && <Debug />}
       </Canvas>
       {!isDebug && <Leva hidden={!isDebug} />}
     </>

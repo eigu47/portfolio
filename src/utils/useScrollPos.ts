@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { type PAGES } from "~/utils/store";
-import { type IndexUnion } from "~/utils/types";
+import { type ValidIndex } from "~/utils/types";
 
 export default function useScrollPos() {
   const [scrollY, setScrollY] = useState(0);
@@ -21,7 +21,7 @@ export default function useScrollPos() {
   }, []);
 
   const scrollPos = scrollY / document.documentElement.clientHeight;
-  const scrollPage = Math.floor(scrollPos) as IndexUnion<typeof PAGES>;
+  const scrollPage = Math.floor(scrollPos) as ValidIndex<typeof PAGES>;
 
   return {
     scrollY,

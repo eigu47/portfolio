@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import { type IndexUnion } from "~/utils/types";
+import { type ValidIndex } from "~/utils/types";
 
 export const TRANSFORM_MODES = [
   "translate",
@@ -8,7 +8,7 @@ export const TRANSFORM_MODES = [
   "scale",
   "disable",
 ] as const;
-let modeId: IndexUnion<typeof TRANSFORM_MODES> = 0;
+let modeId: ValidIndex<typeof TRANSFORM_MODES> = 0;
 
 type Store = {
   selectedObject: THREE.Object3D<THREE.Event> | null;

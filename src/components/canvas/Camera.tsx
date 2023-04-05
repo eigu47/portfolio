@@ -5,13 +5,9 @@ import { useFrame } from "@react-three/fiber";
 import { useControls } from "leva";
 import { Vector3 } from "three";
 
-import Debug from "~/components/canvas/Debug";
-import { PAGES } from "~/utils/store";
+import { COLORS, PAGES } from "~/utils/store";
 import useScrollPos from "~/utils/useScrollPos";
 import useViewport from "~/utils/useViewport";
-
-const isDebug =
-  new URLSearchParams(window.location.search).get("debug") != null;
 
 const position = new Vector3();
 const posFrom = new Vector3();
@@ -25,9 +21,9 @@ const rotTo = new Vector3();
 export default function Camera() {
   const { scrollPos, scrollPage, scrollDown } = useScrollPos();
   const { width, height } = useViewport();
-  const ref = useRef<THREE.Group>(null);
   const { debugOn } = useControls({ debugOn: false });
-
+  const ref = useRef<THREE.Group>(null);
+  // Get current and next page plane position and rotation
   useEffect(() => {
     const [x, y, z] = PAGES[scrollPage].position ?? [0, 0, 0];
     const [px, py, pz] = PAGES[scrollPage + 1]?.position ?? [x, y, z];
@@ -56,12 +52,11 @@ export default function Camera() {
 
   return (
     <group ref={ref}>
-      <PerspectiveCamera makeDefault fov={60} position={[0, 0, 5]} />
+      <PerspectiveCamera makeDefault fov={60} position={[0, 0, 5]}>
+        <fog attach="fog" args={[COLORS.slate900, 0, 60]} />
+      </PerspectiveCamera>
       <ambientLight intensity={0.2} />
       <directionalLight position={[10, 15, 10]} intensity={0.5} />
-      <fog attach="fog" args={["#0f172a", 0, 60]} />
-
-      {isDebug && <Debug cameraGroup={ref} />}
     </group>
   );
 }
