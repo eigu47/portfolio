@@ -29,7 +29,7 @@ const lookTo = new Vector3();
 export default function Keyboard({ ...props }: JSX.IntrinsicElements["group"]) {
   const { nodes, materials } = useGLTF("/keyboard.gltf") as GLTFResult;
   const keyboardRef = useRef<THREE.Group>(null);
-  const { width, height, size } = useViewport();
+  const { width, height, mobile } = useViewport();
   const { posX, posY } = useMousePos();
   const { ...debug } = useDebug();
 
@@ -44,10 +44,10 @@ export default function Keyboard({ ...props }: JSX.IntrinsicElements["group"]) {
       <Float>
         <group
           ref={keyboardRef}
-          scale={size.sm ? 0.9 : width * 0.18}
+          scale={mobile ? width * 0.18 : 0.9}
           position={[
-            size.sm ? width * 0.2 : 0,
-            size.sm ? -height * 0.2 : -height * 0.25,
+            mobile ? 0 : width * 0.2,
+            mobile ? -height * 0.25 : -height * 0.2,
             -0.5,
           ]}
           rotation={[Math.PI * 0.15, -Math.PI * 0.1, 0]}
@@ -59,12 +59,11 @@ export default function Keyboard({ ...props }: JSX.IntrinsicElements["group"]) {
             geometry={nodes.Case.geometry}
             material={materials["Black rubber"]}
           />
-          <mesh
-            name="cable"
+          {/* <mesh
             position={[0.7, 0.25, 0.55]}
-            // geometry={nodes.Keyboard_cable.geometry}
-            // material={materials["Black rubber"]}
-          />
+            geometry={nodes.Keyboard_cable.geometry}
+            material={materials["Black rubber"]}
+          /> */}
           <mesh
             geometry={nodes.Keycaps.geometry}
             material={materials["Keycap material"]}
