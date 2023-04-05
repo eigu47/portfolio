@@ -1,4 +1,4 @@
-import { type ComponentProps, useState, useRef } from "react";
+import { type ComponentProps, useState } from "react";
 
 import {
   GizmoHelper,
@@ -22,8 +22,7 @@ const cameraTarget = new Vector3();
 
 export default function Debug() {
   const camera = useThree((state) => state.camera);
-  const { selectedObject, transformMode } = useDebugStore();
-  const setTransformActive = useDebugStore((state) => state.setTransformActive);
+  const { selectedObject, transformMode, setTransformActive } = useDebugStore();
   const [{ debugOn }, set] = useControls(() => ({
     debugOn: false,
     cameraPos: {
@@ -123,7 +122,6 @@ export function useDebug() {
   } = useDebugStore();
   const { debugOn } = useControls({ debugOn: false });
   const [hovered, setHovered] = useState(false);
-  const selected = useRef<THREE.Group | null>(null);
   useCursor((debugOn && hovered) || transformActive);
 
   function onClick(e: ThreeEvent<MouseEvent>) {
@@ -137,19 +135,11 @@ export function useDebug() {
     if (e.eventObject === selectedObject) cycleTransformMode();
   }
 
-  function onPointerEnter() {
-    setHovered(true);
-  }
-
-  function onPointerOut() {
-    setHovered(false);
-  }
-
   if (!debugOn) return {};
   return {
     onClick,
     onContextMenu,
-    onPointerEnter,
-    onPointerOut,
+    onPointerEnter: () => setHovered(true),
+    onPointerOut: () => setHovered(false),
   } satisfies JSX.IntrinsicElements["group"];
 }

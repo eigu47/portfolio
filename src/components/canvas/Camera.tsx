@@ -23,8 +23,9 @@ export default function Camera() {
   const { width, height } = useViewport();
   const { debugOn } = useControls({ debugOn: false });
   const ref = useRef<THREE.Group>(null);
-  // Get current and next page plane position and rotation
+
   useEffect(() => {
+    // Get pages plane position and rotation
     const [x, y, z] = PAGES[scrollPage].position ?? [0, 0, 0];
     const [px, py, pz] = PAGES[scrollPage + 1]?.position ?? [x, y, z];
     posFrom.set(x * width, y * height, z);
@@ -34,7 +35,7 @@ export default function Camera() {
     const [prx, pry, prz] = PAGES[scrollPage + 1]?.rotation ?? [rx, ry, rz];
     rotFrom.set(Math.PI * rx, Math.PI * ry, Math.PI * rz);
     rotTo.set(Math.PI * prx, Math.PI * pry, Math.PI * prz);
-  }, [scrollPage]);
+  }, [scrollPage, width, height]);
 
   useFrame(({ camera }, delta) => {
     if (debugOn || !ref.current) return null;

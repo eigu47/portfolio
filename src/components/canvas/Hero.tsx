@@ -17,7 +17,6 @@ export default function Hero() {
         rotation={[0, Math.PI * 0.1, 0]}
         color={COLORS.slate300}
         {...debug}
-        {...debug}
       >
         Hello, I am
       </Text>

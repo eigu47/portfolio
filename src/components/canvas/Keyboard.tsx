@@ -29,7 +29,7 @@ const lookTo = new Vector3();
 export default function Keyboard({ ...props }: JSX.IntrinsicElements["group"]) {
   const { nodes, materials } = useGLTF("/keyboard.gltf") as GLTFResult;
   const keyboardRef = useRef<THREE.Group>(null);
-  const { width, height, mobile } = useViewport();
+  const { width, height, size } = useViewport();
   const { posX, posY } = useMousePos();
   const { ...debug } = useDebug();
 
@@ -44,10 +44,10 @@ export default function Keyboard({ ...props }: JSX.IntrinsicElements["group"]) {
       <Float>
         <group
           ref={keyboardRef}
-          scale={mobile ? width * 0.18 : 0.9}
+          scale={size.sm ? 0.9 : width * 0.18}
           position={[
-            mobile ? 0 : width * 0.2,
-            mobile ? -height * 0.25 : -height * 0.2,
+            size.sm ? width * 0.2 : 0,
+            size.sm ? -height * 0.2 : -height * 0.25,
             -0.5,
           ]}
           rotation={[Math.PI * 0.15, -Math.PI * 0.1, 0]}
@@ -77,5 +77,3 @@ export default function Keyboard({ ...props }: JSX.IntrinsicElements["group"]) {
 }
 
 useGLTF.preload("/keyboard.gltf");
-
-//  <ContactShadows position={[0, -1.5, 0]} far={5} blur={5} />
