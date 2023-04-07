@@ -10,7 +10,7 @@ export const TRANSFORM_MODES = [
 ] as const;
 let modeId: ValidIndex<typeof TRANSFORM_MODES> = 0;
 
-type Store = {
+export const useDebugStore = create<{
   selectedObject: THREE.Object3D<THREE.Event> | null;
   transformActive: boolean;
   transformMode: (typeof TRANSFORM_MODES)[number];
@@ -18,9 +18,7 @@ type Store = {
   setSelectedObject: (object: THREE.Object3D<THREE.Event>) => void;
   setTransformActive: (active: boolean) => void;
   cycleTransformMode: () => void;
-};
-
-export const useDebugStore = create<Store>((set) => ({
+}>((set) => ({
   selectedObject: null,
   transformActive: false,
   transformMode: TRANSFORM_MODES[modeId],

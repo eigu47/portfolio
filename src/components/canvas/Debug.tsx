@@ -18,7 +18,7 @@ import { useDebugStore } from "~/utils/debugStore";
 import useMousePos from "~/utils/useMousePos";
 import useViewport from "~/utils/useViewport";
 
-const cameraPoint = new Vector3();
+const cameraPos = new Vector3();
 const cameraDir = new Vector3();
 
 export default function Debug() {
@@ -39,7 +39,7 @@ export default function Debug() {
   }));
   // Adds 5 units in the direction the camera is facing
   camera
-    .getWorldPosition(cameraPoint)
+    .getWorldPosition(cameraPos)
     .add(camera.getWorldDirection(cameraDir).multiplyScalar(5));
 
   if (!debugOn) {
@@ -54,9 +54,9 @@ export default function Debug() {
         makeDefault
         enableZoom={enableZoom}
         onEnd={() => set({ cameraPos: camera.position.toArray() })}
-        target={cameraPoint}
+        target={cameraPos}
       />
-      <group position={cameraPoint}>
+      <group position={cameraPos}>
         <PivotControls annotations />
       </group>
       <GizmoHelper>

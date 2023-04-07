@@ -3,7 +3,14 @@ import { type ComponentProps, useRef, useState } from "react";
 import { Float, Line, Sphere, Trail, useCursor } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useGesture } from "@use-gesture/react";
-import { Color, EllipseCurve, Vector3, type Mesh } from "three";
+import {
+  Color,
+  EllipseCurve,
+  Vector3,
+  type Mesh,
+  Euler,
+  Quaternion,
+} from "three";
 
 import useViewport from "~/utils/useViewport";
 
@@ -21,6 +28,8 @@ const points = new EllipseCurve(
 const cyan = new Color("cyan");
 const tomato = new Color("tomato");
 const dragPos = new Vector3();
+const dragRot = new Quaternion();
+const cameraRot = new Quaternion().setFromEuler(new Euler(0, -Math.PI / 2, 0));
 
 export default function Atom({
   scale = 0.15,
@@ -29,6 +38,7 @@ export default function Atom({
   const [hover, setHover] = useState(false);
   const materialRef = useRef<THREE.MeshPhysicalMaterial>(null);
   const atomRef = useRef<THREE.Group>(null);
+  const camera = useThree(({ camera }) => camera);
   const { width, height, size } = useViewport();
 
   useCursor(hover);
@@ -37,22 +47,26 @@ export default function Atom({
     onPointerEnter: () => setHover(true),
     onPointerLeave: () => setHover(false),
     onDrag: ({ offset }) => {
-      dragPos.set(
-        width * (offset[0] / size.width),
-        height * -(offset[1] / size.height),
-        0
-      );
+      dragPos
+        .set(
+          width * (offset[0] / size.width),
+          height * -(offset[1] / size.height),
+          0
+        )
+        .applyQuaternion(
+          camera.getWorldQuaternion(dragRot).multiply(cameraRot)
+        );
     },
   });
 
   useFrame((_, delta) => {
-    materialRef.current?.color.lerp(hover ? tomato : cyan, delta * 12);
+    materialRef.current?.color.lerp(hover ? tomato : cyan, delta * 8);
     atomRef.current?.position.lerp(dragPos, delta * 12);
   });
 
   return (
-    <group {...props} ref={atomRef} scale={scale}>
-      <Float speed={1} rotationIntensity={50} floatIntensity={5}>
+    <group {...props} ref={atomRef} scale={scale} position={dragPos}>
+      <Float speed={1} rotationIntensity={50} floatIntensity={0}>
         <Line worldUnits points={points} color={cyan} lineWidth={0.3 * scale} />
         <Line
           worldUnits
@@ -82,13 +96,16 @@ export default function Atom({
   );
 }
 
-type ElectronProps = {
+function Electron({
+  radius = 3,
+  speed = 4,
+  scale = 1,
+  ...props
+}: {
   radius?: number;
   speed?: number;
-  scale: number;
-} & JSX.IntrinsicElements["group"];
-
-function Electron({ radius = 3, speed = 4, scale, ...props }: ElectronProps) {
+  scale?: number;
+} & JSX.IntrinsicElements["group"]) {
   const ref = useRef<Mesh>(null);
 
   useFrame(({ clock }) => {

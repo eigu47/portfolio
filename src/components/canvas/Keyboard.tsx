@@ -25,17 +25,18 @@ type GLTFResult = GLTF & {
 };
 
 const lookTo = new Vector3();
+const lerpTo = new Vector3();
 
 export default function Keyboard({ ...props }: JSX.IntrinsicElements["group"]) {
   const { nodes, materials } = useGLTF("/keyboard.gltf") as GLTFResult;
   const keyboardRef = useRef<THREE.Group>(null);
   const { width, height, mobile } = useViewport();
-  const { pagePosX: x, pagePosY: y } = useMousePos();
+  const { posX: x, posY: y } = useMousePos();
   const { ...debug } = useDebug();
 
   useFrame((_, delta) => {
     keyboardRef.current?.lookAt(
-      lookTo.lerp(lookTo.clone().set(x, -y - 2.5, 3.5), delta * 4)
+      lookTo.lerp(lerpTo.set(x, -y - 2.5, 3.5), delta * 4)
     );
   });
 
