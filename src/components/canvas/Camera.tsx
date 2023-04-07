@@ -39,9 +39,7 @@ export default function Camera() {
 
   return (
     <group ref={ref}>
-      <PerspectiveCamera makeDefault fov={60} position={[0, 0, 5]}>
-        <fog attach="fog" args={[COLORS.slate900, 0, 60]} />
-      </PerspectiveCamera>
+      <PerspectiveCamera makeDefault fov={60} position={[0, 0, 5]} />
       <ambientLight intensity={0.2} />
       <directionalLight position={[10, 15, 10]} intensity={0.5} />
     </group>

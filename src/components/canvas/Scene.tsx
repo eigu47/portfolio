@@ -1,7 +1,8 @@
 import { Suspense } from "react";
 
-import { Preload } from "@react-three/drei";
+import { Preload, useDetectGPU } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { Leva } from "leva";
 
 import Atom from "~/components/canvas/Atom";
@@ -15,6 +16,8 @@ const isDebug =
   new URLSearchParams(window.location.search).get("debug") != null;
 
 export default function Scene() {
+  const { tier } = useDetectGPU();
+
   return (
     <>
       <Canvas className="!fixed top-0">
@@ -40,6 +43,13 @@ export default function Scene() {
         </Suspense>
 
         <Preload all />
+
+        {tier > 2 && (
+          <EffectComposer>
+            <Bloom mipmapBlur intensity={0.2} radius={0.2} />
+          </EffectComposer>
+        )}
+
         {isDebug && <Debug />}
       </Canvas>
       {!isDebug && <Leva hidden={!isDebug} />}
