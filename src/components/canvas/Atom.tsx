@@ -1,13 +1,6 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
-import {
-  Float,
-  Line,
-  Sphere,
-  Trail,
-  useCursor,
-  useDetectGPU,
-} from "@react-three/drei";
+import { Float, Line, Sphere, Trail, useDetectGPU } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { Color, EllipseCurve, type Mesh } from "three";
 
@@ -33,22 +26,13 @@ export default function Atom({
   scale = 0.1,
   ...props
 }: { scale?: number } & JSX.IntrinsicElements["group"]) {
-  const [hover, setHover] = useState(false);
-  const materialRef = useRef<THREE.MeshBasicMaterial>(null);
+  const basicRef = useRef<THREE.MeshBasicMaterial>(null);
   const { tier } = useDetectGPU();
-  useCursor(hover);
 
   const cyan = tier > 2 ? bloomCyan : normalCyan;
 
-  useFrame((_, delta) => {
-    materialRef.current?.color.lerp(
-      hover ? bloonNucleous : normalNucleous,
-      delta * 8
-    );
-  });
-
   return (
-    <Dragabble>
+    <Dragabble changeColor={[basicRef, normalNucleous, bloonNucleous]}>
       <group scale={scale} {...props}>
         <Float speed={1} rotationIntensity={50} floatIntensity={0}>
           <Line
@@ -77,20 +61,15 @@ export default function Atom({
           <Electron speed={3} scale={scale} />
           <Electron rotation={[0, 0, Math.PI / 3]} speed={4} scale={scale} />
           <Electron rotation={[0, 0, -Math.PI / 3]} speed={3.5} scale={scale} />
-          <Sphere
-            args={[0.55, 64, 64]}
-            onPointerEnter={() => setHover(true)}
-            onPointerLeave={() => setHover(false)}
-          >
+          <Sphere args={[0.55, 64, 64]}>
             {tier > 2 ? (
               <meshBasicMaterial
-                ref={materialRef}
+                ref={basicRef}
                 color={[3, 0.5, 1]}
                 toneMapped={false}
               />
             ) : (
               <meshPhysicalMaterial
-                // ref={materialRef}
                 color={"cyan"}
                 roughness={0.5}
                 metalness={0.5}

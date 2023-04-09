@@ -6,7 +6,6 @@ import { useControls } from "leva";
 import { Vector3 } from "three";
 
 import { usePage } from "~/components/canvas/Page";
-import { COLORS } from "~/utils/store";
 import useScrollPos from "~/utils/useScrollPos";
 
 const position = new Vector3();
