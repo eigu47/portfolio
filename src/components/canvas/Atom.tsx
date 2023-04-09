@@ -1,4 +1,4 @@
-import { type ComponentProps, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import {
   Float,
@@ -8,18 +8,10 @@ import {
   useCursor,
   useDetectGPU,
 } from "@react-three/drei";
-import { useFrame, useThree } from "@react-three/fiber";
-import { useGesture } from "@use-gesture/react";
-import {
-  Color,
-  EllipseCurve,
-  Vector3,
-  type Mesh,
-  Euler,
-  Quaternion,
-} from "three";
+import { useFrame } from "@react-three/fiber";
+import { Color, EllipseCurve, type Mesh } from "three";
 
-import useViewport from "~/utils/useViewport";
+import Dragabble from "~/components/canvas/Dragabble";
 
 const points = new EllipseCurve(
   0,
@@ -36,8 +28,6 @@ const bloomCyan = new Color(0.1, 1.2, 1.2);
 const normalCyan = new Color("cyan");
 const bloonNucleous = new Color(6, 0.2, 2);
 const normalNucleous = new Color(2, 2, 2);
-const dragPos = new Vector3();
-const dragRot = new Quaternion();
 
 export default function Atom({
   scale = 0.1,
@@ -45,44 +35,26 @@ export default function Atom({
 }: { scale?: number } & JSX.IntrinsicElements["group"]) {
   const [hover, setHover] = useState(false);
   const materialRef = useRef<THREE.MeshBasicMaterial>(null);
-  const atomRef = useRef<THREE.Group>(null);
-  const camera = useThree(({ camera }) => camera);
-  const { width, height, size } = useViewport();
   const { tier } = useDetectGPU();
-  const cyan = tier > 2 ? bloomCyan : normalCyan;
   useCursor(hover);
 
-  const bind = useGesture({
-    onPointerEnter: () => setHover(true),
-    onPointerLeave: () => setHover(false),
-    onDrag: ({ offset }) => {
-      dragPos
-        .set(
-          width * (offset[0] / size.width),
-          height * -(offset[1] / size.height),
-          0
-        )
-        .applyQuaternion(camera.getWorldQuaternion(dragRot));
-    },
-  });
+  const cyan = tier > 2 ? bloomCyan : normalCyan;
 
   useFrame((_, delta) => {
     materialRef.current?.color.lerp(
       hover ? bloonNucleous : normalNucleous,
       delta * 8
     );
-    atomRef.current?.position.lerp(dragPos, delta * 12);
   });
 
   return (
-    <group rotation={[0, -Math.PI / 2, 0]} {...props}>
-      <group ref={atomRef} scale={scale} position={dragPos}>
+    <Dragabble>
+      <group scale={scale} {...props}>
         <Float speed={1} rotationIntensity={50} floatIntensity={0}>
           <Line
             worldUnits
             points={points}
             color={cyan}
-            // color={"cyan"}
             lineWidth={0.3 * scale}
             toneMapped={tier < 2}
           />
@@ -90,7 +62,6 @@ export default function Atom({
             worldUnits
             points={points}
             color={cyan}
-            // color={"cyan"}
             lineWidth={0.3 * scale}
             rotation={[0, 0, 1]}
             toneMapped={tier < 2}
@@ -99,7 +70,6 @@ export default function Atom({
             worldUnits
             points={points}
             color={cyan}
-            // color={"cyan"}
             lineWidth={0.3 * scale}
             rotation={[0, 0, -1]}
             toneMapped={tier < 2}
@@ -109,7 +79,8 @@ export default function Atom({
           <Electron rotation={[0, 0, -Math.PI / 3]} speed={3.5} scale={scale} />
           <Sphere
             args={[0.55, 64, 64]}
-            {...(bind() as ComponentProps<typeof Sphere>)}
+            onPointerEnter={() => setHover(true)}
+            onPointerLeave={() => setHover(false)}
           >
             {tier > 2 ? (
               <meshBasicMaterial
@@ -128,7 +99,7 @@ export default function Atom({
           </Sphere>
         </Float>
       </group>
-    </group>
+    </Dragabble>
   );
 }
 

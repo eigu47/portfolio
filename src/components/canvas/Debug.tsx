@@ -5,8 +5,8 @@ import {
   GizmoViewport,
   OrbitControls,
   PivotControls,
-  Plane,
   TransformControls,
+  Plane,
   useCursor,
 } from "@react-three/drei";
 import { type ThreeEvent, useThree } from "@react-three/fiber";
@@ -49,7 +49,6 @@ export default function Debug() {
   if (!debugOn) {
     camera.position.set(0, 0, 5);
 
-    // return null;
     return <Perf position="top-left" className="top-20" minimal />;
   }
 
@@ -80,7 +79,7 @@ export default function Debug() {
     </>
   );
 }
-
+// TODO - use drei Html component
 export function ObjectPosition() {
   const { selectedObject, transformActive, transformMode } = useDebugStore();
   const { clientX, clientY } = useMousePos();
