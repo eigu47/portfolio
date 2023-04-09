@@ -33,18 +33,20 @@ export default function useViewport() {
     xl: threeSize.width > 1280,
     "2xl": threeSize.width > 1536,
     breakpoints: {
-      sm: 640 as const,
-      md: 768 as const,
-      lg: 1024 as const,
-      xl: 1280 as const,
-      "2xl": 1536 as const,
-    },
+      sm: 640,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+      "2xl": 1536,
+    } as const,
   };
+  const mobile = !size.sm || width * 3 < height * 2;
 
   return {
     width,
     height,
     size,
-    mobile: !size.sm || width * 3 < height * 2,
+    mobile,
+    device: mobile ? ("mobile" as const) : ("desktop" as const),
   };
 }
