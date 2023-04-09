@@ -8,8 +8,8 @@ export default function App() {
     <>
       <Navbar />
       <Scene />
-      {PAGES.map((page, i) => (
-        <section key={i} id={page.id} className="h-screen" />
+      {PAGES.map(({ id }) => (
+        <section key={id} id={id} className="h-screen" />
       ))}
       <Layout />
     </>

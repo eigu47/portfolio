@@ -11,11 +11,13 @@ const cameraPos = new Vector3();
 export default function Dragabble({
   children,
   speed = 10,
-  changeColor,
+  far = 5,
+  hoverColor,
   ...props
 }: {
   speed?: number;
-  changeColor?: [
+  far?: number;
+  hoverColor?: [
     object: React.RefObject<THREE.MeshBasicMaterial>,
     colorFrom: THREE.Color,
     colorTo: THREE.Color,
@@ -33,18 +35,19 @@ export default function Dragabble({
     onPointerLeave: () => setHover(false),
     onDrag: ({ xy: [x, y] }) => {
       camera.getWorldPosition(cameraPos);
+      // Drag on the same plane as the camera, `far` units away
       dragPos
         .set((x / size.width) * 2 - 1, (-y / size.height) * 2 + 1, 0)
         .unproject(camera)
         .sub(cameraPos)
         .normalize()
-        .multiplyScalar(5)
+        .multiplyScalar(far)
         .add(cameraPos);
-
+      // Correct parent offset
       if (ref.current?.parent) {
         dragPos
-          .add(ref.current?.parent?.position.clone().negate())
-          .applyQuaternion(ref.current?.parent?.quaternion.clone().invert());
+          .add(ref.current.parent.position.clone().negate())
+          .applyQuaternion(ref.current.parent.quaternion.clone().invert());
       }
     },
   });
@@ -52,8 +55,8 @@ export default function Dragabble({
   useFrame((_, delta) => {
     ref.current?.position.lerp(dragPos, delta * speed);
 
-    if (changeColor) {
-      const [materialRef, colorFrom, colorTo, speed = 10] = changeColor;
+    if (hoverColor) {
+      const [materialRef, colorFrom, colorTo, speed = 10] = hoverColor;
 
       materialRef.current?.color.lerp(
         hover ? colorTo : colorFrom,

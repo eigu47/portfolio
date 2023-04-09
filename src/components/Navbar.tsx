@@ -2,30 +2,8 @@ import { useState } from "react";
 
 import { useControls } from "leva";
 
+import { PAGES } from "~/utils/store";
 import useScrollPos from "~/utils/useScrollPos";
-
-const NAVITEMS = [
-  {
-    name: "Hello",
-    href: "#",
-  },
-  {
-    name: "About",
-    href: "#about",
-  },
-  {
-    name: "Projects",
-    href: "#projects",
-  },
-  {
-    name: "Contact",
-    href: "#contact",
-  },
-  {
-    name: "Resume",
-    href: "#resume",
-  },
-];
 
 export default function Navbar() {
   const { debugOn } = useControls({ debugOn: false });
@@ -46,16 +24,16 @@ export default function Navbar() {
             showMenu ? "" : "-translate-y-[56px]"
           }`}
         >
-          {NAVITEMS.map(({ name, href }, i) => (
-            <li key={name} className="first:grow">
+          {PAGES.map(({ id }, i) => (
+            <li key={id} className="first:grow">
               <a
-                className={`relative p-3 after:absolute after:bottom-1 after:right-1/2 after:h-[2px] after:w-4/6 after:origin-center after:translate-x-1/2 after:scale-x-0 after:bg-emerald-400 after:transition hover:text-white hover:after:scale-x-100 ${
+                className={`relative p-3 capitalize after:absolute after:bottom-1 after:right-1/2 after:h-[2px] after:w-4/6 after:origin-center after:translate-x-1/2 after:scale-x-0 after:bg-emerald-400 after:transition hover:text-white hover:after:scale-x-100 ${
                   scrollPage === i ? "after:scale-x-100" : ""
                 }`}
-                href={href}
+                href={`#${id}`}
                 onClick={() => setShowMenu(false)}
               >
-                {name}
+                {i === 0 ? "Hello" : id}
               </a>
             </li>
           ))}

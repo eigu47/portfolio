@@ -2,7 +2,7 @@ import { useRef } from "react";
 
 import { Float, Line, Sphere, Trail, useDetectGPU } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { Color, EllipseCurve, type Mesh } from "three";
+import { Color, EllipseCurve } from "three";
 
 import Dragabble from "~/components/canvas/Dragabble";
 
@@ -32,7 +32,7 @@ export default function Atom({
   const cyan = tier > 2 ? bloomCyan : normalCyan;
 
   return (
-    <Dragabble changeColor={[basicRef, normalNucleous, bloonNucleous]}>
+    <Dragabble hoverColor={[basicRef, normalNucleous, bloonNucleous]}>
       <group scale={scale} {...props}>
         <Float speed={1} rotationIntensity={50} floatIntensity={0}>
           <Line
@@ -92,7 +92,7 @@ function Electron({
   speed?: number;
   scale?: number;
 } & JSX.IntrinsicElements["group"]) {
-  const ref = useRef<Mesh>(null);
+  const ref = useRef<THREE.Mesh>(null);
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime() * speed;

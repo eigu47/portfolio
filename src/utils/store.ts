@@ -27,4 +27,9 @@ export const PAGES = [
     position: [0, -4, 0],
     rotation: [0, 1, 0],
   },
+  {
+    id: "resume",
+    position: [0, -5, 0],
+    rotation: [0, 1, 0],
+  },
 ] as const;

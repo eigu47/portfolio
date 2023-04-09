@@ -1,11 +1,9 @@
 import { useControls } from "leva";
 
-import { ObjectPosition } from "~/components/canvas/Debug";
-
 export default function Layout() {
   const { debugOn } = useControls({ debugOn: false });
 
-  if (debugOn) return <ObjectPosition />;
+  if (debugOn) return null;
   return (
     <>
       <div className="fixed bottom-0 mx-12 hidden after:mx-auto after:mt-6 after:block after:h-20 after:w-[1px] after:bg-slate-300 sm:block">

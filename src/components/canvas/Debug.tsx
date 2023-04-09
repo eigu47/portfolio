@@ -8,6 +8,7 @@ import {
   TransformControls,
   Plane,
   useCursor,
+  Html,
 } from "@react-three/drei";
 import { type ThreeEvent, useThree } from "@react-three/fiber";
 import { useControls } from "leva";
@@ -24,13 +25,9 @@ const cameraDir = new Vector3();
 export default function Debug() {
   const camera = useThree((state) => state.camera);
   const { selectedObject, transformMode, setTransformActive } = useDebugStore();
-  const [{ debugOn, enableZoom, enableRotate }, set] = useControls(() => ({
+  const [{ debugOn, orbitControls }, set] = useControls(() => ({
     debugOn: false,
-    enableZoom: {
-      value: true,
-      render: (get) => get("debugOn") as boolean,
-    },
-    enableRotate: {
+    orbitControls: {
       value: true,
       render: (get) => get("debugOn") as boolean,
     },
@@ -56,9 +53,10 @@ export default function Debug() {
     <>
       <Perf position="top-left" className="m-3" />
       <OrbitControls
-        makeDefault
-        enableZoom={enableZoom}
-        enableRotate={enableRotate}
+        makeDefault={orbitControls}
+        enableZoom={orbitControls}
+        enableRotate={orbitControls}
+        enablePan={orbitControls}
         onEnd={() => set({ cameraPos: camera.position.toArray() })}
         target={cameraPos}
       />
@@ -76,43 +74,43 @@ export default function Debug() {
           onMouseUp={() => setTransformActive(false)}
         />
       )}
+      <TransformControlsInfo />
     </>
   );
 }
-// TODO - use drei Html component
-export function ObjectPosition() {
+
+function TransformControlsInfo() {
   const { selectedObject, transformActive, transformMode } = useDebugStore();
   const { clientX, clientY } = useMousePos();
 
   if (!transformActive || !selectedObject) return null;
   return (
-    <div
-      className="fixed rounded-md bg-[#151520] p-2 text-sm text-slate-100"
-      style={{ top: clientY + 24, left: clientX }}
-    >
-      {transformMode === "translate" &&
-        selectedObject.position.toArray().map((pos, i) => (
-          <p key={i}>
-            {i === 0 ? "x" : i === 1 ? "y" : "z"}: {pos.toFixed(2)}
-          </p>
-        ))}
-      {transformMode === "rotate" &&
-        selectedObject.rotation
-          .toArray()
-          .filter((val): val is number => typeof val === "number")
-          .map((rot, i) => (
+    <Html calculatePosition={() => [clientX, clientY + 24]}>
+      <div className="whitespace-nowrap rounded-md bg-[#151520] p-2 text-sm text-slate-100">
+        {transformMode === "translate" &&
+          selectedObject.position.toArray().map((pos, i) => (
             <p key={i}>
-              {i === 0 ? "x" : i === 1 ? "y" : "z"}:{" "}
-              {(rot / Math.PI).toFixed(2)}
+              {i === 0 ? "x" : i === 1 ? "y" : "z"}: {pos.toFixed(2)}
             </p>
           ))}
-      {transformMode === "scale" &&
-        selectedObject.scale.toArray().map((scale, i) => (
-          <p key={i}>
-            {i === 0 ? "x" : i === 1 ? "y" : "z"}: {scale.toFixed(2)}
-          </p>
-        ))}
-    </div>
+        {transformMode === "rotate" &&
+          selectedObject.rotation
+            .toArray()
+            .filter((val): val is number => typeof val === "number")
+            .map((rot, i) => (
+              <p key={i}>
+                {i === 0 ? "x" : i === 1 ? "y" : "z"}:{" "}
+                {(rot / Math.PI).toFixed(2)}
+              </p>
+            ))}
+        {transformMode === "scale" &&
+          selectedObject.scale.toArray().map((scale, i) => (
+            <p key={i}>
+              {i === 0 ? "x" : i === 1 ? "y" : "z"}: {scale.toFixed(2)}
+            </p>
+          ))}
+      </div>
+    </Html>
   );
 }
 
