@@ -8,7 +8,7 @@ export const COLORS = {
 
 export const PAGES = [
   {
-    id: "#",
+    id: "home",
     position: [0, 0, 0],
     rotation: [0, 0, 0],
   },

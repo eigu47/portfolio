@@ -9,7 +9,12 @@ export default function App() {
       <Navbar />
       <Scene />
       {PAGES.map(({ id }) => (
-        <section key={id} id={id} className="h-screen" />
+        <section
+          key={id}
+          id={id}
+          className="h-screen"
+          // style={{ backgroundColor: i % 2 ? "black" : "white" }}
+        />
       ))}
       <Layout />
     </>

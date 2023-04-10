@@ -7,7 +7,6 @@ import useScrollPos from "~/utils/useScrollPos";
 
 export default function Navbar() {
   const { debugOn } = useControls({ debugOn: false });
-
   const [showMenu, setShowMenu] = useState(false);
   const { scrollPage } = useScrollPos();
 
@@ -30,10 +29,10 @@ export default function Navbar() {
                 className={`relative p-3 capitalize after:absolute after:bottom-1 after:right-1/2 after:h-[2px] after:w-4/6 after:origin-center after:translate-x-1/2 after:scale-x-0 after:bg-emerald-400 after:transition hover:text-white hover:after:scale-x-100 ${
                   scrollPage === i ? "after:scale-x-100" : ""
                 }`}
-                href={`#${id}`}
+                href={`#${i === 0 ? "" : id}`}
                 onClick={() => setShowMenu(false)}
               >
-                {i === 0 ? "Hello" : id}
+                {id}
               </a>
             </li>
           ))}

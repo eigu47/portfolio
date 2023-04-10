@@ -19,9 +19,9 @@ export default function useMousePos() {
 
   return {
     ...mousePos,
-    posX: mousePos.pageX / document.documentElement.clientWidth,
-    posY: mousePos.pageY / document.documentElement.clientHeight,
-    coordX: (mousePos.clientX / document.documentElement.clientWidth) * 2 - 1,
-    coordY: -(mousePos.clientY / document.documentElement.clientHeight) * 2 + 1,
+    posX: mousePos.pageX / window.innerWidth,
+    posY: mousePos.pageY / window.innerHeight,
+    coordX: (mousePos.clientX / window.innerWidth) * 2 - 1,
+    coordY: -(mousePos.clientY / window.innerHeight) * 2 + 1,
   };
 }

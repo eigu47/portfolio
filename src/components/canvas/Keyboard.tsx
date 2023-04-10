@@ -5,10 +5,11 @@ import { useRef } from "react";
 
 import { Float, useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { Vector3, type Vector3Tuple } from "three";
+import { Vector3 } from "three";
 import type { GLTF } from "three-stdlib";
 
 import { useDebug } from "~/components/canvas/Debug";
+import { type Layout } from "~/utils/types";
 import useMousePos from "~/utils/useMousePos";
 import useViewport from "~/utils/useViewport";
 
@@ -34,18 +35,18 @@ export default function Keyboard({ ...props }: JSX.IntrinsicElements["group"]) {
   const { posX: x, posY: y } = useMousePos();
   const { ...debug } = useDebug();
 
-  const display = {
+  const layout: Layout = {
     mobile: {
       scale: width * 0.18,
       position: [0, -height * 0.25, -0.5],
-      rotation: [Math.PI * 0.15, -Math.PI * 0.1, 0] satisfies Vector3Tuple,
+      rotation: [Math.PI * 0.15, -Math.PI * 0.1, 0],
     },
     desktop: {
       scale: 0.9,
       position: [width * 0.2, -height * 0.2, -0.5],
-      rotation: [Math.PI * 0.15, -Math.PI * 0.1, 0] satisfies Vector3Tuple,
+      rotation: [Math.PI * 0.15, -Math.PI * 0.1, 0],
     },
-  } as const;
+  };
 
   useFrame((_, delta) => {
     keyboardRef.current?.lookAt(
@@ -57,10 +58,8 @@ export default function Keyboard({ ...props }: JSX.IntrinsicElements["group"]) {
     <Float>
       <group
         ref={keyboardRef}
-        scale={display[device].scale}
-        position={display[device].position}
-        rotation={display[device].rotation}
         dispose={null}
+        {...layout[device]}
         {...debug}
         {...props}
       >

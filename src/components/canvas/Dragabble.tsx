@@ -26,7 +26,7 @@ export default function Dragabble({
 } & JSX.IntrinsicElements["group"]) {
   const ref = useRef<THREE.Group>(null);
   const camera = useThree((state) => state.camera);
-  const size = useThree((state) => state.size);
+  const { width, height } = useThree((state) => state.size);
   const [hover, setHover] = useState(false);
   useCursor(hover);
 
@@ -37,7 +37,7 @@ export default function Dragabble({
       camera.getWorldPosition(cameraPos);
       // Drag on the same plane as the camera, `far` units away
       dragPos
-        .set((x / size.width) * 2 - 1, (-y / size.height) * 2 + 1, 0)
+        .set((x / width) * 2 - 1, (-y / height) * 2 + 1, 0)
         .unproject(camera)
         .sub(cameraPos)
         .normalize()

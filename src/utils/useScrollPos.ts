@@ -20,7 +20,7 @@ export default function useScrollPos() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollPos = scrollY / document.documentElement.clientHeight;
+  const scrollPos = scrollY / window.innerHeight;
   // TODO - make it dynamic based on pages
   const scrollPage = Math.floor(scrollPos) as ValidIndex<typeof PAGES>;
 

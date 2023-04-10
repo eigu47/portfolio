@@ -3,35 +3,34 @@ import { useMemo } from "react";
 import { useThree } from "@react-three/fiber";
 import { Vector3 } from "three";
 
-import useScrollPos from "~/utils/useScrollPos";
-
 const cameraPos = new Vector3();
-const cameraDistance = new Vector3(0, 0, 5);
+const cameraDis = new Vector3(0, 0, 5);
 
 export default function useViewport() {
   const getCurrentViewport = useThree(
     (state) => state.viewport.getCurrentViewport
   );
   const camera = useThree((state) => state.camera);
-  const threeSize = useThree((state) => state.size);
-  const { scrollPage } = useScrollPos();
+  const { width: sizeWidth, height: sizeHeight } = useThree(
+    (state) => state.size
+  );
   // Native viewport width and height are not updated correctly if camera is moved
   const { width, height } = useMemo(() => {
     return getCurrentViewport(
       camera,
-      camera.getWorldPosition(cameraPos).add(cameraDistance)
+      camera.getWorldPosition(cameraPos).add(cameraDis)
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [threeSize, scrollPage, camera, getCurrentViewport]);
+  }, [camera, getCurrentViewport, sizeHeight]);
   // Tailwind-like breakpoints
   const size = {
-    width: threeSize.width,
-    height: threeSize.height,
-    sm: threeSize.width > 640,
-    md: threeSize.width > 768,
-    lg: threeSize.width > 1024,
-    xl: threeSize.width > 1280,
-    "2xl": threeSize.width > 1536,
+    width: sizeWidth,
+    height: sizeHeight,
+    sm: sizeWidth > 640,
+    md: sizeWidth > 768,
+    lg: sizeWidth > 1024,
+    xl: sizeWidth > 1280,
+    "2xl": sizeWidth > 1536,
     breakpoints: {
       sm: 640,
       md: 768,
