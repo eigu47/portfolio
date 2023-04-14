@@ -34,19 +34,20 @@ export default function Atom({
 
   const cyan = tier > 2 ? bloomCyan : normalCyan;
 
-  const layout: Layout = {
-    mobile: {
-      position: [0, height * 0.2, 0],
-    },
-    desktop: {
-      position: [-width * 0.4, 0, 0],
-    },
+  const layout: Layout<JSX.IntrinsicElements["group"]> = {
+    mobile: { position: [0, height * 0.2, 0] },
+    desktop: { position: [-width * 0.4, height * 0.2, 0] },
   };
 
   return (
-    <Dragabble hoverColor={[basicRef, normalNucleous, bloonNucleous]}>
-      <group scale={scale} {...layout[device]} {...props}>
-        <Float speed={1} rotationIntensity={50} floatIntensity={0}>
+    <group {...layout[device]} {...props}>
+      <Dragabble hoverColor={[basicRef, normalNucleous, bloonNucleous]}>
+        <Float
+          speed={1}
+          rotationIntensity={50}
+          floatIntensity={0}
+          scale={scale}
+        >
           <Line
             worldUnits
             points={points}
@@ -89,8 +90,8 @@ export default function Atom({
             )}
           </Sphere>
         </Float>
-      </group>
-    </Dragabble>
+      </Dragabble>
+    </group>
   );
 }
 

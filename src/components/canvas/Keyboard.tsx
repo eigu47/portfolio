@@ -35,16 +35,14 @@ export default function Keyboard({ ...props }: JSX.IntrinsicElements["group"]) {
   const { posX: x, posY: y } = useMousePos();
   const { ...debug } = useDebug();
 
-  const layout: Layout = {
+  const layout: Layout<JSX.IntrinsicElements["group"]> = {
     mobile: {
       scale: width * 0.18,
       position: [0, -height * 0.25, -0.5],
-      rotation: [Math.PI * 0.15, -Math.PI * 0.1, 0],
     },
     desktop: {
       scale: 0.9,
       position: [width * 0.2, -height * 0.2, -0.5],
-      rotation: [Math.PI * 0.15, -Math.PI * 0.1, 0],
     },
   };
 
@@ -59,6 +57,7 @@ export default function Keyboard({ ...props }: JSX.IntrinsicElements["group"]) {
       <group
         ref={keyboardRef}
         dispose={null}
+        rotation={[Math.PI * 0.15, -Math.PI * 0.1, 0]}
         {...layout[device]}
         {...debug}
         {...props}

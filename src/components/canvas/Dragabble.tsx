@@ -3,10 +3,12 @@ import { useRef, useState } from "react";
 import { useCursor } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useGesture } from "@use-gesture/react";
-import { Vector3 } from "three";
+import { Quaternion, Vector3 } from "three";
 
 const dragPos = new Vector3();
 const cameraPos = new Vector3();
+const parentPos = new Vector3();
+const parentQuat = new Quaternion();
 
 export default function Dragabble({
   children,
@@ -30,25 +32,25 @@ export default function Dragabble({
   const [hover, setHover] = useState(false);
   useCursor(hover);
 
+  ref.current?.parent?.getWorldPosition(parentPos).negate();
+  ref.current?.parent?.getWorldQuaternion(parentQuat).invert();
+
   const bind = useGesture({
     onPointerEnter: () => setHover(true),
     onPointerLeave: () => setHover(false),
-    onDrag: ({ xy: [x, y] }) => {
+    onDrag: ({ xy: [x, y], last }) => {
       camera.getWorldPosition(cameraPos);
       // Drag on the same plane as the camera, `far` units away
       dragPos
-        .set((x / width) * 2 - 1, (-y / height) * 2 + 1, 0)
+        .set((x / width) * 2 - 1, -(y / height) * 2 + 1, 0)
         .unproject(camera)
         .sub(cameraPos)
         .normalize()
-        .multiplyScalar(far)
-        .add(cameraPos);
-      // Correct parent offset
-      if (ref.current?.parent) {
-        dragPos
-          .add(ref.current.parent.position.clone().negate())
-          .applyQuaternion(ref.current.parent.quaternion.clone().invert());
-      }
+        .multiplyScalar(last ? far : far * 0.8)
+        .add(cameraPos)
+        // correct by parent offset
+        .add(parentPos)
+        .applyQuaternion(parentQuat);
     },
   });
 
