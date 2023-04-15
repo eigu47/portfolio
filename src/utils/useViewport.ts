@@ -39,13 +39,11 @@ export default function useViewport() {
       "2xl": 1536,
     } as const,
   };
-  const mobile = !size.sm || width * 3 < height * 2;
 
   return {
     width,
     height,
     size,
-    mobile,
-    device: mobile ? ("mobile" as const) : ("desktop" as const),
+    mobile: !size.sm || width * 3 < height * 2,
   };
 }

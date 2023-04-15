@@ -5,7 +5,6 @@ import { useFrame } from "@react-three/fiber";
 import { Color, EllipseCurve } from "three";
 
 import Dragabble from "~/components/canvas/Dragabble";
-import { type Layout } from "~/utils/types";
 import useViewport from "~/utils/useViewport";
 
 const points = new EllipseCurve(
@@ -29,18 +28,16 @@ export default function Atom({
   ...props
 }: { scale?: number } & JSX.IntrinsicElements["group"]) {
   const basicRef = useRef<THREE.MeshBasicMaterial>(null);
-  const { width, height, device } = useViewport();
+  const { width, height, mobile } = useViewport();
   const { tier } = useDetectGPU();
 
   const cyan = tier > 2 ? bloomCyan : normalCyan;
 
-  const layout: Layout<JSX.IntrinsicElements["group"]> = {
-    mobile: { position: [0, height * 0.2, 0] },
-    desktop: { position: [-width * 0.4, height * 0.2, 0] },
-  };
-
   return (
-    <group {...layout[device]} {...props}>
+    <group
+      position={mobile ? [0, height * 0.2, 0] : [-width * 0.4, height * 0.2, 0]}
+      {...props}
+    >
       <Dragabble hoverColor={[basicRef, normalNucleous, bloonNucleous]}>
         <Float
           speed={1}

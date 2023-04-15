@@ -9,7 +9,6 @@ import { Vector3 } from "three";
 import type { GLTF } from "three-stdlib";
 
 import { useDebug } from "~/components/canvas/Debug";
-import { type Layout } from "~/utils/types";
 import useMousePos from "~/utils/useMousePos";
 import useViewport from "~/utils/useViewport";
 
@@ -31,20 +30,11 @@ const lerpTo = new Vector3();
 export default function Keyboard({ ...props }: JSX.IntrinsicElements["group"]) {
   const { nodes, materials } = useGLTF("/keyboard.gltf") as GLTFResult;
   const keyboardRef = useRef<THREE.Group>(null);
-  const { width, height, device } = useViewport();
-  const { posX: x, posY: y } = useMousePos();
+  const { width, height, mobile } = useViewport();
+  const {
+    relative: { x, y },
+  } = useMousePos();
   const { ...debug } = useDebug();
-
-  const layout: Layout<JSX.IntrinsicElements["group"]> = {
-    mobile: {
-      scale: width * 0.18,
-      position: [0, -height * 0.25, -0.5],
-    },
-    desktop: {
-      scale: 0.9,
-      position: [width * 0.2, -height * 0.2, -0.5],
-    },
-  };
 
   useFrame((_, delta) => {
     keyboardRef.current?.lookAt(
@@ -57,8 +47,13 @@ export default function Keyboard({ ...props }: JSX.IntrinsicElements["group"]) {
       <group
         ref={keyboardRef}
         dispose={null}
+        scale={mobile ? width * 0.18 : 0.9}
+        position={
+          mobile
+            ? [0, -height * 0.25, -0.5]
+            : [width * 0.2, -height * 0.2, -0.5]
+        }
         rotation={[Math.PI * 0.15, -Math.PI * 0.1, 0]}
-        {...layout[device]}
         {...debug}
         {...props}
       >

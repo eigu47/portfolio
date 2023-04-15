@@ -18,10 +18,15 @@ export default function useMousePos() {
   }, []);
 
   return {
-    ...mousePos,
-    posX: mousePos.pageX / window.innerWidth,
-    posY: mousePos.pageY / window.innerHeight,
-    coordX: (mousePos.clientX / window.innerWidth) * 2 - 1,
-    coordY: -(mousePos.clientY / window.innerHeight) * 2 + 1,
+    client: { x: mousePos.clientX, y: mousePos.clientY },
+    page: { x: mousePos.pageX, y: mousePos.pageY },
+    relative: {
+      x: mousePos.pageX / window.innerWidth,
+      y: mousePos.pageY / window.innerHeight,
+    },
+    coords: {
+      x: (mousePos.clientX / window.innerWidth) * 2 - 1,
+      y: -(mousePos.clientY / window.innerHeight) * 2 + 1,
+    },
   };
 }

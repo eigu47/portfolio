@@ -82,11 +82,13 @@ export default function Debug() {
 
 function TransformControlsInfo() {
   const { selectedObject, transformActive, transformMode } = useDebugStore();
-  const { clientX, clientY } = useMousePos();
+  const {
+    client: { x, y },
+  } = useMousePos();
 
   if (!transformActive || !selectedObject) return null;
   return (
-    <Html calculatePosition={() => [clientX, clientY + 24]}>
+    <Html calculatePosition={() => [x, y + 24]}>
       <div className="whitespace-nowrap rounded-md bg-[#151520] p-2 text-sm text-slate-100">
         {transformMode === "translate" &&
           selectedObject.position.toArray().map((pos, i) => (
