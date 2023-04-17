@@ -7,13 +7,18 @@ export default function About() {
 
   return (
     <Html
-      position={mobile ? [0, 0, 0] : [width * 0.1, height * 0.1, 0]}
-      center
+      position={mobile ? [0, 0, 0] : [width * 0.08, height * 0.1, 0]}
       transform
       occlude="blending"
+      scale={0.5}
+      style={{ maxWidth: width * 55 }}
     >
-      <div className="rounded border border-cyan-950 bg-slate-950/70">
-        <h3>HELLO</h3>
+      <div className="select-none rounded border border-cyan-950/70 bg-slate-950 p-6 text-center">
+        <p>
+          I&apos;m a self-taught frontend developer with a primary focus on
+          React and TypeScript. <br />I love to learn new technologies to
+          improve my skills and stay current with industry trends.
+        </p>
       </div>
     </Html>
   );

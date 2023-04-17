@@ -90,9 +90,15 @@ export function FullViewport({ ...props }: ComponentProps<typeof Plane>) {
 
   return (
     <>
-      <Plane scale={[width, height, 0]} {...props} ref={setRef} />
-      <Html center transform>
-        <p className="text-center text-xs text-black">
+      <Plane
+        ref={setRef}
+        scale={[width, height, 0]}
+        material-color="gray"
+        {...props}
+      />
+
+      <Html transform occlude="blending" position={[0, 0, 0.01]}>
+        <p className="text-center text-xs">
           {height.toFixed(2)} x {width.toFixed(2)}
           <br />
           {ref

@@ -47,8 +47,8 @@ export default function Keyboard({ ...props }: JSX.IntrinsicElements["group"]) {
         rotation={
           mobile ? [Math.PI * 0.15, 0, 0] : [Math.PI * 0.15, -Math.PI * 0.1, 0]
         }
-        {...debug}
         {...props}
+        {...debug}
       >
         <mesh
           geometry={nodes.Case.geometry}
