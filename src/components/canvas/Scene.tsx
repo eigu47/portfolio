@@ -11,6 +11,7 @@ import Debug, { FullViewport } from "~/components/canvas/Debug";
 import Hero from "~/components/canvas/Hero";
 import Keyboard from "~/components/canvas/Keyboard";
 import Page from "~/components/canvas/Page";
+import TechLogos from "~/components/canvas/TechLogos";
 
 const isDebug =
   new URLSearchParams(window.location.search).get("debug") != null;
@@ -31,6 +32,7 @@ export default function Scene() {
 
           <Page page={1}>
             <Atom />
+            <TechLogos />
           </Page>
 
           <Page page={2}>

@@ -1,5 +1,9 @@
 import { useRef } from "react";
 
+const position = new Vector3();
+const rotation = new Vector3();
+const lookAt = new Vector3();
+
 import { PerspectiveCamera } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useControls } from "leva";
@@ -8,14 +12,10 @@ import { Vector3 } from "three";
 import { usePage } from "~/components/canvas/Page";
 import useScrollPos from "~/utils/useScrollPos";
 
-const position = new Vector3();
-const rotation = new Vector3();
-const lookAt = new Vector3();
-
 export default function Camera() {
   const { debugOn, orbitControls } = useControls({
     debugOn: false,
-    orbitControls: { value: false, render: (get) => get("debugOn") as boolean },
+    orbitControls: { value: true, render: (get) => get("debugOn") as boolean },
   });
   const { scrollPos, scrollPage, scrollDown } = useScrollPos();
   const { position: posFrom, rotation: rotFrom } = usePage(scrollPage);

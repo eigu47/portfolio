@@ -14,17 +14,17 @@ export const PAGES = [
   },
   {
     id: "about",
-    position: [0, -1, 0],
-    rotation: [0, 0, 0],
+    position: [0, -1.2, -3],
+    rotation: [-0.2, 0, 0],
   },
   {
     id: "projects",
-    position: [0.5, -3, 0],
-    rotation: [0, 1, 0],
+    position: [-1, -3, 0],
+    rotation: [0, 0.5, 0],
   },
   {
     id: "contact",
-    position: [0, -4, 0],
+    position: [-1, -4, 0],
     rotation: [0, 1, 0],
   },
   {

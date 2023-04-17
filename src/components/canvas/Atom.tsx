@@ -7,17 +7,6 @@ import { Color, EllipseCurve } from "three";
 import Dragabble from "~/components/canvas/Dragabble";
 import useViewport from "~/utils/useViewport";
 
-const points = new EllipseCurve(
-  0,
-  0,
-  3,
-  1.15,
-  0,
-  2 * Math.PI,
-  false,
-  0
-).getPoints(100);
-
 const bloomCyan = new Color(0.1, 1.2, 1.2);
 const normalCyan = new Color("cyan");
 const bloonNucleous = new Color(6, 0.2, 2);
@@ -130,3 +119,14 @@ function Electron({
     </group>
   );
 }
+
+const points = new EllipseCurve(
+  0,
+  0,
+  3,
+  1.15,
+  0,
+  2 * Math.PI,
+  false,
+  0
+).getPoints(100);

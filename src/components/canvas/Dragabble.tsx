@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 
-import { useCursor } from "@react-three/drei";
+import { useCursor, useDetectGPU } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useGesture } from "@use-gesture/react";
 import { Quaternion, Vector3 } from "three";
@@ -30,6 +30,7 @@ export default function Dragabble({
   const camera = useThree((state) => state.camera);
   const { width, height } = useThree((state) => state.size);
   const [hover, setHover] = useState(false);
+  const { isMobile } = useDetectGPU();
   useCursor(hover);
 
   ref.current?.parent?.getWorldPosition(parentPos).negate();
@@ -55,6 +56,8 @@ export default function Dragabble({
   });
 
   useFrame((_, delta) => {
+    if (isMobile) return null;
+
     ref.current?.position.lerp(dragPos, delta * speed);
 
     if (hoverColor) {
@@ -68,7 +71,11 @@ export default function Dragabble({
   });
 
   return (
-    <group ref={ref} {...props} {...(bind() as JSX.IntrinsicElements["group"])}>
+    <group
+      ref={ref}
+      {...props}
+      {...(!isMobile && (bind() as JSX.IntrinsicElements["group"]))}
+    >
       {children}
     </group>
   );

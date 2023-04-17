@@ -30,7 +30,7 @@ export default function Debug() {
   const { selectedObject, transformMode, setTransformActive } = useDebugStore();
   const [{ debugOn, orbitControls }, set] = useControls(() => ({
     debugOn: false,
-    orbitControls: { value: false, render: (get) => get("debugOn") as boolean },
+    orbitControls: { value: true, render: (get) => get("debugOn") as boolean },
     cameraPos: {
       value: camera.position.toArray(),
       onEditEnd: (value: THREE.Vector3Tuple) => camera.position.set(...value),
