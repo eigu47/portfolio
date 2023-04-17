@@ -8,6 +8,7 @@ import redux from "~/assets/redux.svg";
 import tailwindcss from "~/assets/tailwindcss.svg";
 import threejs from "~/assets/threejs.svg";
 import typescript from "~/assets/typescript.svg";
+import { useDebug } from "~/components/canvas/Debug";
 import { COLORS } from "~/utils/store";
 import useViewport from "~/utils/useViewport";
 
@@ -17,7 +18,11 @@ export default function TechLogos() {
   const gap = (width * 0.8) / LOGOS.length;
 
   return (
-    <Center position={[0, -height * 0.25, 0]} disableZ disableY>
+    <Center
+      position={mobile ? [0, -height * 0.3, 0] : [0, -height * 0.25, 0]}
+      disableZ
+      disableY
+    >
       {LOGOS.map(({ name, src, scale }, i) => (
         <Ball
           key={name}
@@ -42,9 +47,10 @@ function Ball({
 }: { logo: string; logoScale: number } & JSX.IntrinsicElements["group"]) {
   const { debugOn } = useControls({ debugOn: false });
   const texture = useTexture(logo);
+  const { ...debug } = useDebug();
 
   return (
-    <group {...props}>
+    <group {...props} {...debug}>
       <Float speed={4}>
         <mesh>
           <icosahedronGeometry args={[1, 1]} />

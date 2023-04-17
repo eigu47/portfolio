@@ -15,7 +15,7 @@ import useScrollPos from "~/utils/useScrollPos";
 export default function Camera() {
   const { debugOn, orbitControls } = useControls({
     debugOn: false,
-    orbitControls: { value: true, render: (get) => get("debugOn") as boolean },
+    orbitControls: { value: false, render: (get) => get("debugOn") as boolean },
   });
   const { scrollPos, scrollPage, scrollDown } = useScrollPos();
   const { position: posFrom, rotation: rotFrom } = usePage(scrollPage);

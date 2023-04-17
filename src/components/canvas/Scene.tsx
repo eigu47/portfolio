@@ -5,6 +5,7 @@ import { Canvas } from "@react-three/fiber";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { Leva } from "leva";
 
+import About from "~/components/canvas/About";
 import Atom from "~/components/canvas/Atom";
 import Camera from "~/components/canvas/Camera";
 import Debug, { FullViewport } from "~/components/canvas/Debug";
@@ -32,6 +33,7 @@ export default function Scene() {
 
           <Page page={1}>
             <Atom />
+            <About />
             <TechLogos />
           </Page>
 

@@ -4,6 +4,7 @@ import { Float, Line, Sphere, Trail, useDetectGPU } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { Color, EllipseCurve } from "three";
 
+import { useDebug } from "~/components/canvas/Debug";
 import Dragabble from "~/components/canvas/Dragabble";
 import useViewport from "~/utils/useViewport";
 
@@ -19,13 +20,17 @@ export default function Atom({
   const basicRef = useRef<THREE.MeshBasicMaterial>(null);
   const { width, height, mobile } = useViewport();
   const { tier } = useDetectGPU();
+  const { ...debug } = useDebug();
 
   const cyan = tier > 2 ? bloomCyan : normalCyan;
 
   return (
     <group
-      position={mobile ? [0, height * 0.2, 0] : [-width * 0.4, height * 0.2, 0]}
+      position={
+        mobile ? [0, height * 0.35, 0] : [-width * 0.4, height * 0.2, 0]
+      }
       {...props}
+      {...debug}
     >
       <Dragabble hoverColor={[basicRef, normalNucleous, bloonNucleous]}>
         <Float

@@ -1,9 +1,12 @@
 import { useControls } from "leva";
 
+import DebugOverlay from "~/components/canvas/DebugOverlay";
+
 export default function Layout() {
   const { debugOn } = useControls({ debugOn: false });
 
-  if (debugOn) return null;
+  if (debugOn) return <DebugOverlay />;
+
   return (
     <>
       <div className="fixed bottom-0 mx-12 hidden flex-col gap-6 after:mx-auto after:mt-2 after:block after:h-20 after:w-[1px] after:bg-slate-300 sm:flex">
