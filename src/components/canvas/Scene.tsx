@@ -26,12 +26,12 @@ export default function Scene() {
         <Camera />
 
         <Suspense fallback={null}>
-          <Page page={1}>
+          <Page page={0}>
             <Hero />
             <Keyboard />
           </Page>
 
-          <Page page={0}>
+          <Page page={1}>
             <Atom />
             <About />
             <TechLogos />

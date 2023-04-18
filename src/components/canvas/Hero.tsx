@@ -1,5 +1,6 @@
 import { Text } from "@react-three/drei";
 
+import { calibre300, calibre400, calibre500 } from "~/assets/fonts";
 import { useDebug } from "~/components/canvas/Debug";
 import { COLORS } from "~/utils/store";
 import useViewport from "~/utils/useViewport";
@@ -16,7 +17,7 @@ export default function Hero() {
         rotation={[0, Math.PI * 0.1, 0]}
         anchorX="left"
         color={COLORS.slate300}
-        font="/fonts/Calibre-Light.ttf"
+        font={calibre400}
         {...debug}
       >
         Hello, I am
@@ -28,7 +29,7 @@ export default function Hero() {
         }
         anchorX={mobile ? "center" : "left"}
         color={COLORS.slate300}
-        font="/fonts/Calibre-Medium.ttf"
+        font={calibre500}
         {...debug}
       >
         Eiguchi Pablo
@@ -40,7 +41,7 @@ export default function Hero() {
         anchorX={mobile ? "center" : "left"}
         scale={0.35}
         color={COLORS.slate400}
-        font="/fonts/Calibre-Light.ttf"
+        font={calibre300}
         {...debug}
       >
         - Web Developer -

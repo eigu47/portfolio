@@ -1,13 +1,17 @@
-import { Center, Decal, Float, useTexture } from "@react-three/drei";
+import { useState } from "react";
+
+import { Center, Decal, Float, Html, useTexture } from "@react-three/drei";
 import { useControls } from "leva";
 
-import html from "~/assets/html.svg";
-import javascript from "~/assets/javascript.svg";
-import nextjs from "~/assets/nextjs.svg";
-import redux from "~/assets/redux.svg";
-import tailwindcss from "~/assets/tailwindcss.svg";
-import threejs from "~/assets/threejs.svg";
-import typescript from "~/assets/typescript.svg";
+import {
+  html,
+  javascript,
+  nextjs,
+  redux,
+  tailwindcss,
+  threejs,
+  typescript,
+} from "~/assets/logos";
 import { useDebug } from "~/components/canvas/Debug";
 import { COLORS } from "~/utils/store";
 import useViewport from "~/utils/useViewport";
@@ -23,17 +27,16 @@ export default function TechLogos() {
       disableZ
       disableY
     >
-      {LOGOS.map(({ name, src, scale }, i) => (
+      {LOGOS.map((ball, i) => (
         <Ball
-          key={name}
-          logo={src}
+          key={ball.name}
+          ball={ball}
           position={
             mobile
               ? [gap * i, i % 2 ? -gap * 2 : 0, 0]
               : [gap * i, i % 2 ? -gap * 0.5 : 0, 0]
           }
           scale={mobile ? 0.2 : 0.3}
-          logoScale={scale}
         />
       ))}
     </Center>
@@ -41,40 +44,51 @@ export default function TechLogos() {
 }
 
 function Ball({
-  logo,
-  logoScale,
+  ball: { name, src, scale },
   ...props
-}: { logo: string; logoScale: number } & JSX.IntrinsicElements["group"]) {
+}: { ball: (typeof LOGOS)[number] } & JSX.IntrinsicElements["group"]) {
   const { debugOn } = useControls({ debugOn: false });
-  const texture = useTexture(logo);
+  const texture = useTexture(src);
   const { ...debug } = useDebug();
+  const [hover, setHover] = useState(false);
 
   return (
     <group {...props} {...debug}>
       <Float speed={4}>
-        <mesh>
+        <mesh
+          onPointerEnter={() => setHover(true)}
+          onPointerLeave={() => setHover(false)}
+        >
           <icosahedronGeometry args={[1, 1]} />
           <meshStandardMaterial color={COLORS.slate100} flatShading />
           <Decal
             map={texture}
             position={[0, 0, 1]}
             rotation={[Math.PI * 2, 0, 0]}
-            scale={1.2 * logoScale}
+            scale={1.2 * scale}
             debug={debugOn}
             flatShading
           />
         </mesh>
       </Float>
+
+      {hover && (
+        <Html position={[0.5, -0.5, 0]}>
+          <div className="rounded border border-cyan-800 bg-cyan-950 p-2">
+            <p>{name}</p>
+          </div>
+        </Html>
+      )}
     </group>
   );
 }
 
 export const LOGOS = [
-  { name: "html", src: html, scale: 1 },
-  { name: "javascript", src: javascript, scale: 1 },
-  { name: "typescript", src: typescript, scale: 1 },
-  { name: "nextjs", src: nextjs, scale: 1 },
-  { name: "tailwindcss", src: tailwindcss, scale: 1.3 },
-  { name: "threejs", src: threejs, scale: 1.3 },
-  { name: "redux", src: redux, scale: 1 },
+  { name: "HTML", src: html, scale: 1 },
+  { name: "Javascript", src: javascript, scale: 1 },
+  { name: "Typescript", src: typescript, scale: 1 },
+  { name: "Next.js", src: nextjs, scale: 1 },
+  { name: "Tailwindcss", src: tailwindcss, scale: 1.3 },
+  { name: "Three.js", src: threejs, scale: 1.3 },
+  { name: "Redux", src: redux, scale: 1 },
 ] as const;

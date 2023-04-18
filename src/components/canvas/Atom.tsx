@@ -27,7 +27,7 @@ export default function Atom({
   return (
     <group
       position={
-        mobile ? [0, height * 0.35, 0] : [-width * 0.4, height * 0.2, 0]
+        mobile ? [0, height * 0.35, 0] : [-width * 0.35, height * 0.2, 0]
       }
       {...props}
       {...debug}
