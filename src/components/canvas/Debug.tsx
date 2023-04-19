@@ -84,7 +84,7 @@ export default function Debug() {
   );
 }
 
-export function FullViewport({ ...props }: ComponentProps<typeof Plane>) {
+export function FullViewport(props: ComponentProps<typeof Plane>) {
   const { width, height } = useViewport();
   const [ref, setRef] = useState<ComponentRef<typeof Plane> | null>(null);
 

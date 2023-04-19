@@ -1,11 +1,13 @@
 import { Text } from "@react-three/drei";
 
 import { calibre400 } from "~/assets/fonts";
+import { useDebug } from "~/components/canvas/Debug";
 import { COLORS } from "~/utils/store";
 import useViewport from "~/utils/useViewport";
 
 export default function About() {
   const { width, height, mobile } = useViewport();
+  const { ...debug } = useDebug();
 
   return (
     <>
@@ -21,6 +23,7 @@ export default function About() {
         color={COLORS.slate300}
         font={calibre400}
         depthOffset={-2}
+        {...debug}
       >
         I&apos;m a self-taught frontend developer with a primary focus on React
         and TypeScript.{"\n"}I love to learn new technologies to improve my

@@ -4,23 +4,24 @@ export const COLORS = {
   slate400: "#a1a1aa",
   slate900: "#0f172a",
   emerald400: "#34d399",
+  emerald500: "#10b981",
 } as const;
 
 export const PAGES = [
   {
-    id: "home",
+    id: "hello",
     position: [0, 0, 0],
     rotation: [0, 0, 0],
   },
   {
     id: "about",
-    position: [0, -1.5, -2],
+    position: [0, -1.5, -3],
     rotation: [-0.25, 0, 0],
   },
   {
     id: "projects",
-    position: [-1, -4, 0],
-    rotation: [0, 0.5, 0],
+    position: [-0.2, -3, 0],
+    rotation: [0, 1, 0],
   },
   {
     id: "contact",

@@ -12,6 +12,7 @@ import Debug, { FullViewport } from "~/components/canvas/Debug";
 import Hero from "~/components/canvas/Hero";
 import Keyboard from "~/components/canvas/Keyboard";
 import Page from "~/components/canvas/Page";
+import Projects from "~/components/canvas/Projects";
 import TechLogos from "~/components/canvas/TechLogos";
 
 const isDebug =
@@ -38,7 +39,7 @@ export default function Scene() {
           </Page>
 
           <Page page={2}>
-            <FullViewport />
+            <Projects />
           </Page>
 
           <Page page={3}>

@@ -15,7 +15,7 @@ import useViewport from "~/utils/useViewport";
 const lookTo = new Vector3();
 const lerpTo = new Vector3();
 
-export default function Keyboard({ ...props }: JSX.IntrinsicElements["group"]) {
+export default function Keyboard(props: JSX.IntrinsicElements["group"]) {
   const { nodes, materials } = useGLTF("/keyboard.gltf") as GLTFResult;
   const keyboardRef = useRef<THREE.Group>(null);
   const { width, height, mobile } = useViewport();
