@@ -6,6 +6,6 @@
 ### About
 
 Interactive 3D personal portfolio in React.js with Typescript and Three.js.
-Try adding ["?debug"](https://www.eiguchipablo.dev/?debug) in the url!
+Try adding ["?debug"](https://www.eiguchipablo.dev/?debug "eiguchipablo.dev/?debug") in the url!
 
-Contact me in [LinkedIn](https://www.linkedin.com/in/eiguchipablo/)
+Contact me in [LinkedIn](https://www.linkedin.com/in/eiguchipablo/ "linkedin.com/in/eiguchipablo/")
