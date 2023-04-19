@@ -9,7 +9,7 @@ export const COLORS = {
 
 export const PAGES = [
   {
-    id: "hello",
+    id: "",
     position: [0, 0, 0],
     rotation: [0, 0, 0],
   },
