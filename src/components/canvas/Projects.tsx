@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { Image, Text, useCursor } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
 import { DoubleSide, FrontSide } from "three";
 
 import { calibre400 } from "~/assets/fonts";
@@ -10,11 +11,23 @@ import {
   traveler,
   keyboardSniper,
 } from "~/assets/images";
-import { COLORS } from "~/utils/store";
+import { COLORS, PAGES } from "~/utils/store";
+import useScrollPos from "~/utils/useScrollPos";
 import useViewport from "~/utils/useViewport";
+
+const PROJECT_PAGES = PAGES.filter(
+  (page): page is (typeof PAGES)[number] & { id: "projects" } =>
+    page.id === "projects"
+);
 
 export default function Projects(props: JSX.IntrinsicElements["group"]) {
   const { width, height, mobile } = useViewport();
+  const { scrollPage, scrollPos } = useScrollPos();
+  const carouselRef = useRef<THREE.Group>(null);
+
+  useFrame(() => {
+    if (!carouselRef.current) return null;
+  });
 
   const size = mobile ? width * 0.35 : width * 0.15;
 
@@ -29,7 +42,7 @@ export default function Projects(props: JSX.IntrinsicElements["group"]) {
         Personal projects
       </Text>
 
-      <group {...props}>
+      <group {...props} ref={carouselRef}>
         {PROJECTS.map((project, i, arr) => (
           <Project
             key={i}
@@ -105,4 +118,4 @@ const PROJECTS = [
     url: "https://keyboard-sniper.web.app/",
     image: keyboardSniper,
   },
-];
+] as const;

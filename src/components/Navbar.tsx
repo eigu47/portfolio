@@ -23,19 +23,23 @@ export default function Navbar() {
             showMenu ? "" : "-translate-y-[56px]"
           }`}
         >
-          {PAGES.map(({ id }, i) => (
-            <li key={id} className="first:grow">
-              <a
-                className={`relative p-3 capitalize after:absolute after:bottom-1 after:right-1/2 after:h-[2px] after:w-4/6 after:origin-center after:translate-x-1/2 after:scale-x-0 after:bg-emerald-400 after:transition hover:text-white hover:after:scale-x-100 ${
-                  scrollPage === i ? "after:scale-x-100" : ""
-                }`}
-                href={`#${id}`}
-                onClick={() => setShowMenu(false)}
-              >
-                {i === 0 ? "Hello" : id}
-              </a>
-            </li>
-          ))}
+          {PAGES.filter((page): page is Filtered => page.id !== undefined).map(
+            ({ id, section }, i) => (
+              <li key={i} className="first:grow">
+                <a
+                  className={`relative p-3 after:absolute after:bottom-1 after:right-1/2 after:h-[2px] after:w-4/6 after:origin-center after:translate-x-1/2 after:scale-x-0 after:bg-emerald-400 after:transition hover:text-white hover:after:scale-x-100 ${
+                    PAGES[scrollPage].section === section
+                      ? "after:scale-x-100"
+                      : ""
+                  }`}
+                  href={`#${id}`}
+                  onClick={() => setShowMenu(false)}
+                >
+                  {section}
+                </a>
+              </li>
+            )
+          )}
         </ul>
       </nav>
       <button
@@ -88,3 +92,5 @@ function CloseIcon(props: JSX.IntrinsicElements["svg"]) {
     </svg>
   );
 }
+
+type Filtered = (typeof PAGES)[number] & { id: string };

@@ -42,7 +42,7 @@ export default function Scene() {
             <Projects />
           </Page>
 
-          <Page page={3}>
+          <Page page={5}>
             <FullViewport />
           </Page>
         </Suspense>

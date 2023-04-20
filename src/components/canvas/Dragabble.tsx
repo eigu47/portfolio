@@ -26,15 +26,15 @@ export default function Dragabble({
     speed?: number
   ];
 } & JSX.IntrinsicElements["group"]) {
-  const ref = useRef<THREE.Group>(null);
+  const groupRef = useRef<THREE.Group>(null);
   const camera = useThree((state) => state.camera);
   const { width, height } = useThree((state) => state.size);
   const [hover, setHover] = useState(false);
   const { isMobile } = useDetectGPU();
   useCursor(hover);
 
-  ref.current?.parent?.getWorldPosition(parentPos).negate();
-  ref.current?.parent?.getWorldQuaternion(parentQuat).invert();
+  groupRef.current?.parent?.getWorldPosition(parentPos).negate();
+  groupRef.current?.parent?.getWorldQuaternion(parentQuat).invert();
 
   const bind = useGesture({
     onPointerEnter: () => setHover(true),
@@ -58,7 +58,7 @@ export default function Dragabble({
   useFrame((_, delta) => {
     if (isMobile) return null;
 
-    ref.current?.position.lerp(dragPos, delta * speed);
+    groupRef.current?.position.lerp(dragPos, delta * speed);
 
     if (hoverColor) {
       const [materialRef, colorFrom, colorTo, speed = 10] = hoverColor;
@@ -72,7 +72,7 @@ export default function Dragabble({
 
   return (
     <group
-      ref={ref}
+      ref={groupRef}
       {...props}
       {...(!isMobile && (bind() as JSX.IntrinsicElements["group"]))}
     >

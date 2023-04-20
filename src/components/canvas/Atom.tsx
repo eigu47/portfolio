@@ -96,12 +96,12 @@ function Electron({
   speed?: number;
   scale?: number;
 } & JSX.IntrinsicElements["group"]) {
-  const ref = useRef<THREE.Mesh>(null);
+  const electronRef = useRef<THREE.Mesh>(null);
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime() * speed;
 
-    ref.current?.position.set(
+    electronRef.current?.position.set(
       Math.sin(t) * radius,
       (Math.cos(t) * radius * Math.atan(t)) / Math.PI / 1.25,
       0
@@ -116,7 +116,7 @@ function Electron({
         color={new Color(2, 1, 10)}
         attenuation={(t) => t * t}
       >
-        <mesh ref={ref}>
+        <mesh ref={electronRef}>
           <sphereGeometry args={[0.25]} />
           <meshBasicMaterial color={[10, 1, 10]} toneMapped={false} />
         </mesh>

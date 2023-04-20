@@ -20,24 +20,24 @@ export default function Camera() {
   const { scrollPos, scrollPage, scrollDown } = useScrollPos();
   const { position: posFrom, rotation: rotFrom } = usePage(scrollPage);
   const { position: posTo, rotation: rotTo } = usePage(scrollPage + 1);
-  const ref = useRef<THREE.Group>(null);
+  const groupRef = useRef<THREE.Group>(null);
 
   useFrame(({ camera }, delta) => {
-    if ((debugOn && orbitControls) || !ref.current) return null;
+    if ((debugOn && orbitControls) || !groupRef.current) return null;
 
     position.lerpVectors(posFrom, posTo, scrollPos - scrollPage);
-    ref.current.position.lerp(position, delta * 4);
+    groupRef.current.position.lerp(position, delta * 4);
 
     camera.lookAt(
-      lookAt.lerp(scrollDown ? position : ref.current.position, delta * 8)
+      lookAt.lerp(scrollDown ? position : groupRef.current.position, delta * 8)
     );
 
     rotation.lerpVectors(rotFrom, rotTo, scrollPos - scrollPage);
-    ref.current.rotation.setFromVector3(rotation);
+    groupRef.current.rotation.setFromVector3(rotation);
   });
 
   return (
-    <group ref={ref}>
+    <group ref={groupRef}>
       <PerspectiveCamera makeDefault fov={60} position={[0, 0, 5]} />
       <ambientLight intensity={0.2} />
       <directionalLight position={[10, 15, 10]} intensity={0.5} />
