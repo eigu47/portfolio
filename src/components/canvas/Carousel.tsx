@@ -1,7 +1,9 @@
 import { useRef, useState } from "react";
 
 import { Image, Text, useCursor } from "@react-three/drei";
-import { DoubleSide, FrontSide } from "three";
+import { useFrame } from "@react-three/fiber";
+import { useDrag } from "@use-gesture/react";
+import { DoubleSide, FrontSide, Quaternion } from "three";
 
 import { calibre400 } from "~/assets/fonts";
 import {
@@ -13,11 +15,23 @@ import {
 import { COLORS } from "~/utils/store";
 import useViewport from "~/utils/useViewport";
 
+const carouselQuat = new Quaternion();
+
 export default function Carousel(props: JSX.IntrinsicElements["group"]) {
   const { width, height, mobile } = useViewport();
   const carouselRef = useRef<THREE.Group>(null);
+  const [drag, setDrag] = useState(false);
+  useCursor(drag, "grabbing");
 
   const size = mobile ? width * 0.35 : width * 0.15;
+
+  const bind = useDrag(({ down }) => {
+    setDrag(down);
+  });
+
+  useFrame(() => {
+    if (!carouselRef.current) return null;
+  });
 
   return (
     <group {...props}>
@@ -31,7 +45,7 @@ export default function Carousel(props: JSX.IntrinsicElements["group"]) {
         Personal projects
       </Text>
 
-      <group ref={carouselRef}>
+      <group ref={carouselRef} {...(bind() as JSX.IntrinsicElements["group"])}>
         {PROJECTS.map((project, i) => (
           <Project
             key={i}
@@ -57,7 +71,9 @@ function Project({
 } & JSX.IntrinsicElements["group"]) {
   const { height } = useViewport();
   const [hover, setHover] = useState(false);
-  useCursor(hover, "pointer");
+  const [drag, setDrag] = useState(false);
+  useCursor(hover);
+  useCursor(drag, "grab");
 
   return (
     <group {...props}>
@@ -67,6 +83,8 @@ function Project({
           ref={(ref) => ref && (ref.material.side = DoubleSide)}
           url={image}
           scale={[size * ASPECT_RATIO, size]}
+          onPointerEnter={() => setDrag(true)}
+          onPointerLeave={() => setDrag(false)}
         />
 
         <Text

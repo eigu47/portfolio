@@ -10,6 +10,7 @@ import useViewport from "~/utils/useViewport";
 
 const bloomCyan = new Color(0.1, 1.2, 1.2);
 const normalCyan = new Color("cyan");
+const normalTomato = new Color("orangered");
 const bloonNucleous = new Color(6, 0.2, 2);
 const normalNucleous = new Color(2, 2, 2);
 
@@ -18,6 +19,7 @@ export default function Atom({
   ...props
 }: { scale?: number } & JSX.IntrinsicElements["group"]) {
   const basicRef = useRef<THREE.MeshBasicMaterial>(null);
+  const physicalRef = useRef<THREE.MeshPhysicalMaterial>(null);
   const { width, height, mobile } = useViewport();
   const { tier } = useDetectGPU();
   const { ...debug } = useDebug();
@@ -32,7 +34,13 @@ export default function Atom({
       {...props}
       {...debug}
     >
-      <Dragabble hoverColor={[basicRef, normalNucleous, bloonNucleous]}>
+      <Dragabble
+        hoverColor={
+          tier > 2
+            ? [basicRef, normalNucleous, bloonNucleous]
+            : [physicalRef, normalCyan, normalTomato]
+        }
+      >
         <Float
           speed={1}
           rotationIntensity={50}
@@ -74,7 +82,8 @@ export default function Atom({
               />
             ) : (
               <meshPhysicalMaterial
-                color={"cyan"}
+                ref={physicalRef}
+                color={normalCyan}
                 roughness={0.5}
                 metalness={0.5}
               />

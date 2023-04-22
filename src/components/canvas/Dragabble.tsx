@@ -1,9 +1,11 @@
 import { useRef, useState } from "react";
 
-import { useCursor, useDetectGPU } from "@react-three/drei";
+import { useCursor } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useGesture } from "@use-gesture/react";
 import { Quaternion, Vector3 } from "three";
+
+import usePreventScroll from "~/utils/usePreventScroll";
 
 const dragPos = new Vector3();
 const cameraPos = new Vector3();
@@ -20,7 +22,9 @@ export default function Dragabble({
   speed?: number;
   far?: number;
   hoverColor?: [
-    object: React.RefObject<THREE.MeshBasicMaterial>,
+    object:
+      | React.RefObject<THREE.MeshBasicMaterial>
+      | React.RefObject<THREE.MeshPhysicalMaterial>,
     colorFrom: THREE.Color,
     colorTo: THREE.Color,
     speed?: number
@@ -30,8 +34,10 @@ export default function Dragabble({
   const camera = useThree((state) => state.camera);
   const { width, height } = useThree((state) => state.size);
   const [hover, setHover] = useState(false);
-  const { isMobile } = useDetectGPU();
-  useCursor(hover);
+  const [drag, setDrag] = useState(false);
+  const preventScroll = usePreventScroll();
+  useCursor(hover, "grab");
+  useCursor(drag, "grabbing", hover ? "grab" : "auto");
 
   groupRef.current?.parent?.getWorldPosition(parentPos).negate();
   groupRef.current?.parent?.getWorldQuaternion(parentQuat).invert();
@@ -39,7 +45,7 @@ export default function Dragabble({
   const bind = useGesture({
     onPointerEnter: () => setHover(true),
     onPointerLeave: () => setHover(false),
-    onDrag: ({ xy: [x, y], last }) => {
+    onDrag: ({ xy: [x, y], down }) => {
       camera.getWorldPosition(cameraPos);
       // Drag on the same plane as the camera, `far` units away
       dragPos
@@ -47,24 +53,25 @@ export default function Dragabble({
         .unproject(camera)
         .sub(cameraPos)
         .normalize()
-        .multiplyScalar(last ? far : far * 0.8)
+        .multiplyScalar(down ? far * 0.8 : far)
         .add(cameraPos)
         // correct by parent offset
         .add(parentPos)
         .applyQuaternion(parentQuat);
+
+      setDrag(down);
+      preventScroll.current = down;
     },
   });
 
   useFrame((_, delta) => {
-    if (isMobile) return null;
-
     groupRef.current?.position.lerp(dragPos, delta * speed);
 
     if (hoverColor) {
       const [materialRef, colorFrom, colorTo, speed = 10] = hoverColor;
 
       materialRef.current?.color.lerp(
-        hover ? colorTo : colorFrom,
+        hover || drag ? colorTo : colorFrom,
         delta * speed
       );
     }
@@ -74,7 +81,7 @@ export default function Dragabble({
     <group
       ref={groupRef}
       {...props}
-      {...(!isMobile && (bind() as JSX.IntrinsicElements["group"]))}
+      {...(bind() as JSX.IntrinsicElements["group"])}
     >
       {children}
     </group>
