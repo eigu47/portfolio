@@ -8,11 +8,11 @@ import { Leva } from "leva";
 import About from "~/components/canvas/About";
 import Atom from "~/components/canvas/Atom";
 import Camera from "~/components/canvas/Camera";
+import Carousel from "~/components/canvas/Carousel";
 import Debug, { FullViewport } from "~/components/canvas/Debug";
 import Hero from "~/components/canvas/Hero";
 import Keyboard from "~/components/canvas/Keyboard";
 import Page from "~/components/canvas/Page";
-import Projects from "~/components/canvas/Projects";
 import TechLogos from "~/components/canvas/TechLogos";
 
 const isDebug =
@@ -39,21 +39,21 @@ export default function Scene() {
           </Page>
 
           <Page page={2}>
-            <Projects />
+            <Carousel />
           </Page>
 
-          <Page page={5}>
+          <Page page={3}>
             <FullViewport />
           </Page>
+
+          <Preload all />
+
+          {tier > 2 && (
+            <EffectComposer>
+              <Bloom mipmapBlur intensity={0.2} radius={0.2} />
+            </EffectComposer>
+          )}
         </Suspense>
-
-        <Preload all />
-
-        {tier > 2 && (
-          <EffectComposer>
-            <Bloom mipmapBlur intensity={0.2} radius={0.2} />
-          </EffectComposer>
-        )}
 
         {isDebug && <Debug />}
       </Canvas>

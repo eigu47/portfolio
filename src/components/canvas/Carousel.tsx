@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 
 import { Image, Text, useCursor } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
 import { DoubleSide, FrontSide } from "three";
 
 import { calibre400 } from "~/assets/fonts";
@@ -11,48 +10,38 @@ import {
   traveler,
   keyboardSniper,
 } from "~/assets/images";
-import { COLORS, PAGES } from "~/utils/store";
-import useScrollPos from "~/utils/useScrollPos";
+import { COLORS } from "~/utils/store";
 import useViewport from "~/utils/useViewport";
 
-const PROJECT_PAGES = PAGES.filter(
-  (page): page is (typeof PAGES)[number] & { id: "projects" } =>
-    page.id === "projects"
-);
-
-export default function Projects(props: JSX.IntrinsicElements["group"]) {
+export default function Carousel(props: JSX.IntrinsicElements["group"]) {
   const { width, height, mobile } = useViewport();
-  const { scrollPage, scrollPos } = useScrollPos();
   const carouselRef = useRef<THREE.Group>(null);
-
-  useFrame(() => {
-    if (!carouselRef.current) return null;
-  });
 
   const size = mobile ? width * 0.35 : width * 0.15;
 
   return (
-    <>
+    <group {...props}>
       <Text
         position={[0, size * 0.5 + height * 0.15, 0]}
         fontSize={0.35}
         font={calibre400}
         color={COLORS.slate300}
+        material-side={DoubleSide}
       >
         Personal projects
       </Text>
 
-      <group {...props} ref={carouselRef}>
-        {PROJECTS.map((project, i, arr) => (
+      <group ref={carouselRef}>
+        {PROJECTS.map((project, i) => (
           <Project
             key={i}
             project={project}
             size={size}
-            rotation={[0, ((Math.PI * 2) / arr.length) * i, 0]}
+            rotation={[0, ((Math.PI * 2) / PROJECTS.length) * i, 0]}
           />
         ))}
       </group>
-    </>
+    </group>
   );
 }
 

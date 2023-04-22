@@ -20,8 +20,7 @@ export default function useViewport() {
       camera,
       camera.getWorldPosition(cameraPos).add(cameraDis)
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [camera, getCurrentViewport, sizeHeight]);
+  }, [camera, getCurrentViewport]);
   // Tailwind-like breakpoints
   const size = {
     width: sizeWidth,

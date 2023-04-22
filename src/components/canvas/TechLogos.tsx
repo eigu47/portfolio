@@ -50,14 +50,17 @@ function Ball({
   const { debugOn } = useControls({ debugOn: false });
   const texture = useTexture(src);
   const { ...debug } = useDebug();
-  const [hover, setHover] = useState(false);
+  const [showModal, setModal] = useState(false);
+  const { mobile } = useViewport();
 
   return (
     <group {...props} {...debug}>
       <Float speed={4}>
         <mesh
-          onPointerEnter={() => setHover(true)}
-          onPointerLeave={() => setHover(false)}
+          onPointerEnter={() => !mobile && setModal(true)}
+          onPointerLeave={() => !mobile && setModal(false)}
+          onPointerDown={() => mobile && setModal(true)}
+          onPointerMissed={() => mobile && setModal(false)}
         >
           <icosahedronGeometry args={[1, 1]} />
           <meshStandardMaterial color={COLORS.slate100} flatShading />
@@ -72,7 +75,7 @@ function Ball({
         </mesh>
       </Float>
 
-      {hover && (
+      {showModal && (
         <Html position={[0.5, -0.5, 0]}>
           <div className="rounded border border-cyan-800 bg-cyan-950 p-2">
             <p>{name}</p>

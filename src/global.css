@@ -13,6 +13,8 @@ html,
 }
 
 html {
+  @apply snap-y snap-mandatory;
+
   overflow: overlay;
   scrollbar-color: var(--slate-400) var(--slate-900);
 }

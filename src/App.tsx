@@ -8,11 +8,11 @@ export default function App() {
     <>
       <Navbar />
       <Scene />
-      {PAGES.map(({ id }, i) => (
+      {PAGES.map(({ id }) => (
         <section
-          key={i}
+          key={id}
           id={id}
-          className="h-screen"
+          className="h-screen snap-start snap-always"
           // style={{ backgroundColor: i % 2 ? "black" : "white" }}
         />
       ))}
