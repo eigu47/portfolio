@@ -10,7 +10,6 @@ import useViewport from "~/utils/useViewport";
 
 const bloomCyan = new Color(0.1, 1.2, 1.2);
 const normalCyan = new Color("cyan");
-const normalTomato = new Color("orangered");
 const bloonNucleous = new Color(6, 0.2, 2);
 const normalNucleous = new Color(2, 2, 2);
 
@@ -38,7 +37,7 @@ export default function Atom({
         hoverColor={
           tier > 2
             ? [basicRef, normalNucleous, bloonNucleous]
-            : [physicalRef, normalCyan, normalTomato]
+            : [physicalRef, normalCyan, bloonNucleous]
         }
       >
         <Float

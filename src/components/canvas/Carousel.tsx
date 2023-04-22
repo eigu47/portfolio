@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { Image, Text, useCursor } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useDrag } from "@use-gesture/react";
-import { DoubleSide, FrontSide, Quaternion } from "three";
+import { DoubleSide, FrontSide, Vector3 } from "three";
 
 import { calibre400 } from "~/assets/fonts";
 import {
@@ -13,24 +13,43 @@ import {
   keyboardSniper,
 } from "~/assets/images";
 import { COLORS } from "~/utils/store";
+import usePreventScroll from "~/utils/usePreventScroll";
 import useViewport from "~/utils/useViewport";
+import { useDebug } from "~/components/canvas/Debug";
 
-const carouselQuat = new Quaternion();
+const rotation = new Vector3();
+const lerpFrom = new Vector3();
 
 export default function Carousel(props: JSX.IntrinsicElements["group"]) {
-  const { width, height, mobile } = useViewport();
+  const {
+    width,
+    height,
+    mobile,
+    size: { width: sizeWidth },
+  } = useViewport();
   const carouselRef = useRef<THREE.Group>(null);
+  const preventScroll = usePreventScroll();
+  const [hover, setHover] = useState(false);
   const [drag, setDrag] = useState(false);
-  useCursor(drag, "grabbing");
+  useCursor(!drag && hover, "grab");
+  useCursor(drag, "grabbing", hover ? "grab" : "auto");
+  const { ...debug } = useDebug();
 
   const size = mobile ? width * 0.35 : width * 0.15;
 
-  const bind = useDrag(({ down }) => {
+  const bind = useDrag(({ offset: [x], down }) => {
     setDrag(down);
+    preventScroll.current = down;
+
+    rotation.set(0, Math.PI * (x / sizeWidth) * 2, 0);
   });
 
-  useFrame(() => {
+  useFrame((_, delta) => {
     if (!carouselRef.current) return null;
+
+    carouselRef.current.rotation.setFromVector3(
+      lerpFrom.lerp(rotation, delta * 8)
+    );
   });
 
   return (
@@ -45,13 +64,19 @@ export default function Carousel(props: JSX.IntrinsicElements["group"]) {
         Personal projects
       </Text>
 
-      <group ref={carouselRef} {...(bind() as JSX.IntrinsicElements["group"])}>
+      <group
+        ref={carouselRef}
+        {...(bind() as JSX.IntrinsicElements["group"])}
+        {...debug}
+      >
         {PROJECTS.map((project, i) => (
           <Project
             key={i}
             project={project}
             size={size}
             rotation={[0, ((Math.PI * 2) / PROJECTS.length) * i, 0]}
+            setHoverCarousel={setHover}
+            drag={drag}
           />
         ))}
       </group>
@@ -64,16 +89,18 @@ const ASPECT_RATIO = 1.4;
 function Project({
   project: { name, url, image },
   size,
+  setHoverCarousel,
+  drag,
   ...props
 }: {
   project: (typeof PROJECTS)[number];
   size: number;
+  setHoverCarousel: (hover: boolean) => void;
+  drag: boolean;
 } & JSX.IntrinsicElements["group"]) {
   const { height } = useViewport();
   const [hover, setHover] = useState(false);
-  const [drag, setDrag] = useState(false);
-  useCursor(hover);
-  useCursor(drag, "grab");
+  useCursor(!drag && hover);
 
   return (
     <group {...props}>
@@ -83,8 +110,8 @@ function Project({
           ref={(ref) => ref && (ref.material.side = DoubleSide)}
           url={image}
           scale={[size * ASPECT_RATIO, size]}
-          onPointerEnter={() => setDrag(true)}
-          onPointerLeave={() => setDrag(false)}
+          onPointerEnter={() => setHoverCarousel(true)}
+          onPointerLeave={() => setHoverCarousel(false)}
         />
 
         <Text

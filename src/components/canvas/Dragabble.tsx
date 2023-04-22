@@ -46,6 +46,9 @@ export default function Dragabble({
     onPointerEnter: () => setHover(true),
     onPointerLeave: () => setHover(false),
     onDrag: ({ xy: [x, y], down }) => {
+      setDrag(down);
+      preventScroll.current = down;
+
       camera.getWorldPosition(cameraPos);
       // Drag on the same plane as the camera, `far` units away
       dragPos
@@ -58,9 +61,6 @@ export default function Dragabble({
         // correct by parent offset
         .add(parentPos)
         .applyQuaternion(parentQuat);
-
-      setDrag(down);
-      preventScroll.current = down;
     },
   });
 
