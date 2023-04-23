@@ -21,12 +21,12 @@ export const PAGES = [
   {
     id: "projects",
     position: [-0.2, -3, 0],
-    rotation: [0, 1, 0],
+    rotation: [0, 0.5, 0],
   },
   {
     id: "contact",
     position: [0, -4.5, 0],
-    rotation: [0, 2, 0],
+    rotation: [0, 1, 0],
   },
   {
     id: "resume",

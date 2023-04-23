@@ -45,7 +45,7 @@ export default function Dragabble({
   const bind = useGesture({
     onPointerEnter: () => setHover(true),
     onPointerLeave: () => setHover(false),
-    onDrag: ({ xy: [x, y], down, last, offset: [offX, offY] }) => {
+    onDrag: ({ xy: [x, y], down, offset: [offX, offY] }) => {
       setDrag(down);
       preventScroll.current = down;
 
@@ -63,8 +63,6 @@ export default function Dragabble({
           // correct by parent offset
           .add(parentPos)
           .applyQuaternion(parentQuat);
-
-      last && (preventScroll.current = false);
     },
   });
 

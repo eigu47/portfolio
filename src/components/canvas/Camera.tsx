@@ -2,6 +2,7 @@ import { useRef } from "react";
 
 const position = new Vector3();
 const rotation = new Vector3();
+const rotationLerp = new Vector3();
 const lookAt = new Vector3();
 
 import { PerspectiveCamera } from "@react-three/drei";
@@ -33,7 +34,10 @@ export default function Camera() {
     );
 
     rotation.lerpVectors(rotFrom, rotTo, scrollPos - scrollPage);
-    groupRef.current.rotation.setFromVector3(rotation);
+
+    groupRef.current.rotation.setFromVector3(
+      rotationLerp.lerp(rotation, delta * 8)
+    );
   });
 
   return (

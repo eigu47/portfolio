@@ -1,8 +1,9 @@
 import { useRef, useState } from "react";
 
-import { Image, Text, useCursor } from "@react-three/drei";
+import { Box, Image, Text, useCursor } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useDrag } from "@use-gesture/react";
+import { useGesture } from "@use-gesture/react";
+import { useControls } from "leva";
 import { DoubleSide, FrontSide, Vector3 } from "three";
 
 import { calibre400 } from "~/assets/fonts";
@@ -12,10 +13,10 @@ import {
   traveler,
   keyboardSniper,
 } from "~/assets/images";
+import { useDebug } from "~/components/canvas/Debug";
 import { COLORS } from "~/utils/store";
 import usePreventScroll from "~/utils/usePreventScroll";
 import useViewport from "~/utils/useViewport";
-import { useDebug } from "~/components/canvas/Debug";
 
 const rotation = new Vector3();
 const lerpFrom = new Vector3();
@@ -31,21 +32,32 @@ export default function Carousel(props: JSX.IntrinsicElements["group"]) {
   const preventScroll = usePreventScroll();
   const [hover, setHover] = useState(false);
   const [drag, setDrag] = useState(false);
-  useCursor(!drag && hover, "grab");
+  useCursor(hover, "grab");
   useCursor(drag, "grabbing", hover ? "grab" : "auto");
   const { ...debug } = useDebug();
 
-  const size = mobile ? width * 0.35 : width * 0.15;
+  const size = mobile ? width * 0.3 : width * 0.15;
 
-  const bind = useDrag(({ offset: [x], down }) => {
-    setDrag(down);
-    preventScroll.current = down;
+  const bind = useGesture({
+    onPointerEnter: ({ event }) => {
+      // @ts-expect-error - object is not typed
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (event.object.name === "text") return;
+      setHover(true);
+    },
+    onPointerLeave: () => setHover(false),
+    onDrag: ({ offset: [x], down }) => {
+      setDrag(down);
+      preventScroll.current = down;
 
-    rotation.set(
-      0,
-      mobile ? Math.PI * (x / sizeWidth) * 1.5 : Math.PI * (x / sizeWidth) * 2,
-      0
-    );
+      rotation.set(
+        0,
+        mobile
+          ? Math.PI * (x / sizeWidth) * 1.5
+          : Math.PI * (x / sizeWidth) * 2,
+        0
+      );
+    },
   });
 
   useFrame((_, delta) => {
@@ -59,8 +71,8 @@ export default function Carousel(props: JSX.IntrinsicElements["group"]) {
   return (
     <group {...props}>
       <Text
-        position={[0, size * 0.5 + height * 0.15, 0]}
-        fontSize={0.35}
+        position={[0, size * 0.5 + height * 0.05, size]}
+        fontSize={mobile ? 0.3 : 0.35}
         font={calibre400}
         color={COLORS.slate300}
         material-side={DoubleSide}
@@ -77,9 +89,8 @@ export default function Carousel(props: JSX.IntrinsicElements["group"]) {
           <Project
             key={i}
             project={project}
-            size={size}
             rotation={[0, ((Math.PI * 2) / PROJECTS.length) * i, 0]}
-            setHoverCarousel={setHover}
+            size={size}
             drag={drag}
           />
         ))}
@@ -93,17 +104,16 @@ const ASPECT_RATIO = 1.4;
 function Project({
   project: { name, url, image },
   size,
-  setHoverCarousel,
   drag,
   ...props
 }: {
   project: (typeof PROJECTS)[number];
   size: number;
-  setHoverCarousel: (hover: boolean) => void;
   drag: boolean;
 } & JSX.IntrinsicElements["group"]) {
   const { height } = useViewport();
   const [hover, setHover] = useState(false);
+  const { debugOn } = useControls({ debugOn: false });
   useCursor(!drag && hover);
 
   return (
@@ -114,8 +124,12 @@ function Project({
           ref={(ref) => ref && (ref.material.side = DoubleSide)}
           url={image}
           scale={[size * ASPECT_RATIO, size]}
-          onPointerEnter={() => setHoverCarousel(true)}
-          onPointerLeave={() => setHoverCarousel(false)}
+        />
+
+        <Box
+          args={[size * ASPECT_RATIO, size, size * 0.5]}
+          visible={debugOn}
+          material-wireframe={true}
         />
 
         <Text
@@ -127,6 +141,8 @@ function Project({
           material-side={FrontSide}
           material-color={hover ? COLORS.emerald500 : COLORS.slate100}
           font={calibre400}
+          color={COLORS.slate300}
+          name="text"
         >
           {name}
         </Text>

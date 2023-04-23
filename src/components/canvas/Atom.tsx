@@ -2,6 +2,7 @@ import { useRef } from "react";
 
 import { Float, Line, Sphere, Trail, useDetectGPU } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
+import { useControls } from "leva";
 import { Color, EllipseCurve } from "three";
 
 import { useDebug } from "~/components/canvas/Debug";
@@ -19,6 +20,7 @@ export default function Atom({
 }: { scale?: number } & JSX.IntrinsicElements["group"]) {
   const basicRef = useRef<THREE.MeshBasicMaterial>(null);
   const physicalRef = useRef<THREE.MeshPhysicalMaterial>(null);
+  const { debugOn } = useControls({ debugOn: false });
   const { width, height, mobile } = useViewport();
   const { tier } = useDetectGPU();
   const { ...debug } = useDebug();
@@ -88,6 +90,12 @@ export default function Atom({
               />
             )}
           </Sphere>
+
+          <Sphere
+            args={[2, 8, 8]}
+            visible={debugOn}
+            material-wireframe={true}
+          />
         </Float>
       </Dragabble>
     </group>
