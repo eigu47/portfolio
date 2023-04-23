@@ -38,11 +38,9 @@ export default function Keyboard(props: JSX.IntrinsicElements["group"]) {
       <group
         ref={keyboardRef}
         dispose={null}
-        scale={mobile ? width * 0.18 : 0.9}
+        scale={mobile ? width * 0.2 : 0.9}
         position={
-          mobile
-            ? [0, -height * 0.25, -0.5]
-            : [width * 0.2, -height * 0.2, -0.5]
+          mobile ? [0, -height * 0.2, -0.5] : [width * 0.2, -height * 0.2, -0.5]
         }
         rotation={
           mobile ? [Math.PI * 0.15, 0, 0] : [Math.PI * 0.15, -Math.PI * 0.1, 0]

@@ -12,7 +12,7 @@ export default function About() {
   return (
     <Text
       position={
-        mobile ? [0, height * 0.05, 0] : [width * 0.1, height * 0.12, 0]
+        mobile ? [0, height * 0.03, 0] : [width * 0.1, height * 0.12, 0]
       }
       maxWidth={mobile ? width * 0.9 : width * 0.6}
       fontSize={mobile ? 0.2 : 0.3}

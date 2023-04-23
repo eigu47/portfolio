@@ -7,16 +7,13 @@
   --slate-900: #0f172a;
 }
 body,
-html,
-#root {
-  @apply h-full w-full scroll-smooth bg-slate-900 text-slate-300;
+html {
+  @apply scroll-smooth bg-slate-900 text-slate-300;
 }
 
 html {
   @apply snap-y snap-mandatory;
-
   overflow: overlay;
-  scrollbar-color: var(--slate-400) var(--slate-900);
 }
 
 ::-webkit-scrollbar {

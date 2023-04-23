@@ -20,7 +20,7 @@ export default function useScrollPos() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollPos = scrollY / window.innerHeight;
+  const scrollPos = scrollY / document.documentElement.clientHeight;
 
   const scrollPage = Math.floor(+scrollPos.toFixed(2)) as ValidIndex<
     typeof PAGES

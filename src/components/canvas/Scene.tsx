@@ -23,7 +23,7 @@ export default function Scene() {
 
   return (
     <>
-      <Canvas className="!fixed top-0">
+      <Canvas className="!fixed top-0 !h-screen">
         <Camera />
 
         <Suspense fallback={null}>

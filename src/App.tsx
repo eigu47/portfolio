@@ -12,7 +12,8 @@ export default function App() {
         <section
           key={id}
           id={id}
-          className="h-screen snap-start snap-always"
+          className="w-full snap-start snap-always"
+          style={{ height: `${document.documentElement.clientHeight}px` }}
           // style={{ backgroundColor: i % 2 ? "black" : "white" }}
         />
       ))}

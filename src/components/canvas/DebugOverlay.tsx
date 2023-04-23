@@ -75,6 +75,7 @@ function CameraPosition() {
       >
         ⏭
       </a>
+
       <p className="whitespace-nowrap bg-slate-100 px-1 text-center">
         {cameraPos
           .toArray()

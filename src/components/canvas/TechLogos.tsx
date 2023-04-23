@@ -22,11 +22,7 @@ export default function TechLogos() {
   const gap = (width * 0.8) / LOGOS.length;
 
   return (
-    <Center
-      position={mobile ? [0, -height * 0.3, 0] : [0, -height * 0.25, 0]}
-      disableZ
-      disableY
-    >
+    <Center position={[0, -height * 0.25, 0]} disableZ disableY>
       {LOGOS.map((ball, i) => (
         <Ball
           key={ball.name}

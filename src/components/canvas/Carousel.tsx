@@ -41,7 +41,11 @@ export default function Carousel(props: JSX.IntrinsicElements["group"]) {
     setDrag(down);
     preventScroll.current = down;
 
-    rotation.set(0, Math.PI * (x / sizeWidth) * 2, 0);
+    rotation.set(
+      0,
+      mobile ? Math.PI * (x / sizeWidth) * 1.5 : Math.PI * (x / sizeWidth) * 2,
+      0
+    );
   });
 
   useFrame((_, delta) => {

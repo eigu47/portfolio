@@ -45,22 +45,26 @@ export default function Dragabble({
   const bind = useGesture({
     onPointerEnter: () => setHover(true),
     onPointerLeave: () => setHover(false),
-    onDrag: ({ xy: [x, y], down }) => {
+    onDrag: ({ xy: [x, y], down, last, offset: [offX, offY] }) => {
       setDrag(down);
       preventScroll.current = down;
 
       camera.getWorldPosition(cameraPos);
-      // Drag on the same plane as the camera, `far` units away
-      dragPos
-        .set((x / width) * 2 - 1, -(y / height) * 2 + 1, 0)
-        .unproject(camera)
-        .sub(cameraPos)
-        .normalize()
-        .multiplyScalar(down ? far * 0.8 : far)
-        .add(cameraPos)
-        // correct by parent offset
-        .add(parentPos)
-        .applyQuaternion(parentQuat);
+      // fixes weird bug in mobile
+      if (offX && offY)
+        // Drag on the same plane as the camera, `far` units away.
+        dragPos
+          .set((x / width) * 2 - 1, -(y / height) * 2 + 1, 0)
+          .unproject(camera)
+          .sub(cameraPos)
+          .normalize()
+          .multiplyScalar(down ? far * 0.8 : far)
+          .add(cameraPos)
+          // correct by parent offset
+          .add(parentPos)
+          .applyQuaternion(parentQuat);
+
+      last && (preventScroll.current = false);
     },
   });
 

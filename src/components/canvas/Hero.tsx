@@ -13,7 +13,11 @@ export default function Hero() {
     <>
       <Text
         scale={mobile ? 0.5 : 0.7}
-        position={[-width * 0.7, height * 0.3, -3]}
+        position={
+          mobile
+            ? [-width * 0.7, height * 0.35, -3]
+            : [-width * 0.7, height * 0.3, -3]
+        }
         rotation={[0, Math.PI * 0.1, 0]}
         anchorX="left"
         color={COLORS.slate300}
@@ -23,9 +27,9 @@ export default function Hero() {
         Hello, I am
       </Text>
       <Text
-        scale={mobile ? width * 0.15 : 0.7}
+        scale={mobile ? width * 0.16 : 0.7}
         position={
-          mobile ? [0, height * 0.05, 0] : [-width * 0.35, height * 0.05, 0]
+          mobile ? [0, height * 0.1, 0] : [-width * 0.35, height * 0.05, 0]
         }
         anchorX={mobile ? "center" : "left"}
         color={COLORS.slate300}
@@ -36,7 +40,7 @@ export default function Hero() {
       </Text>
       <Text
         position={
-          mobile ? [0, -height * 0.1, -3] : [-width * 0.55, -height * 0.1, -3]
+          mobile ? [0, -height * 0, -3] : [-width * 0.55, -height * 0.1, -3]
         }
         anchorX={mobile ? "center" : "left"}
         scale={0.35}
