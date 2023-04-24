@@ -39,12 +39,10 @@ export default function Carousel(props: JSX.IntrinsicElements["group"]) {
   const size = mobile ? width * 0.3 : width * 0.15;
 
   const bind = useGesture({
-    onPointerEnter: ({ event }) => {
+    onPointerEnter: ({ event }) =>
       // @ts-expect-error - object is not typed
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (event.object.name === "text") return;
-      setHover(true);
-    },
+      event.object.name !== "text" && setHover(true),
     onPointerLeave: () => setHover(false),
     onDrag: ({ offset: [x], down }) => {
       setDrag(down);
@@ -61,9 +59,7 @@ export default function Carousel(props: JSX.IntrinsicElements["group"]) {
   });
 
   useFrame((_, delta) => {
-    if (!carouselRef.current) return null;
-
-    carouselRef.current.rotation.setFromVector3(
+    carouselRef.current?.rotation.setFromVector3(
       lerpFrom.lerp(rotation, delta * 8)
     );
   });

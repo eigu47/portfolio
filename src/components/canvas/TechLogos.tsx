@@ -55,8 +55,8 @@ function Ball({
         <mesh
           onPointerEnter={() => !mobile && setModal(true)}
           onPointerLeave={() => !mobile && setModal(false)}
-          onPointerDown={() => mobile && setModal(true)}
-          onPointerMissed={() => mobile && setModal(false)}
+          onPointerDown={() => setModal(true)}
+          onPointerMissed={() => setModal(false)}
         >
           <icosahedronGeometry args={[1, 1]} />
           <meshStandardMaterial color={COLORS.slate100} flatShading />

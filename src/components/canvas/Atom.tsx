@@ -42,12 +42,7 @@ export default function Atom({
             : [physicalRef, normalCyan, bloonNucleous]
         }
       >
-        <Float
-          speed={1}
-          rotationIntensity={50}
-          floatIntensity={0}
-          scale={scale}
-        >
+        <Float rotationIntensity={50} scale={scale}>
           <Line
             worldUnits
             points={points}
