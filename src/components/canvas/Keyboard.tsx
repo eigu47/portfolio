@@ -22,7 +22,7 @@ export default function Keyboard(props: JSX.IntrinsicElements["group"]) {
   const {
     relative: { x, y },
   } = useMousePos();
-  const { ...debug } = useDebug();
+  const debug = useDebug();
 
   useFrame((_, delta) => {
     if (mobile) return null;

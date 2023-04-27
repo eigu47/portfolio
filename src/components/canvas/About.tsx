@@ -7,7 +7,7 @@ import useViewport from "~/utils/useViewport";
 
 export default function About() {
   const { width, height, mobile } = useViewport();
-  const { ...debug } = useDebug();
+  const debug = useDebug();
 
   return (
     <Text

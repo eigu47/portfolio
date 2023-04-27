@@ -34,7 +34,7 @@ export default function Carousel(props: JSX.IntrinsicElements["group"]) {
   const [drag, setDrag] = useState(false);
   useCursor(hover, "grab");
   useCursor(drag, "grabbing", hover ? "grab" : "auto");
-  const { ...debug } = useDebug();
+  const debug = useDebug();
 
   const size = mobile ? width * 0.3 : width * 0.15;
 
@@ -71,7 +71,6 @@ export default function Carousel(props: JSX.IntrinsicElements["group"]) {
         fontSize={mobile ? 0.3 : 0.35}
         font={calibre400}
         color={COLORS.slate300}
-        material-side={DoubleSide}
       >
         Personal projects
       </Text>

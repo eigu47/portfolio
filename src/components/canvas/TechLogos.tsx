@@ -45,7 +45,7 @@ function Ball({
 }: { ball: (typeof LOGOS)[number] } & JSX.IntrinsicElements["group"]) {
   const { debugOn } = useControls({ debugOn: false });
   const texture = useTexture(src);
-  const { ...debug } = useDebug();
+  const debug = useDebug();
   const [showModal, setModal] = useState(false);
   const { mobile } = useViewport();
 

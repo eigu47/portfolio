@@ -7,7 +7,7 @@ import useViewport from "~/utils/useViewport";
 
 export default function Hero() {
   const { width, height, mobile } = useViewport();
-  const { ...debug } = useDebug();
+  const debug = useDebug();
 
   return (
     <>

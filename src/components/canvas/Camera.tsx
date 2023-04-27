@@ -41,10 +41,12 @@ export default function Camera() {
   });
 
   return (
-    <group ref={groupRef}>
-      <PerspectiveCamera makeDefault fov={60} position={[0, 0, 5]} />
+    <>
+      <group ref={groupRef}>
+        <PerspectiveCamera makeDefault fov={60} position={[0, 0, 5]} />
+      </group>
       <ambientLight intensity={0.2} />
       <directionalLight position={[10, 15, 10]} intensity={0.5} />
-    </group>
+    </>
   );
 }

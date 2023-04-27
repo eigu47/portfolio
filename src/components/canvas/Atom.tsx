@@ -23,7 +23,7 @@ export default function Atom({
   const { debugOn } = useControls({ debugOn: false });
   const { width, height, mobile } = useViewport();
   const { tier } = useDetectGPU();
-  const { ...debug } = useDebug();
+  const debug = useDebug();
 
   const cyan = tier > 2 ? bloomCyan : normalCyan;
 
@@ -69,7 +69,7 @@ export default function Atom({
           <Electron speed={3} scale={scale} />
           <Electron rotation={[0, 0, Math.PI / 3]} speed={4} scale={scale} />
           <Electron rotation={[0, 0, -Math.PI / 3]} speed={3.5} scale={scale} />
-          <Sphere args={[0.55, 64, 64]}>
+          <Sphere args={[0.55]}>
             {tier > 2 ? (
               <meshBasicMaterial
                 ref={basicRef}
@@ -87,7 +87,7 @@ export default function Atom({
           </Sphere>
 
           <Sphere
-            args={[2, 8, 8]}
+            args={[2, 6, 6]}
             visible={debugOn}
             material-wireframe={true}
           />

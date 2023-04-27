@@ -9,9 +9,10 @@ import About from "~/components/canvas/About";
 import Atom from "~/components/canvas/Atom";
 import Camera from "~/components/canvas/Camera";
 import Carousel from "~/components/canvas/Carousel";
-import Debug, { FullViewport } from "~/components/canvas/Debug";
+import Debug from "~/components/canvas/Debug";
 import Hero from "~/components/canvas/Hero";
 import Keyboard from "~/components/canvas/Keyboard";
+import Laptop from "~/components/canvas/Laptop";
 import Page from "~/components/canvas/Page";
 import TechLogos from "~/components/canvas/TechLogos";
 
@@ -43,7 +44,7 @@ export default function Scene() {
           </Page>
 
           <Page page={3}>
-            <FullViewport />
+            <Laptop />
           </Page>
 
           <Preload all />

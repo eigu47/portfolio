@@ -20,17 +20,17 @@ export const PAGES = [
   },
   {
     id: "projects",
-    position: [-0.2, -3, 0],
+    position: [-0.2, -2.5, 0],
     rotation: [0, 0.5, 0],
   },
   {
     id: "contact",
-    position: [0, -4.5, 0],
+    position: [0, -3.5, 0],
     rotation: [0, 1, 0],
   },
   {
     id: "resume",
-    position: [0, -5.5, 0],
+    position: [0, -4, 0],
     rotation: [0, 2, 0],
   },
 ] as const;
