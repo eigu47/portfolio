@@ -2,8 +2,8 @@ import { useState } from "react";
 
 import { useControls } from "leva";
 
-import { PAGES } from "~/utils/store";
-import useScrollPos from "~/utils/useScrollPos";
+import useScrollPos from "~/hooks/useScrollPos";
+import { PAGES } from "~/utils/config";
 
 export default function Navbar() {
   const { debugOn } = useControls({ debugOn: false });

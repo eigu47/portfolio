@@ -20,8 +20,8 @@ import { useControls } from "leva";
 import { Perf } from "r3f-perf";
 import { Vector3 } from "three";
 
+import useViewport from "~/hooks/useViewport";
 import { useDebugStore } from "~/utils/debugStore";
-import useViewport from "~/utils/useViewport";
 
 const cameraPos = new Vector3();
 const cameraDir = new Vector3();
@@ -48,6 +48,10 @@ export default function Debug() {
   useEffect(() => {
     setCamera(camera);
   }, [setCamera, camera]);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("snap-none", debugOn);
+  }, [debugOn]);
 
   if (!debugOn) {
     camera.position.set(0, 0, 5);

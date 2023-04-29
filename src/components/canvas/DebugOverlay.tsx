@@ -2,11 +2,11 @@ import { useState } from "react";
 
 import { Vector3 } from "three";
 
+import useMousePos from "~/hooks/useMousePos";
+import useScrollPos from "~/hooks/useScrollPos";
+import { PAGES } from "~/utils/config";
 import { useDebugStore } from "~/utils/debugStore";
-import { PAGES } from "~/utils/store";
 import { type ValidIndex } from "~/utils/types";
-import useMousePos from "~/utils/useMousePos";
-import useScrollPos from "~/utils/useScrollPos";
 
 export default function DebugOverlay() {
   return (

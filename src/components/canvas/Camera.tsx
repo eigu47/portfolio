@@ -1,17 +1,17 @@
 import { useRef } from "react";
 
-const position = new Vector3();
-const rotation = new Vector3();
-const rotationLerp = new Vector3();
-const lookAt = new Vector3();
-
 import { PerspectiveCamera } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useControls } from "leva";
 import { Vector3 } from "three";
 
 import { usePage } from "~/components/canvas/Page";
-import useScrollPos from "~/utils/useScrollPos";
+import useScrollPos from "~/hooks/useScrollPos";
+
+const position = new Vector3();
+const rotation = new Vector3();
+const rotationLerp = new Vector3();
+const lookAt = new Vector3();
 
 export default function Camera() {
   const { debugOn, orbitControls } = useControls({
@@ -46,7 +46,7 @@ export default function Camera() {
         <PerspectiveCamera makeDefault fov={60} position={[0, 0, 5]} />
       </group>
       <ambientLight intensity={0.2} />
-      <directionalLight position={[10, 15, 10]} intensity={0.5} />
+      <directionalLight castShadow position={[10, 15, 10]} intensity={0.5} />
     </>
   );
 }

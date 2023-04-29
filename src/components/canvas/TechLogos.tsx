@@ -13,8 +13,8 @@ import {
   typescript,
 } from "~/assets/logos";
 import { useDebug } from "~/components/canvas/Debug";
-import { COLORS } from "~/utils/store";
-import useViewport from "~/utils/useViewport";
+import useViewport from "~/hooks/useViewport";
+import { COLORS } from "~/utils/config";
 
 export default function TechLogos() {
   const { mobile, width, height } = useViewport();
@@ -53,6 +53,8 @@ function Ball({
     <group {...props} {...debug}>
       <Float speed={4}>
         <mesh
+          castShadow
+          receiveShadow
           onPointerEnter={() => !mobile && setModal(true)}
           onPointerLeave={() => !mobile && setModal(false)}
           onPointerDown={() => setModal(true)}

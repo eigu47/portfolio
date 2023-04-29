@@ -2,8 +2,8 @@ import { Text } from "@react-three/drei";
 
 import { calibre400 } from "~/assets/fonts";
 import { useDebug } from "~/components/canvas/Debug";
-import { COLORS } from "~/utils/store";
-import useViewport from "~/utils/useViewport";
+import useViewport from "~/hooks/useViewport";
+import { COLORS } from "~/utils/config";
 
 export default function About() {
   const { width, height, mobile } = useViewport();

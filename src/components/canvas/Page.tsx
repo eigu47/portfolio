@@ -2,9 +2,9 @@ import { useMemo } from "react";
 
 import { Vector3 } from "three";
 
-import { PAGES } from "~/utils/store";
+import useViewport from "~/hooks/useViewport";
+import { PAGES } from "~/utils/config";
 import { type ValidIndex } from "~/utils/types";
-import useViewport from "~/utils/useViewport";
 
 export default function Page({
   children,

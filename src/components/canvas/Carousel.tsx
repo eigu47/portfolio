@@ -14,9 +14,9 @@ import {
   keyboardSniper,
 } from "~/assets/images";
 import { useDebug } from "~/components/canvas/Debug";
-import { COLORS } from "~/utils/store";
-import usePreventScroll from "~/utils/usePreventScroll";
-import useViewport from "~/utils/useViewport";
+import usePreventScroll from "~/hooks/usePreventScroll";
+import useViewport from "~/hooks/useViewport";
+import { COLORS } from "~/utils/config";
 
 const rotation = new Vector3();
 const lerpFrom = new Vector3();

@@ -11,9 +11,9 @@ import { Vector3 } from "three";
 import { type GLTF } from "three-stdlib";
 
 import { useDebug } from "~/components/canvas/Debug";
-import { PAGES } from "~/utils/store";
-import useScrollPos from "~/utils/useScrollPos";
-import useViewport from "~/utils/useViewport";
+import useScrollPos from "~/hooks/useScrollPos";
+import useViewport from "~/hooks/useViewport";
+import { PAGES } from "~/utils/config";
 
 const CONTACT_PAGE = PAGES.findIndex(({ id }) => id === "contact");
 const rotation = new Vector3();
@@ -23,15 +23,14 @@ const closedRot = new Vector3(Math.PI * 0.56, 0, 0);
 export default function Model(props: JSX.IntrinsicElements["group"]) {
   const { nodes, materials } = useGLTF("/laptop.glb") as GLTFResult;
   const { height, mobile } = useViewport();
-  const { scrollPage } = useScrollPos();
+  const { scrollPos } = useScrollPos();
   const monitorRef = useRef<THREE.Group>(null);
+
+  const isOpen = scrollPos > CONTACT_PAGE - 0.25;
 
   useFrame((_, delta) => {
     monitorRef.current?.rotation.setFromVector3(
-      rotation.lerp(
-        scrollPage === CONTACT_PAGE ? openRot : closedRot,
-        delta * 4
-      )
+      rotation.lerp(isOpen ? openRot : closedRot, delta * 4)
     );
   });
 
@@ -41,9 +40,10 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
     <group
       {...props}
       scale={mobile ? 0.15 : 0.2}
-      position={[0, -height * 0.15, 0]}
+      position={[0, -height * 0.2, 0]}
       rotation={[0.3, 0, 0]}
       dispose={null}
+      {...debug}
     >
       <mesh
         castShadow
@@ -63,11 +63,16 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
         rotation={closedRot.toArray()}
         {...debug}
       >
-        <Plane
+        <group
           position={[0, 4.92, -1.08]}
           rotation={[-0.18, 0, 0]}
           scale={[12.56, 8.41, 1]}
-        />
+        >
+          <Plane>
+            <meshBasicMaterial color={[0.6, 0.6, 5]} toneMapped={false} />
+          </Plane>
+        </group>
+
         <mesh
           castShadow
           receiveShadow

@@ -5,7 +5,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useGesture } from "@use-gesture/react";
 import { Quaternion, Vector3 } from "three";
 
-import usePreventScroll from "~/utils/usePreventScroll";
+import usePreventScroll from "~/hooks/usePreventScroll";
 
 const dragPos = new Vector3();
 const cameraPos = new Vector3();

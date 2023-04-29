@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { type PAGES } from "~/utils/store";
+import { type PAGES } from "~/utils/config";
 import { type ValidIndex } from "~/utils/types";
 
 export default function useScrollPos() {

@@ -9,8 +9,8 @@ import { Vector3 } from "three";
 import type { GLTF } from "three-stdlib";
 
 import { useDebug } from "~/components/canvas/Debug";
-import useMousePos from "~/utils/useMousePos";
-import useViewport from "~/utils/useViewport";
+import useMousePos from "~/hooks/useMousePos";
+import useViewport from "~/hooks/useViewport";
 
 const lookTo = new Vector3();
 const lerpTo = new Vector3();
@@ -48,6 +48,8 @@ export default function Keyboard(props: JSX.IntrinsicElements["group"]) {
         {...debug}
       >
         <mesh
+          castShadow
+          receiveShadow
           geometry={nodes.Case.geometry}
           material={materials["Black rubber"]}
         />
@@ -57,6 +59,7 @@ export default function Keyboard(props: JSX.IntrinsicElements["group"]) {
             material={materials["Black rubber"]}
           /> */}
         <mesh
+          castShadow
           geometry={nodes.Keycaps.geometry}
           material={materials["Keycap material"]}
           material-color="#cbd5e1"

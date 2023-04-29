@@ -24,7 +24,7 @@ export default function Scene() {
 
   return (
     <>
-      <Canvas className="!fixed top-0 !h-screen">
+      <Canvas shadows className="!fixed top-0 !h-screen">
         <Camera />
 
         <Suspense fallback={null}>
@@ -51,7 +51,7 @@ export default function Scene() {
 
           {tier > 2 && (
             <EffectComposer>
-              <Bloom mipmapBlur intensity={0.2} radius={0.2} />
+              <Bloom mipmapBlur intensity={0.3} radius={0.2} />
             </EffectComposer>
           )}
         </Suspense>

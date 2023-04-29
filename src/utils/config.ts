@@ -30,7 +30,7 @@ export const PAGES = [
   },
   {
     id: "resume",
-    position: [0, -4, 0],
-    rotation: [0, 2, 0],
+    position: [0, -3.5, 3.75],
+    rotation: [0, 1, 0],
   },
 ] as const;

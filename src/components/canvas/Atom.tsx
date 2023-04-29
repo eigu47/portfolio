@@ -7,7 +7,7 @@ import { Color, EllipseCurve } from "three";
 
 import { useDebug } from "~/components/canvas/Debug";
 import Dragabble from "~/components/canvas/Dragabble";
-import useViewport from "~/utils/useViewport";
+import useViewport from "~/hooks/useViewport";
 
 const bloomCyan = new Color(0.1, 1.2, 1.2);
 const normalCyan = new Color("cyan");
