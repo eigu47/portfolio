@@ -5,12 +5,14 @@ Laptop by Poly by Google [CC-BY] (https://creativecommons.org/licenses/by/3.0/) 
 
 import { useRef } from "react";
 
-import { Plane, useGLTF } from "@react-three/drei";
+import { Box, Plane, useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
+import { useControls } from "leva";
 import { Vector3 } from "three";
 import { type GLTF } from "three-stdlib";
 
 import { useDebug } from "~/components/canvas/Debug";
+import Rotable from "~/components/canvas/Rotable";
 import useScrollPos from "~/hooks/useScrollPos";
 import useViewport from "~/hooks/useViewport";
 import { PAGES } from "~/utils/config";
@@ -25,6 +27,9 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
   const { height, mobile } = useViewport();
   const { scrollPos } = useScrollPos();
   const monitorRef = useRef<THREE.Group>(null);
+  const { debugOn } = useControls({ debugOn: false });
+
+  const debug = useDebug();
 
   const isOpen = scrollPos > CONTACT_PAGE - 0.25;
 
@@ -34,10 +39,8 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
     );
   });
 
-  const debug = useDebug();
-
   return (
-    <group
+    <Rotable
       {...props}
       scale={mobile ? 0.15 : 0.2}
       position={[0, -height * 0.2, 0]}
@@ -45,6 +48,12 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
       dispose={null}
       {...debug}
     >
+      <Box
+        args={[13.5, 10, 12]}
+        position={[0, height * 0.85, -1]}
+        visible={debugOn}
+        material-wireframe={true}
+      />
       <mesh
         castShadow
         receiveShadow
@@ -61,7 +70,6 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
         position={[0, 0.19, -4.85]}
         ref={monitorRef}
         rotation={closedRot.toArray()}
-        {...debug}
       >
         <group
           position={[0, 4.92, -1.08]}
@@ -80,7 +88,7 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
           material={materials["1A1A1A"]}
         />
       </group>
-    </group>
+    </Rotable>
   );
 }
 

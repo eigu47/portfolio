@@ -6,7 +6,7 @@ import { useControls } from "leva";
 import { Color, EllipseCurve } from "three";
 
 import { useDebug } from "~/components/canvas/Debug";
-import Dragabble from "~/components/canvas/Dragabble";
+import Draggable from "~/components/canvas/Draggable";
 import useViewport from "~/hooks/useViewport";
 
 const bloomCyan = new Color(0.1, 1.2, 1.2);
@@ -35,7 +35,7 @@ export default function Atom({
       {...props}
       {...debug}
     >
-      <Dragabble
+      <Draggable
         hoverColor={
           tier > 2
             ? [basicRef, normalNucleous, bloonNucleous]
@@ -92,7 +92,7 @@ export default function Atom({
             material-wireframe={true}
           />
         </Float>
-      </Dragabble>
+      </Draggable>
     </group>
   );
 }

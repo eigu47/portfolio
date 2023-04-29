@@ -1,10 +1,9 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import { Box, Image, Text, useCursor } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
 import { useGesture } from "@use-gesture/react";
 import { useControls } from "leva";
-import { DoubleSide, FrontSide, Vector3 } from "three";
+import { DoubleSide, FrontSide } from "three";
 
 import { calibre400 } from "~/assets/fonts";
 import {
@@ -14,27 +13,17 @@ import {
   keyboardSniper,
 } from "~/assets/images";
 import { useDebug } from "~/components/canvas/Debug";
-import usePreventScroll from "~/hooks/usePreventScroll";
+import Rotable from "~/components/canvas/Rotable";
 import useViewport from "~/hooks/useViewport";
 import { COLORS } from "~/utils/config";
 
-const rotation = new Vector3();
-const lerpFrom = new Vector3();
-
 export default function Carousel(props: JSX.IntrinsicElements["group"]) {
-  const {
-    width,
-    height,
-    mobile,
-    size: { width: sizeWidth },
-  } = useViewport();
-  const carouselRef = useRef<THREE.Group>(null);
-  const preventScroll = usePreventScroll();
-  const [hover, setHover] = useState(false);
+  const { width, height, mobile } = useViewport();
+  const [textHover, setHover] = useState(false);
   const [drag, setDrag] = useState(false);
-  useCursor(hover, "grab");
-  useCursor(drag, "grabbing", hover ? "grab" : "auto");
   const debug = useDebug();
+
+  useCursor(!drag && textHover);
 
   const size = mobile ? width * 0.3 : width * 0.15;
 
@@ -42,26 +31,9 @@ export default function Carousel(props: JSX.IntrinsicElements["group"]) {
     onPointerEnter: ({ event }) =>
       // @ts-expect-error - object is not typed
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      event.object.name !== "text" && setHover(true),
+      event.object.name === "text" && setHover(true),
     onPointerLeave: () => setHover(false),
-    onDrag: ({ offset: [x], down }) => {
-      setDrag(down);
-      preventScroll.current = down;
-
-      rotation.set(
-        0,
-        mobile
-          ? Math.PI * (x / sizeWidth) * 1.5
-          : Math.PI * (x / sizeWidth) * 2,
-        0
-      );
-    },
-  });
-
-  useFrame((_, delta) => {
-    carouselRef.current?.rotation.setFromVector3(
-      lerpFrom.lerp(rotation, delta * 8)
-    );
+    onDrag: ({ down }) => setDrag(down),
   });
 
   return (
@@ -75,21 +47,18 @@ export default function Carousel(props: JSX.IntrinsicElements["group"]) {
         Personal projects
       </Text>
 
-      <group
-        ref={carouselRef}
-        {...(bind() as JSX.IntrinsicElements["group"])}
-        {...debug}
-      >
-        {PROJECTS.map((project, i) => (
-          <Project
-            key={i}
-            project={project}
-            rotation={[0, ((Math.PI * 2) / PROJECTS.length) * i, 0]}
-            size={size}
-            drag={drag}
-          />
-        ))}
-      </group>
+      <Rotable>
+        <group {...(bind() as JSX.IntrinsicElements["group"])} {...debug}>
+          {PROJECTS.map((project, i) => (
+            <Project
+              key={i}
+              project={project}
+              rotation={[0, ((Math.PI * 2) / PROJECTS.length) * i, 0]}
+              size={size}
+            />
+          ))}
+        </group>
+      </Rotable>
     </group>
   );
 }
@@ -99,17 +68,14 @@ const ASPECT_RATIO = 1.4;
 function Project({
   project: { name, url, image },
   size,
-  drag,
   ...props
 }: {
   project: (typeof PROJECTS)[number];
   size: number;
-  drag: boolean;
 } & JSX.IntrinsicElements["group"]) {
   const { height } = useViewport();
   const [hover, setHover] = useState(false);
   const { debugOn } = useControls({ debugOn: false });
-  useCursor(!drag && hover);
 
   return (
     <group {...props}>

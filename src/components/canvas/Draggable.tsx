@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 import { useCursor } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
@@ -7,12 +7,7 @@ import { Quaternion, Vector3 } from "three";
 
 import usePreventScroll from "~/hooks/usePreventScroll";
 
-const dragPos = new Vector3();
-const cameraPos = new Vector3();
-const parentPos = new Vector3();
-const parentQuat = new Quaternion();
-
-export default function Dragabble({
+export default function Draggable({
   children,
   speed = 10,
   far = 5,
@@ -38,6 +33,11 @@ export default function Dragabble({
   const preventScroll = usePreventScroll();
   useCursor(hover, "grab");
   useCursor(drag, "grabbing", hover ? "grab" : "auto");
+
+  const dragPos = useMemo(() => new Vector3(), []);
+  const cameraPos = useMemo(() => new Vector3(), []);
+  const parentPos = useMemo(() => new Vector3(), []);
+  const parentQuat = useMemo(() => new Quaternion(), []);
 
   groupRef.current?.parent?.getWorldPosition(parentPos).negate();
   groupRef.current?.parent?.getWorldQuaternion(parentQuat).invert();
