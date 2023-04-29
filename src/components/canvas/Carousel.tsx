@@ -1,6 +1,12 @@
 import { useState } from "react";
 
-import { Box, Image, Text, useCursor } from "@react-three/drei";
+import {
+  Box,
+  Image,
+  PresentationControls,
+  Text,
+  useCursor,
+} from "@react-three/drei";
 import { useGesture } from "@use-gesture/react";
 import { useControls } from "leva";
 import { DoubleSide, FrontSide } from "three";
@@ -13,17 +19,21 @@ import {
   keyboardSniper,
 } from "~/assets/images";
 import { useDebug } from "~/components/canvas/Debug";
-import Rotable from "~/components/canvas/Rotable";
+import usePreventScroll from "~/hooks/usePreventScroll";
 import useViewport from "~/hooks/useViewport";
 import { COLORS } from "~/utils/config";
 
 export default function Carousel(props: JSX.IntrinsicElements["group"]) {
   const { width, height, mobile } = useViewport();
-  const [textHover, setHover] = useState(false);
+  const [hover, setHover] = useState(false);
+  const [textHover, setTextHover] = useState(false);
   const [drag, setDrag] = useState(false);
+  const prevent = usePreventScroll();
   const debug = useDebug();
 
-  useCursor(!drag && textHover);
+  useCursor(textHover);
+  useCursor(hover, "grab");
+  useCursor(drag, "grabbing", hover ? "grab" : "auto");
 
   const size = mobile ? width * 0.3 : width * 0.15;
 
@@ -31,9 +41,15 @@ export default function Carousel(props: JSX.IntrinsicElements["group"]) {
     onPointerEnter: ({ event }) =>
       // @ts-expect-error - object is not typed
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      event.object.name === "text" && setHover(true),
-    onPointerLeave: () => setHover(false),
-    onDrag: ({ down }) => setDrag(down),
+      event.object.name === "text" ? setTextHover(true) : setHover(true),
+    onPointerLeave: () => {
+      setHover(false);
+      setTextHover(false);
+    },
+    onDrag: ({ down }) => {
+      prevent.current = down;
+      setDrag(down);
+    },
   });
 
   return (
@@ -47,7 +63,7 @@ export default function Carousel(props: JSX.IntrinsicElements["group"]) {
         Personal projects
       </Text>
 
-      <Rotable>
+      <PresentationControls cursor={false} polar={[0, 0]} speed={1.5}>
         <group {...(bind() as JSX.IntrinsicElements["group"])} {...debug}>
           {PROJECTS.map((project, i) => (
             <Project
@@ -58,7 +74,7 @@ export default function Carousel(props: JSX.IntrinsicElements["group"]) {
             />
           ))}
         </group>
-      </Rotable>
+      </PresentationControls>
     </group>
   );
 }
@@ -73,7 +89,7 @@ function Project({
   project: (typeof PROJECTS)[number];
   size: number;
 } & JSX.IntrinsicElements["group"]) {
-  const { height } = useViewport();
+  const { height, mobile } = useViewport();
   const [hover, setHover] = useState(false);
   const { debugOn } = useControls({ debugOn: false });
 
@@ -89,6 +105,7 @@ function Project({
 
         <Box
           args={[size * ASPECT_RATIO, size, size * 0.5]}
+          position={mobile ? [0, 0, -size * 0.25] : [0, 0, 0]}
           visible={debugOn}
           material-wireframe={true}
         />

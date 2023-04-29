@@ -5,14 +5,14 @@ Laptop by Poly by Google [CC-BY] (https://creativecommons.org/licenses/by/3.0/) 
 
 import { useRef } from "react";
 
-import { Box, Plane, useGLTF } from "@react-three/drei";
+import { Box, Plane, PresentationControls, useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useControls } from "leva";
 import { Vector3 } from "three";
 import { type GLTF } from "three-stdlib";
 
 import { useDebug } from "~/components/canvas/Debug";
-import Rotable from "~/components/canvas/Rotable";
+import useCursorGrab from "~/hooks/useCursorGrab";
 import useScrollPos from "~/hooks/useScrollPos";
 import useViewport from "~/hooks/useViewport";
 import { PAGES } from "~/utils/config";
@@ -27,8 +27,8 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
   const { height, mobile } = useViewport();
   const { scrollPos } = useScrollPos();
   const monitorRef = useRef<THREE.Group>(null);
+  const grab = useCursorGrab();
   const { debugOn } = useControls({ debugOn: false });
-
   const debug = useDebug();
 
   const isOpen = scrollPos > CONTACT_PAGE - 0.25;
@@ -40,55 +40,62 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
   });
 
   return (
-    <Rotable
-      {...props}
-      scale={mobile ? 0.15 : 0.2}
-      position={[0, -height * 0.2, 0]}
-      rotation={[0.3, 0, 0]}
-      dispose={null}
-      {...debug}
+    <PresentationControls
+      cursor={false}
+      polar={[-Math.PI * 0.2, Math.PI * 0.2]}
+      snap
     >
-      <Box
-        args={[13.5, 10, 12]}
-        position={[0, height * 0.85, -1]}
-        visible={debugOn}
-        material-wireframe={true}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes["Laptop_01_Cube025-Mesh"].geometry}
-        material={materials["1A1A1A"]}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes["Laptop_01_Cube025-Mesh_1"].geometry}
-        material={materials["455A64"]}
-      />
       <group
-        position={[0, 0.19, -4.85]}
-        ref={monitorRef}
-        rotation={closedRot.toArray()}
+        scale={mobile ? 0.15 : 0.2}
+        position={[0, -height * 0.2, 0]}
+        rotation={[0.3, 0, 0]}
+        dispose={null}
+        {...grab}
+        {...props}
+        {...debug}
       >
-        <group
-          position={[0, 4.92, -1.08]}
-          rotation={[-0.18, 0, 0]}
-          scale={[12.56, 8.41, 1]}
-        >
-          <Plane>
-            <meshBasicMaterial color={[0.6, 0.6, 5]} toneMapped={false} />
-          </Plane>
-        </group>
-
+        <Box
+          args={[13.5, 10, 12]}
+          position={[0, height * 0.85, -1]}
+          visible={debugOn}
+          material-wireframe={true}
+        />
         <mesh
           castShadow
           receiveShadow
-          geometry={nodes["Laptop_01_Cube025-Mesh001"].geometry}
+          geometry={nodes["Laptop_01_Cube025-Mesh"].geometry}
           material={materials["1A1A1A"]}
         />
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={nodes["Laptop_01_Cube025-Mesh_1"].geometry}
+          material={materials["455A64"]}
+        />
+        <group
+          position={[0, 0.19, -4.85]}
+          ref={monitorRef}
+          rotation={closedRot.toArray()}
+        >
+          <group
+            position={[0, 4.92, -1.08]}
+            rotation={[-0.18, 0, 0]}
+            scale={[12.56, 8.41, 1]}
+          >
+            <Plane>
+              <meshBasicMaterial color={[0.6, 0.6, 5]} toneMapped={false} />
+            </Plane>
+          </group>
+
+          <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes["Laptop_01_Cube025-Mesh001"].geometry}
+            material={materials["1A1A1A"]}
+          />
+        </group>
       </group>
-    </Rotable>
+    </PresentationControls>
   );
 }
 

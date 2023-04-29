@@ -5,7 +5,6 @@ import { useFrame } from "@react-three/fiber";
 import { useControls } from "leva";
 import { Color, EllipseCurve } from "three";
 
-import { useDebug } from "~/components/canvas/Debug";
 import Draggable from "~/components/canvas/Draggable";
 import useViewport from "~/hooks/useViewport";
 
@@ -23,7 +22,6 @@ export default function Atom({
   const { debugOn } = useControls({ debugOn: false });
   const { width, height, mobile } = useViewport();
   const { tier } = useDetectGPU();
-  const debug = useDebug();
 
   const cyan = tier > 2 ? bloomCyan : normalCyan;
 
@@ -33,7 +31,6 @@ export default function Atom({
         mobile ? [0, height * 0.3, 0] : [-width * 0.35, height * 0.2, 0]
       }
       {...props}
-      {...debug}
     >
       <Draggable
         hoverColor={

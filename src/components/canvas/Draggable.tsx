@@ -46,8 +46,8 @@ export default function Draggable({
     onPointerEnter: () => setHover(true),
     onPointerLeave: () => setHover(false),
     onDrag: ({ xy: [x, y], down, offset: [offX, offY] }) => {
-      setDrag(down);
       preventScroll.current = down;
+      setDrag(down);
 
       camera.getWorldPosition(cameraPos);
       // fixes weird bug in mobile
