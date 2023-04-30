@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 import { Float, Line, Sphere, Trail, useDetectGPU } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
@@ -105,21 +105,25 @@ function Electron({
   scale?: number;
 } & JSX.IntrinsicElements["group"]) {
   const electronRef = useRef<THREE.Mesh>(null);
+  const [trailWidth, setTrailWidth] = useState(0);
 
   useFrame(({ clock }) => {
-    const t = clock.getElapsedTime() * speed;
+    const elapsed = clock.getElapsedTime();
+    const t = elapsed * speed;
 
     electronRef.current?.position.set(
       Math.sin(t) * radius,
       (Math.cos(t) * radius * Math.atan(t)) / Math.PI / 1.25,
       0
     );
+    // fixes weird flicker at start
+    !trailWidth && elapsed > 1 && setTrailWidth(5 * scale);
   });
 
   return (
     <group {...props}>
       <Trail
-        width={5 * scale}
+        width={trailWidth}
         length={8 * scale}
         color={new Color(2, 1, 10)}
         attenuation={(t) => t * t}

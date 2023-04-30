@@ -35,8 +35,6 @@ export default function Carousel(props: JSX.IntrinsicElements["group"]) {
   useCursor(hover, "grab");
   useCursor(drag, "grabbing", hover ? "grab" : "auto");
 
-  const size = mobile ? width * 0.3 : width * 0.15;
-
   const bind = useGesture({
     onPointerEnter: ({ event }) =>
       // @ts-expect-error - object is not typed
@@ -52,6 +50,8 @@ export default function Carousel(props: JSX.IntrinsicElements["group"]) {
     },
   });
 
+  const size = mobile ? width * 0.3 : 1.5;
+
   return (
     <group {...props}>
       <Text
@@ -63,7 +63,11 @@ export default function Carousel(props: JSX.IntrinsicElements["group"]) {
         Personal projects
       </Text>
 
-      <PresentationControls cursor={false} polar={[0, 0]} speed={1.5}>
+      <PresentationControls
+        cursor={false}
+        polar={[0, 0]}
+        speed={mobile ? 1.5 : 2}
+      >
         <group {...(bind() as JSX.IntrinsicElements["group"])} {...debug}>
           {PROJECTS.map((project, i) => (
             <Project

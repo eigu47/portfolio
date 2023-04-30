@@ -16,7 +16,7 @@ export const useDebugStore = create<{
   transformMode: (typeof TRANSFORM_MODES)[number];
   camera: THREE.Camera | null;
 
-  setSelectedObject: (object: THREE.Object3D<THREE.Event>) => void;
+  setSelectedObject: (object: THREE.Object3D<THREE.Event> | null) => void;
   setTransformActive: (active: boolean) => void;
   cycleTransformMode: () => void;
   setCamera: (camera: THREE.Camera) => void;

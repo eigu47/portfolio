@@ -55,7 +55,7 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
         {...debug}
       >
         <Box
-          args={[13.5, 10, 12]}
+          args={mobile && !debugOn ? [0, 0, 0] : [13.5, 10, 12]}
           position={[0, height * 0.85, -1]}
           visible={debugOn}
           material-wireframe={true}
@@ -99,8 +99,6 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
   );
 }
 
-useGLTF.preload("/laptop.glb");
-
 type GLTFResult = GLTF & {
   nodes: {
     ["Laptop_01_Cube025-Mesh"]: THREE.Mesh;
@@ -118,3 +116,5 @@ type GLTFResult = GLTF & {
     FF9800: THREE.MeshStandardMaterial;
   };
 };
+
+useGLTF.preload("/laptop.glb");

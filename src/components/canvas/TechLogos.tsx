@@ -33,6 +33,7 @@ export default function TechLogos() {
               : [gap * i, i % 2 ? -gap * 0.5 : 0, 0]
           }
           scale={mobile ? 0.2 : 0.3}
+          last={i === LOGOS.length - 1}
         />
       ))}
     </Center>
@@ -41,8 +42,12 @@ export default function TechLogos() {
 
 function Ball({
   ball: { name, src, scale },
+  last,
   ...props
-}: { ball: (typeof LOGOS)[number] } & JSX.IntrinsicElements["group"]) {
+}: {
+  ball: (typeof LOGOS)[number];
+  last: boolean;
+} & JSX.IntrinsicElements["group"]) {
   const { debugOn } = useControls({ debugOn: false });
   const texture = useTexture(src);
   const debug = useDebug();
@@ -74,7 +79,7 @@ function Ball({
       </Float>
 
       {showModal && (
-        <Html position={[0.5, -0.5, 0]}>
+        <Html position={mobile && last ? [-0.5, -0.5, 0] : [0.5, -0.5, 0]}>
           <div className="rounded border border-cyan-800 bg-cyan-950 p-2">
             <p>{name}</p>
           </div>

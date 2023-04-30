@@ -69,8 +69,6 @@ export default function Keyboard(props: JSX.IntrinsicElements["group"]) {
   );
 }
 
-useGLTF.preload("/keyboard.gltf");
-
 type GLTFResult = GLTF & {
   nodes: {
     Keyboard_cable: THREE.Mesh;
@@ -82,3 +80,5 @@ type GLTFResult = GLTF & {
     ["Keycap material"]: THREE.MeshStandardMaterial;
   };
 };
+
+useGLTF.preload("/keyboard.gltf");
