@@ -1,8 +1,9 @@
+import { Suspense } from "react";
+
 import { Preload, useDetectGPU } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { Leva } from "leva";
-import { Suspense } from "react";
 
 import About from "~/components/canvas/About";
 import Atom from "~/components/canvas/Atom";
@@ -26,7 +27,7 @@ export default function Scene() {
       <Canvas shadows className="!fixed top-0 !h-screen">
         <Camera />
 
-        <Suspense fallback={<Hero />}>
+        <Suspense fallback={null}>
           <Page page={0}>
             <Hero />
             <Keyboard />

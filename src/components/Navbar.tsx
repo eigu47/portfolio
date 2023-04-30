@@ -41,6 +41,7 @@ export default function Navbar() {
 
       <button
         className="fixed right-2 top-0 z-10 p-3 sm:hidden"
+        aria-label={showMenu ? "Close menu" : "Open menu"}
         onClick={() => setShowMenu((state) => !state)}
       >
         <HamburgerIcon
