@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, useRef } from "react";
 
 import { Preload, useDetectGPU } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
@@ -7,6 +7,7 @@ import { Leva } from "leva";
 
 import About from "~/components/canvas/About";
 import Atom from "~/components/canvas/Atom";
+import Cable from "~/components/canvas/Cable";
 import Camera from "~/components/canvas/Camera";
 import Carousel from "~/components/canvas/Carousel";
 import Debug from "~/components/canvas/Debug";
@@ -20,6 +21,7 @@ const isDebug =
   new URLSearchParams(window.location.search).get("debug") != null;
 
 export default function Scene() {
+  const cableRef = useRef<THREE.Mesh>(null);
   const { tier } = useDetectGPU();
 
   return (
@@ -30,7 +32,8 @@ export default function Scene() {
         <Suspense fallback={null}>
           <Page page={0}>
             <Hero />
-            <Keyboard />
+            <Keyboard cableRef={cableRef} />
+            <Cable cableRef={cableRef} />
           </Page>
 
           <Page page={1}>

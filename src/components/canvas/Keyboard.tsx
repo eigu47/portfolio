@@ -15,7 +15,12 @@ import useViewport from "~/hooks/useViewport";
 const lookTo = new Vector3();
 const lerpTo = new Vector3();
 
-export default function Keyboard(props: JSX.IntrinsicElements["group"]) {
+export default function Keyboard({
+  cableRef,
+  ...props
+}: {
+  cableRef: React.RefObject<THREE.Mesh>;
+} & JSX.IntrinsicElements["group"]) {
   const { nodes, materials } = useGLTF("/keyboard.gltf") as GLTFResult;
   const keyboardRef = useRef<THREE.Group>(null);
   const { width, height, mobile } = useViewport();
@@ -44,6 +49,7 @@ export default function Keyboard(props: JSX.IntrinsicElements["group"]) {
         rotation={
           mobile ? [Math.PI * 0.15, 0, 0] : [Math.PI * 0.15, -Math.PI * 0.1, 0]
         }
+        name="keyboard"
         {...props}
         {...debug}
       >
@@ -53,11 +59,12 @@ export default function Keyboard(props: JSX.IntrinsicElements["group"]) {
           geometry={nodes.Case.geometry}
           material={materials["Black rubber"]}
         />
-        {/* <mesh
-            position={[0.7, 0.25, 0.55]}
-            geometry={nodes.Keyboard_cable.geometry}
-            material={materials["Black rubber"]}
-          /> */}
+        <mesh
+          position={[0.7, 0.25, 0.55]}
+          // geometry={nodes.Keyboard_cable.geometry}
+          // material={materials["Black rubber"]}
+          ref={cableRef}
+        />
         <mesh
           castShadow
           geometry={nodes.Keycaps.geometry}
