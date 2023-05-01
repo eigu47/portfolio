@@ -38,7 +38,7 @@ export default function Keyboard({
   });
 
   return (
-    <Float speed={mobile ? 3 : 1}>
+    <Float speed={3} rotationIntensity={0.5} floatIntensity={0.5}>
       <group
         ref={keyboardRef}
         dispose={null}
@@ -53,8 +53,6 @@ export default function Keyboard({
         {...debug}
       >
         <mesh
-          castShadow
-          receiveShadow
           geometry={nodes.Case.geometry}
           material={materials["Black rubber"]}
         />
@@ -65,7 +63,6 @@ export default function Keyboard({
           ref={cableRef}
         />
         <mesh
-          castShadow
           geometry={nodes.Keycaps.geometry}
           material={materials["Keycap material"]}
           material-color="#cbd5e1"

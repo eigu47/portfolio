@@ -1,41 +1,89 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
-import { Tube } from "@react-three/drei";
+import { Icosahedron, Tube } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { CatmullRomCurve3, MeshStandardMaterial, Vector3 } from "three";
+import { useControls } from "leva";
+import { CatmullRomCurve3, Vector3 } from "three";
 
 import { usePage } from "~/components/canvas/Page";
 import useViewport from "~/hooks/useViewport";
-
-const keyboardPos = new Vector3();
 
 export default function Cable({
   cableRef,
 }: {
   cableRef: React.RefObject<THREE.Mesh>;
 }) {
-  const { width, height } = useViewport();
+  const { width, height, mobile } = useViewport();
   const { position: page1 } = usePage(1);
   const { position: page2 } = usePage(2);
   const { position: page3 } = usePage(3);
+
+  const fixedPoints = ConvertToPoints(
+    mobile
+      ? [
+          [width * -0.26 - 0.05, height * 0.1 + 0.2, -0.05],
+          [width * -0.45, 0, -1.5],
+
+          [[width * -0.4, height * 0.5, -1.5], page1],
+
+          [[-0.5, height * 0.5, width * -0.5], page2],
+          [[-1, height * -0.5, width * -0.45], page2],
+
+          [[width * -0.5, height * -0.15, 1], page3],
+
+          [[-1.05, -0.5, 0.5], page3],
+          [[-1, -0.5, 0.5], page3],
+        ]
+      : [
+          [width * -0.35 + 2.6, height * 0.05 + 0.23, -0.05],
+          [width * -0.23, -0.2, -1],
+          // over web dev
+          [width * -0.55 + 1.2, height * -0.1 + 0.15, -1.9],
+          [width * -0.55 + 0.9, height * -0.1 + 0.15, -2.1],
+
+          [[width * -0.2, height * 0.5, -0.5], page1],
+
+          [[width * -0, height * 0.5, width * -0.15 - 1], page2],
+          [[width * -0.2, height * -0.15, -0.5], page3],
+          [[-1.45, -0.95, 0.5], page3],
+          [[-1.35, -0.95, 0.5], page3],
+        ]
+  );
+
+  return (
+    <>
+      <LooseCable cableRef={cableRef} />
+      <CableSection points={fixedPoints} segments={256} />
+    </>
+  );
+}
+
+const keyboardPos = new Vector3();
+
+function LooseCable({ cableRef }: { cableRef: React.RefObject<THREE.Mesh> }) {
+  const { width, height, mobile } = useViewport();
   const [startPoint, setStartPoint] = useState<THREE.Vector3Tuple>([0, 0, 0]);
 
-  const material = useMemo(() => {
-    return new MeshStandardMaterial({
-      color: "#020617",
-      flatShading: true,
-    });
-  }, []);
-
-  const cableMid = useMemo(() => {
-    return [
-      new Vector3(-width * 0.3, -height * 0.6, -1),
-      new Vector3(-width * 0.25, -height * 0.8, -1),
-      page1.clone().add(new Vector3(-width * 0.3, 0, 1)),
-      page2,
-      page3.clone().add(new Vector3(-width * 0.3, height * 0.4, 1)),
-    ];
-  }, [page1, page2, page3, width, height]);
+  const points = ConvertToPoints(
+    mobile
+      ? [
+          startPoint,
+          [[width * -0, height * 0.08, -0.2], startPoint],
+          [[width * -0.3, height * 0.12, 0.3], startPoint],
+          // over "eiguchi"
+          [width * -0.26, height * 0.1 + 0.2, 0.05],
+          [width * -0.26 - 0.05, height * 0.1 + 0.2, -0.05],
+        ]
+      : [
+          startPoint,
+          [[width * 0.02, height * 0.05, -0.5], startPoint],
+          [[width * -0, height * 0.12, -0.5], startPoint],
+          [[width * -0.25, height * 0.13, 0.3], startPoint],
+          // over "pablo"
+          [width * -0.35 + 2.7, height * 0.05 + 0.23, 0.05],
+          [width * -0.35 + 2.6, height * 0.05 + 0.23, -0.05],
+        ]
+  );
 
   useFrame(() => {
     if (!cableRef.current) return null;
@@ -43,53 +91,47 @@ export default function Cable({
     setStartPoint(cableRef.current.getWorldPosition(keyboardPos).toArray());
   });
 
+  return <CableSection points={points} />;
+}
+
+function CableSection({
+  points,
+  segments = 64,
+}: {
+  points: Vector3[];
+  segments?: number;
+}) {
+  const { debugOn } = useControls({ debugOn: false });
+
   return (
     <>
-      <CablePart
-        points={[
-          [0, 0.1, -1],
-          [-0.2, 0.2, -2],
-          [-0.4, 0.3, -2.5],
-          [-0.5, 0.2, -2.5],
-          [-0.6, 0.2, -2.5],
-          [-0.7, -0.2, -2.5],
-        ]}
-        attach={[new Vector3(...startPoint), cableMid[0] ?? new Vector3()]}
-        material={material}
+      <Tube
+        args={[new CatmullRomCurve3(points), segments, 0.025]}
+        material-color="#020617"
       />
-      <CablePart points={cableMid} material={material} />
+      {debugOn &&
+        points.map((p, i) => (
+          <Icosahedron
+            key={i}
+            args={[0.05, 0]}
+            position={p}
+            material-wireframe={true}
+          />
+        ))}
     </>
   );
 }
 
-function CablePart({
-  points,
-  material,
-  attach, // head and tail of the cable
-}: {
-  points: (THREE.Vector3 | THREE.Vector3Tuple)[];
-  material: THREE.MeshStandardMaterial;
-  attach?: [THREE.Vector3, THREE.Vector3];
-}) {
-  const { width, height } = useViewport();
-  // points dont change so memoize separately
-  const vectorPoints = useMemo(() => {
-    return points.map((p) => {
-      if (p instanceof Vector3) return p;
-      return new Vector3(width * p[0], height * p[1], p[2]);
-    });
-  }, [points, width, height]);
-  // this creates the least amount of vector3 instances
-  const curvePoints = useMemo(() => {
-    if (!attach) return vectorPoints;
-    return [
-      attach[0],
-      ...vectorPoints.map((p) => p.clone().add(attach[0])),
-      attach[1],
-    ];
-  }, [attach, vectorPoints]);
+type VectorLike = THREE.Vector3 | THREE.Vector3Tuple;
+type Point = VectorLike | [VectorLike, VectorLike];
 
-  const curve = new CatmullRomCurve3(curvePoints, false, "chordal", 0.5);
+function ToVector3(vector: VectorLike): THREE.Vector3 {
+  return vector instanceof Vector3 ? vector : new Vector3(...vector);
+}
 
-  return <Tube args={[curve, 64, 0.025, 8, false]} material={material} />;
+function ConvertToPoints(points: Point[]): Vector3[] {
+  return points.map((p) => {
+    if (p.length === 2) return ToVector3(p[0]).add(ToVector3(p[1]));
+    return ToVector3(p);
+  });
 }

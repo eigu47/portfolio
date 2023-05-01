@@ -1,6 +1,13 @@
 import { useRef, useState } from "react";
 
-import { Float, Line, Sphere, Trail, useDetectGPU } from "@react-three/drei";
+import {
+  Float,
+  Icosahedron,
+  Line,
+  Sphere,
+  Trail,
+  useDetectGPU,
+} from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useControls } from "leva";
 import { Color, EllipseCurve } from "three";
@@ -83,8 +90,8 @@ export default function Atom({
             )}
           </Sphere>
 
-          <Sphere
-            args={[2, 6, 6]}
+          <Icosahedron
+            args={[2, 0]}
             visible={debugOn}
             material-wireframe={true}
           />

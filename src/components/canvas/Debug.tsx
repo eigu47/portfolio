@@ -30,13 +30,10 @@ export default function Debug() {
   const camera = useThree((state) => state.camera);
   const { selectedObject, transformMode, setTransformActive, setCamera } =
     useDebugStore();
-  const [{ debugOn, orbitControls }, set] = useControls(() => ({
+  const [{ debugOn, orbitControls }] = useControls(() => ({
     debugOn: false,
-    orbitControls: { value: false, render: (get) => get("debugOn") as boolean },
-    cameraPos: {
-      value: camera.position.toArray(),
-      onEditEnd: (value: THREE.Vector3Tuple) => camera.position.set(...value),
-      step: 0.1,
+    orbitControls: {
+      value: false,
       render: (get) => get("debugOn") as boolean,
     },
   }));
@@ -67,7 +64,6 @@ export default function Debug() {
         enableZoom={orbitControls}
         enableRotate={orbitControls}
         enablePan={orbitControls}
-        onEnd={() => set({ cameraPos: camera.position.toArray() })}
         target={cameraPos}
       />
       <group position={cameraPos}>

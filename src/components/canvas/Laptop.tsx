@@ -5,7 +5,7 @@ Laptop by Poly by Google [CC-BY] (https://creativecommons.org/licenses/by/3.0/) 
 
 import { useRef } from "react";
 
-import { Box, Plane, PresentationControls, useGLTF } from "@react-three/drei";
+import { Box, Plane, useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useControls } from "leva";
 import { Vector3 } from "three";
@@ -40,62 +40,50 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
   });
 
   return (
-    <PresentationControls
-      cursor={false}
-      polar={[-Math.PI * 0.2, Math.PI * 0.2]}
-      snap
+    <group
+      scale={mobile ? 0.15 : 0.2}
+      position={mobile ? [0, -height * 0.12, 0] : [0, -height * 0.2, 0]}
+      rotation={[0.3, 0, 0]}
+      dispose={null}
+      {...grab}
+      {...props}
+      {...debug}
     >
+      <Box
+        args={mobile && !debugOn ? [0, 0, 0] : [13.5, 10, 12]}
+        position={[0, height * 0.85, -1]}
+        visible={debugOn}
+        material-wireframe={true}
+      />
+      <mesh
+        geometry={nodes["Laptop_01_Cube025-Mesh"].geometry}
+        material={materials["1A1A1A"]}
+      />
+      <mesh
+        geometry={nodes["Laptop_01_Cube025-Mesh_1"].geometry}
+        material={materials["455A64"]}
+      />
       <group
-        scale={mobile ? 0.15 : 0.2}
-        position={[0, -height * 0.2, 0]}
-        rotation={[0.3, 0, 0]}
-        dispose={null}
-        {...grab}
-        {...props}
-        {...debug}
+        position={[0, 0.19, -4.85]}
+        ref={monitorRef}
+        rotation={closedRot.toArray()}
       >
-        <Box
-          args={mobile && !debugOn ? [0, 0, 0] : [13.5, 10, 12]}
-          position={[0, height * 0.85, -1]}
-          visible={debugOn}
-          material-wireframe={true}
-        />
+        <group
+          position={[0, 4.92, -1.08]}
+          rotation={[-0.18, 0, 0]}
+          scale={[12.56, 8.41, 1]}
+        >
+          <Plane>
+            <meshBasicMaterial color={[0.6, 0.6, 5]} toneMapped={false} />
+          </Plane>
+        </group>
+
         <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes["Laptop_01_Cube025-Mesh"].geometry}
+          geometry={nodes["Laptop_01_Cube025-Mesh001"].geometry}
           material={materials["1A1A1A"]}
         />
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes["Laptop_01_Cube025-Mesh_1"].geometry}
-          material={materials["455A64"]}
-        />
-        <group
-          position={[0, 0.19, -4.85]}
-          ref={monitorRef}
-          rotation={closedRot.toArray()}
-        >
-          <group
-            position={[0, 4.92, -1.08]}
-            rotation={[-0.18, 0, 0]}
-            scale={[12.56, 8.41, 1]}
-          >
-            <Plane>
-              <meshBasicMaterial color={[0.6, 0.6, 5]} toneMapped={false} />
-            </Plane>
-          </group>
-
-          <mesh
-            castShadow
-            receiveShadow
-            geometry={nodes["Laptop_01_Cube025-Mesh001"].geometry}
-            material={materials["1A1A1A"]}
-          />
-        </group>
       </group>
-    </PresentationControls>
+    </group>
   );
 }
 

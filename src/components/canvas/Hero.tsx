@@ -40,7 +40,7 @@ export default function Hero() {
       </Text>
       <Text
         position={
-          mobile ? [0, -height * 0, -3] : [-width * 0.55, -height * 0.1, -3]
+          mobile ? [0, -height * 0, -3] : [-width * 0.55, -height * 0.1, -2]
         }
         anchorX={mobile ? "center" : "left"}
         scale={0.35}

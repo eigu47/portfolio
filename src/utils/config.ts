@@ -15,22 +15,22 @@ export const PAGES = [
   },
   {
     id: "about",
-    position: [0, -1.5, -3],
-    rotation: [-0.25, 0, 0],
+    position: [-0.35, -1.5, -3],
+    rotation: [-0.2, 0, 0],
   },
   {
     id: "projects",
-    position: [-0.2, -2.5, 0],
+    position: [-0.65, -3, -0.5],
     rotation: [0, 0.5, 0],
   },
   {
     id: "contact",
-    position: [0, -3.5, 0],
+    position: [-0.45, -4, -2],
     rotation: [0, 1, 0],
   },
   {
     id: "resume",
-    position: [0, -3.5, 3.75],
+    position: [-0.45, -3.95, 1],
     rotation: [0, 1, 0],
   },
 ] as const;

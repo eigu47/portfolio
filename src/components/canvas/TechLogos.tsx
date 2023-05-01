@@ -1,6 +1,13 @@
 import { useState } from "react";
 
-import { Center, Decal, Float, Html, useTexture } from "@react-three/drei";
+import {
+  Center,
+  Decal,
+  Float,
+  Html,
+  Icosahedron,
+  useTexture,
+} from "@react-three/drei";
 import { useControls } from "leva";
 
 import {
@@ -57,15 +64,13 @@ function Ball({
   return (
     <group {...props} {...debug}>
       <Float speed={4}>
-        <mesh
-          castShadow
-          receiveShadow
+        <Icosahedron
+          args={[1, 1]}
           onPointerEnter={() => !mobile && setModal(true)}
           onPointerLeave={() => !mobile && setModal(false)}
           onPointerDown={() => setModal(true)}
           onPointerMissed={() => setModal(false)}
         >
-          <icosahedronGeometry args={[1, 1]} />
           <meshStandardMaterial color={COLORS.slate100} flatShading />
           <Decal
             map={texture}
@@ -75,7 +80,7 @@ function Ball({
             debug={debugOn}
             flatShading
           />
-        </mesh>
+        </Icosahedron>
       </Float>
 
       {showModal && (
