@@ -37,20 +37,6 @@ export default function Cable({
     ];
   }, [page1, page2, page3, width, height]);
 
-  const cableStart = useMemo(() => {
-    const start = new Vector3(...startPoint);
-
-    return [
-      start,
-      start.clone().add(new Vector3(0, height * 0.1, -1)),
-      start.clone().add(new Vector3(-width * 0.2, height * 0.2, -2)),
-      start.clone().add(new Vector3(-width * 0.4, height * 0.3, -2.5)),
-      new Vector3(-width * 0.1, -height * 0.3, -1).sub(start),
-      new Vector3(-width * 0.1, -height * 0.4, -1).sub(start),
-      cableMid[0] ?? new Vector3(0, 0, 0),
-    ];
-  }, [startPoint, cableMid, width, height]);
-
   useFrame(() => {
     if (!cableRef.current) return null;
 
@@ -59,7 +45,18 @@ export default function Cable({
 
   return (
     <>
-      <CablePart points={cableStart} material={material} />
+      <CablePart
+        points={[
+          [0, 0.1, -1],
+          [-0.2, 0.2, -2],
+          [-0.4, 0.3, -2.5],
+          [-0.5, 0.2, -2.5],
+          [-0.6, 0.2, -2.5],
+          [-0.7, -0.2, -2.5],
+        ]}
+        attach={[new Vector3(...startPoint), cableMid[0] ?? new Vector3()]}
+        material={material}
+      />
       <CablePart points={cableMid} material={material} />
     </>
   );
@@ -68,13 +65,31 @@ export default function Cable({
 function CablePart({
   points,
   material,
+  attach, // head and tail of the cable
 }: {
-  points: THREE.Vector3[];
+  points: (THREE.Vector3 | THREE.Vector3Tuple)[];
   material: THREE.MeshStandardMaterial;
+  attach?: [THREE.Vector3, THREE.Vector3];
 }) {
-  const curve = useMemo(() => {
-    return new CatmullRomCurve3(points, false, "chordal", 0.5);
-  }, [points]);
+  const { width, height } = useViewport();
+  // points dont change so memoize separately
+  const vectorPoints = useMemo(() => {
+    return points.map((p) => {
+      if (p instanceof Vector3) return p;
+      return new Vector3(width * p[0], height * p[1], p[2]);
+    });
+  }, [points, width, height]);
+  // this creates the least amount of vector3 instances
+  const curvePoints = useMemo(() => {
+    if (!attach) return vectorPoints;
+    return [
+      attach[0],
+      ...vectorPoints.map((p) => p.clone().add(attach[0])),
+      attach[1],
+    ];
+  }, [attach, vectorPoints]);
+
+  const curve = new CatmullRomCurve3(curvePoints, false, "chordal", 0.5);
 
   return <Tube args={[curve, 64, 0.025, 8, false]} material={material} />;
 }

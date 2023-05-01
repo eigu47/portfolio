@@ -38,7 +38,7 @@ export default function Keyboard({
   });
 
   return (
-    <Float speed={2}>
+    <Float speed={mobile ? 3 : 1}>
       <group
         ref={keyboardRef}
         dispose={null}
@@ -49,7 +49,6 @@ export default function Keyboard({
         rotation={
           mobile ? [Math.PI * 0.15, 0, 0] : [Math.PI * 0.15, -Math.PI * 0.1, 0]
         }
-        name="keyboard"
         {...props}
         {...debug}
       >
