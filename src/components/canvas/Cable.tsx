@@ -21,7 +21,7 @@ export default function Cable({
   const fixedPoints = ConvertToPoints(
     mobile
       ? [
-          [width * -0.26 - 0.05, height * 0.1 + 0.2, -0.05],
+          [width * -0.26 - 0.05, height * 0.1 + width * 0.05, -0.05],
           [width * -0.45, 0, -1.5],
 
           [[width * -0.4, height * 0.5, -1.5], page1],
@@ -35,10 +35,10 @@ export default function Cable({
           [[-1, -0.5, 0.5], page3],
         ]
       : [
-          [width * -0.35 + 2.6, height * 0.05 + 0.23, -0.05],
+          [width * -0.35 + 2.7, height * 0.05 + 0.23, -0.05],
           [width * -0.23, -0.2, -1],
           // over web dev
-          [width * -0.55 + 1.2, height * -0.1 + 0.15, -1.9],
+          [width * -0.55 + 1.1, height * -0.1 + 0.15, -1.9],
           [width * -0.55 + 0.9, height * -0.1 + 0.15, -2.1],
 
           [[width * -0.2, height * 0.5, -0.5], page1],
@@ -71,8 +71,8 @@ function LooseCable({ cableRef }: { cableRef: React.RefObject<THREE.Mesh> }) {
           [[width * -0, height * 0.08, -0.2], startPoint],
           [[width * -0.3, height * 0.12, 0.3], startPoint],
           // over "eiguchi"
-          [width * -0.26, height * 0.1 + 0.2, 0.05],
-          [width * -0.26 - 0.05, height * 0.1 + 0.2, -0.05],
+          [width * -0.26, height * 0.1 + width * 0.05, 0.05],
+          [width * -0.26 - 0.05, height * 0.1 + width * 0.05, -0.05],
         ]
       : [
           startPoint,
@@ -80,8 +80,8 @@ function LooseCable({ cableRef }: { cableRef: React.RefObject<THREE.Mesh> }) {
           [[width * -0, height * 0.12, -0.5], startPoint],
           [[width * -0.25, height * 0.13, 0.3], startPoint],
           // over "pablo"
-          [width * -0.35 + 2.7, height * 0.05 + 0.23, 0.05],
-          [width * -0.35 + 2.6, height * 0.05 + 0.23, -0.05],
+          [width * -0.35 + 2.8, height * 0.05 + 0.23, 0.05],
+          [width * -0.35 + 2.7, height * 0.05 + 0.23, -0.05],
         ]
   );
 
@@ -101,12 +101,13 @@ function CableSection({
   points: Vector3[];
   segments?: number;
 }) {
+  const { mobile } = useViewport();
   const { debugOn } = useControls({ debugOn: false });
 
   return (
     <>
       <Tube
-        args={[new CatmullRomCurve3(points), segments, 0.025]}
+        args={[new CatmullRomCurve3(points), segments, mobile ? 0.013 : 0.02]}
         material-color="#020617"
       />
       {debugOn &&

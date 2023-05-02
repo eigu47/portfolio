@@ -5,14 +5,13 @@ Laptop by Poly by Google [CC-BY] (https://creativecommons.org/licenses/by/3.0/) 
 
 import { useRef } from "react";
 
-import { Box, Plane, useGLTF } from "@react-three/drei";
+import { Center, Html, Plane, Svg, useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useControls } from "leva";
 import { Vector3 } from "three";
 import { type GLTF } from "three-stdlib";
 
+import { github, linkedin, mail } from "~/assets/logos";
 import { useDebug } from "~/components/canvas/Debug";
-import useCursorGrab from "~/hooks/useCursorGrab";
 import useScrollPos from "~/hooks/useScrollPos";
 import useViewport from "~/hooks/useViewport";
 import { PAGES } from "~/utils/config";
@@ -27,8 +26,6 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
   const { height, mobile } = useViewport();
   const { scrollPos } = useScrollPos();
   const monitorRef = useRef<THREE.Group>(null);
-  const grab = useCursorGrab();
-  const { debugOn } = useControls({ debugOn: false });
   const debug = useDebug();
 
   const isOpen = scrollPos > CONTACT_PAGE - 0.25;
@@ -45,16 +42,15 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
       position={mobile ? [0, -height * 0.12, 0] : [0, -height * 0.2, 0]}
       rotation={[0.3, 0, 0]}
       dispose={null}
-      {...grab}
       {...props}
       {...debug}
     >
-      <Box
+      {/* <Box
         args={mobile && !debugOn ? [0, 0, 0] : [13.5, 10, 12]}
         position={[0, height * 0.85, -1]}
         visible={debugOn}
         material-wireframe={true}
-      />
+      /> */}
       <mesh
         geometry={nodes["Laptop_01_Cube025-Mesh"].geometry}
         material={materials["1A1A1A"]}
@@ -68,14 +64,25 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
         ref={monitorRef}
         rotation={closedRot.toArray()}
       >
-        <group
-          position={[0, 4.92, -1.08]}
-          rotation={[-0.18, 0, 0]}
-          scale={[12.56, 8.41, 1]}
-        >
-          <Plane>
+        <group position={[0, 4.92, -1.08]} rotation={[-0.18, 0, 0]}>
+          <Plane scale={[12.56, 8.41, 1]}>
             <meshBasicMaterial color={[0.6, 0.6, 5]} toneMapped={false} />
           </Plane>
+
+          <Center disableZ position-z={0.1}>
+            {SOCIALS.map(({ name, onClick, icon, props, position }) => (
+              <group key={name} position={position}>
+                <Svg src={icon} {...props} />
+                <Html transform position={[1.3, -1.4, 0]}>
+                  <button
+                    onClick={onClick}
+                    className="h-24 w-24"
+                    aria-label={name}
+                  />
+                </Html>
+              </group>
+            ))}
+          </Center>
         </group>
 
         <mesh
@@ -106,3 +113,37 @@ type GLTFResult = GLTF & {
 };
 
 useGLTF.preload("/laptop.glb");
+
+const SOCIALS = [
+  {
+    name: "LinkedIn",
+    onClick: () =>
+      window.open("https://www.linkedin.com/in/eiguchipablo/", "_blank"),
+    icon: linkedin,
+    position: [-4, 0, 0],
+    props: {
+      scale: 0.02,
+      fillMaterial: { color: "black" },
+    },
+  },
+  {
+    name: "GitHub",
+    onClick: () => window.open("https://github.com/eigu47", "_blank"),
+    icon: github,
+    position: [0, 0, 0],
+    props: {
+      scale: 0.02,
+      fillMaterial: { color: "black" },
+    },
+  },
+  {
+    name: "Mail",
+    onClick: () => window.open("mailto:pablo.eiguchi@gmail.com", "_blank"),
+    icon: mail,
+    position: [3.85, 0, 0],
+    props: {
+      scale: 0.12,
+      strokeMaterial: { color: "black" },
+    },
+  },
+] as const;

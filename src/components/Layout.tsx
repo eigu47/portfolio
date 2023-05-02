@@ -56,7 +56,7 @@ const SOCIALS = [
   },
   {
     name: "LinkedIn",
-    href: "https://www.linkedin.com/in/pablo-mart%C3%ADn-eiguchi-34b874239/",
+    href: "https://www.linkedin.com/in/eiguchipablo/",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
