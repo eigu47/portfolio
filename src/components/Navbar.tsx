@@ -23,13 +23,15 @@ export default function Navbar() {
             showMenu ? "" : "-translate-y-[56px]"
           }`}
         >
-          {PAGES.filter(({ id }) => id !== "resume").map(({ id }, i) => (
+          {PAGES.map(({ id, href }, i) => (
             <li key={i} className="first:grow">
               <a
                 className={`relative p-3 capitalize after:absolute after:bottom-1 after:right-1/2 after:h-[2px] after:w-4/6 after:origin-center after:translate-x-1/2 after:scale-x-0 after:bg-emerald-400 after:transition hover:text-white hover:after:scale-x-100 ${
                   scrollPage === i ? "after:scale-x-100" : ""
                 }`}
-                href={`#${id}`}
+                href={href}
+                target={id === "resume" ? "_blank" : undefined}
+                rel="noreferrer"
                 onClick={() => setShowMenu(false)}
               >
                 {i === 0 ? "hello" : id}

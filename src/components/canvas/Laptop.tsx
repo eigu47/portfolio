@@ -5,12 +5,11 @@ Laptop by Poly by Google [CC-BY] (https://creativecommons.org/licenses/by/3.0/) 
 
 import { useRef } from "react";
 
-import { Center, Html, Plane, Svg, useGLTF } from "@react-three/drei";
+import { Html, Plane, useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { Vector3 } from "three";
 import { type GLTF } from "three-stdlib";
 
-import { github, linkedin, mail } from "~/assets/logos";
 import { useDebug } from "~/components/canvas/Debug";
 import useScrollPos from "~/hooks/useScrollPos";
 import useViewport from "~/hooks/useViewport";
@@ -45,12 +44,6 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
       {...props}
       {...debug}
     >
-      {/* <Box
-        args={mobile && !debugOn ? [0, 0, 0] : [13.5, 10, 12]}
-        position={[0, height * 0.85, -1]}
-        visible={debugOn}
-        material-wireframe={true}
-      /> */}
       <mesh
         geometry={nodes["Laptop_01_Cube025-Mesh"].geometry}
         material={materials["1A1A1A"]}
@@ -66,23 +59,19 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
       >
         <group position={[0, 4.92, -1.08]} rotation={[-0.18, 0, 0]}>
           <Plane scale={[12.56, 8.41, 1]}>
-            <meshBasicMaterial color={[0.6, 0.6, 5]} toneMapped={false} />
+            <meshBasicMaterial color={[0.6, 0.6, 6]} toneMapped={false} />
           </Plane>
 
-          <Center disableZ position-z={0.1}>
-            {SOCIALS.map(({ name, onClick, icon, props, position }) => (
-              <group key={name} position={position}>
-                <Svg src={icon} {...props} />
-                <Html transform position={[1.3, -1.4, 0]}>
-                  <button
-                    onClick={onClick}
-                    className="h-24 w-24"
-                    aria-label={name}
-                  />
-                </Html>
-              </group>
-            ))}
-          </Center>
+          <Html
+            position-z={0.1}
+            transform
+            occlude="blending"
+            className="screen h-[310px] w-[480px] overflow-y-scroll"
+          >
+            <a href="/EiguchiPabloMartin.pdf" target="_blank" rel="noreferrer">
+              <img src="/EiguchiPabloMartin.jpg" alt="Eiguchi Pablo Martin" />
+            </a>
+          </Html>
         </group>
 
         <mesh
@@ -111,39 +100,3 @@ type GLTFResult = GLTF & {
     FF9800: THREE.MeshStandardMaterial;
   };
 };
-
-useGLTF.preload("/laptop.glb");
-
-const SOCIALS = [
-  {
-    name: "LinkedIn",
-    onClick: () =>
-      window.open("https://www.linkedin.com/in/eiguchipablo/", "_blank"),
-    icon: linkedin,
-    position: [-4, 0, 0],
-    props: {
-      scale: 0.02,
-      fillMaterial: { color: "black" },
-    },
-  },
-  {
-    name: "GitHub",
-    onClick: () => window.open("https://github.com/eigu47", "_blank"),
-    icon: github,
-    position: [0, 0, 0],
-    props: {
-      scale: 0.02,
-      fillMaterial: { color: "black" },
-    },
-  },
-  {
-    name: "Mail",
-    onClick: () => window.open("mailto:pablo.eiguchi@gmail.com", "_blank"),
-    icon: mail,
-    position: [3.85, 0, 0],
-    props: {
-      scale: 0.12,
-      strokeMaterial: { color: "black" },
-    },
-  },
-] as const;

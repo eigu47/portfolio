@@ -21,3 +21,12 @@ html {
   border: 6px solid rgba(15, 23, 42, 1);
   border-radius: 8px;
 }
+
+.screen::-webkit-scrollbar {
+  width: 8px;
+}
+.screen::-webkit-scrollbar-thumb {
+  background-color: white;
+  border: 1px solid rgba(15, 23, 42, 1);
+  border-radius: 0;
+}
