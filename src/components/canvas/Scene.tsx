@@ -29,7 +29,7 @@ export default function Scene() {
       <Canvas className="!fixed top-0 !h-screen">
         <Camera />
 
-        <Suspense fallback={null}>
+        <Suspense fallback={<Hero />}>
           <Page page={0}>
             <Hero />
             <Keyboard cableRef={cableRef} />
