@@ -14,7 +14,7 @@ import {
   html,
   javascript,
   nextjs,
-  redux,
+  react,
   tailwindcss,
   threejs,
   typescript,
@@ -85,7 +85,7 @@ function Ball({
 
       {showModal && (
         <Html position={mobile && last ? [-0.5, -0.5, 0] : [0.5, -0.5, 0]}>
-          <div className="rounded border border-cyan-800 bg-cyan-950 p-2">
+          <div className="rounded border border-cyan-800 bg-cyan-950 p-2 text-center">
             <p>{name}</p>
           </div>
         </Html>
@@ -95,11 +95,11 @@ function Ball({
 }
 
 export const LOGOS = [
-  { name: "HTML", src: html, scale: 1 },
+  { name: "HTML/CSS", src: html, scale: 1 },
   { name: "Javascript", src: javascript, scale: 1 },
   { name: "Typescript", src: typescript, scale: 1 },
   { name: "Next.js", src: nextjs, scale: 1 },
-  { name: "Tailwindcss", src: tailwindcss, scale: 1.3 },
+  { name: "React Native", src: react, scale: 1.2 },
+  { name: "Tailwind", src: tailwindcss, scale: 1.3 },
   { name: "Three.js", src: threejs, scale: 1.3 },
-  { name: "Redux", src: redux, scale: 1 },
 ] as const;

@@ -100,3 +100,5 @@ type GLTFResult = GLTF & {
     FF9800: THREE.MeshStandardMaterial;
   };
 };
+
+useGLTF.preload("/laptop.glb");
