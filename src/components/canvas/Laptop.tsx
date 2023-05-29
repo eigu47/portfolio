@@ -68,8 +68,8 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
             occlude="blending"
             className="screen h-[310px] w-[480px] overflow-y-scroll"
           >
-            <a href="/EiguchiPabloMartin.pdf" target="_blank" rel="noreferrer">
-              <img src="/EiguchiPabloMartin.jpg" alt="Eiguchi Pablo Martin" />
+            <a href="/EiguchiPablo.pdf" target="_blank" rel="noreferrer">
+              <img src="/EiguchiPablo.jpg" alt="Eiguchi Pablo Martin" />
             </a>
           </Html>
         </group>
