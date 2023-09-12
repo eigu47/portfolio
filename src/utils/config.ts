@@ -34,7 +34,7 @@ export const PAGES = [
   },
   {
     id: "resume",
-    href: "/EiguchiPabloMartin.pdf",
+    href: "/EiguchiPablo.pdf",
     position: [-0.45, -3.95, 1],
     rotation: [0, 1, 0],
   },

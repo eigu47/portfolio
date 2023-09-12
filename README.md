@@ -10,4 +10,4 @@ Try adding ["?debug"](https://www.eiguchipablo.dev/?debug) in the url!
 
 Contact me in [LinkedIn](https://www.linkedin.com/in/eiguchipablo/)
 
-My [resume](https://www.eiguchipablo.dev/EiguchiPabloMartin.pdf)
+My [resume](https://www.eiguchipablo.dev/EiguchiPablo.pdf)
