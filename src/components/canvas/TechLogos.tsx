@@ -78,7 +78,7 @@ function Ball({
             rotation={[Math.PI * 2, 0, 0]}
             scale={1.2 * scale}
             debug={debugOn}
-            flatShading
+            // flatShading
           />
         </Icosahedron>
       </Float>
