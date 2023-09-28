@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-pdf/renderer": "^3.1.12",
     "@react-three/drei": "^9.65.3",
     "@react-three/fiber": "^8.12.0",
     "@react-three/postprocessing": "^2.7.1",
@@ -17,6 +18,8 @@
     "leva": "^0.9.34",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^4.11.0",
+    "react-router-dom": "^6.16.0",
     "three": "^0.150.1",
     "zustand": "^4.3.6"
   },
@@ -27,7 +30,7 @@
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@vitejs/plugin-react-swc": "^3.0.0",
     "autoprefixer": "^10.4.14",
-    "eslint": "^8.36.0",
+    "eslint": "^8.50.0",
     "eslint-config-standard-with-typescript": "^34.0.1",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-n": "^15.6.1",
