@@ -41,11 +41,14 @@ export default function Navbar() {
               </a>
 
               {i === PAGES.length - 1 && (
-                <button className="absolute -right-16 bottom-3 sm:relative sm:inset-0">
-                  <a href="/resume" target="_blank">
-                    <PiFilePdfDuotone className="h-8 w-8 duration-200 hover:fill-emerald-400" />
-                  </a>
-                </button>
+                <a
+                  className="absolute -right-16 bottom-2 sm:relative sm:right-0 sm:-bottom-2"
+                  href="/resume"
+                  target="_blank"
+                  aria-label="Resume"
+                >
+                  <PiFilePdfDuotone className="h-8 w-8 duration-200 hover:fill-emerald-400" />
+                </a>
               )}
             </li>
           ))}

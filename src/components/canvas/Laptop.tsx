@@ -69,7 +69,7 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
             className="screen h-[310px] w-[480px] overflow-y-scroll"
           >
             <a href="/EiguchiPablo.pdf" target="_blank" rel="noreferrer">
-              <img src="/EiguchiPablo.jpg" alt="Eiguchi Pablo Martin" />
+              <img src="/EiguchiPablo.jpg" alt="Eiguchi Pablo Martin" width="480px" height="310px" />
             </a>
           </Html>
         </group>

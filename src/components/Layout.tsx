@@ -11,7 +11,7 @@ export default function Layout() {
     <>
       <div className="fixed bottom-0 mx-12 hidden flex-col gap-6 after:mx-auto after:mt-2 after:block after:h-20 after:w-[1px] after:bg-slate-300 sm:flex">
         {SOCIALS.map(({ name, href, icon }) => (
-          <a key={name} href={href} target="_blank" rel="noreferrer">
+          <a key={name} href={href} target="_blank" rel="noreferrer" aria-label={name}>
             {icon({
               className:
                 "block h-8 w-8 stroke-slate-300 transition hover:-translate-y-0.5 hover:fill-emerald-400 focus:-translate-y-0.5 focus:fill-emerald-400",
