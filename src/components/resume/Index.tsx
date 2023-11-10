@@ -82,6 +82,8 @@ Font.register({
   fonts: [{ fontWeight: 400, src: notosans400 }],
 });
 
+Font.registerHyphenationCallback(word => [word]);
+
 export function MyDocument() {
   return (
     <Document title="Eiguchi Pablo Martin.pdf" author="Eiguchi Pablo Martin">

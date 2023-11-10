@@ -1,4 +1,4 @@
-import { type Svg } from "@react-pdf/renderer";
+import { type Svg, Text } from "@react-pdf/renderer";
 
 export const COLORS = {
   slate100: "#f1f5f9",
@@ -43,7 +43,26 @@ export const PAGES = [
   },
 ] as const;
 
+function Summary() {
+  return (
+    <Text style={{ textAlign: "justify", paddingHorizontal: 3 }}>
+      I am a Japanese-Argentinian (
+      <Text style={{ fontFamily: "notosans", fontSize: 9 }}>⽇系⼈</Text>) web
+      developer based in Kawasaki with a strong passion for coding and
+      continuous learning. I started my programming journey in early 2022 and
+      have since completed several Udemy courses covering HTML/CSS/Javascript,
+      React.js, TypeScript, Next.js, React Native, and Three.js. Additionally, I
+      completed the Harvard University online course CS50 Introduction to
+      Computer Science. My language skills include JLPT 2 proficiency in
+      Japanese, an English TOEIC score of 840, and native Spanish fluency. I
+      love learning new technologies to improve my skills and staying current
+      with industry trends.
+    </Text>
+  );
+}
+
 export const RESUME: {
+  Summary: React.ReactNode;
   contact: {
     text: string;
     svgPath: string;
@@ -66,6 +85,7 @@ export const RESUME: {
     svgProps?: React.ComponentProps<typeof Svg>;
   }[];
 } = {
+  Summary: <Summary />,
   contact: [
     {
       // telephone
