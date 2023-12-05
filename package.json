@@ -16,6 +16,7 @@
     "@types/three": "^0.149.0",
     "@use-gesture/react": "^10.2.25",
     "leva": "^0.9.34",
+    "posthog-js": "^1.93.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",

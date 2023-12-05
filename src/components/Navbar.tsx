@@ -33,9 +33,9 @@ export default function Navbar() {
                   scrollPage === i ? "after:scale-x-100" : ""
                 }`}
                 href={href}
-                // target={id === "resume" ? "_blank" : undefined}
                 rel="noreferrer"
                 onClick={() => setShowMenu(false)}
+                id={id || "home"}
               >
                 {i === 0 ? "hello" : id}
               </a>
@@ -46,6 +46,7 @@ export default function Navbar() {
                   href="/resume"
                   target="_blank"
                   aria-label="Resume"
+                  id="pdf"
                 >
                   <PiFilePdfDuotone className="h-8 w-8 duration-200 hover:fill-emerald-400" />
                 </a>
