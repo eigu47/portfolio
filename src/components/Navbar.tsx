@@ -35,7 +35,7 @@ export default function Navbar() {
                 href={href}
                 rel="noreferrer"
                 onClick={() => setShowMenu(false)}
-                id={id || "home"}
+                // id={id || "home"}
               >
                 {i === 0 ? "hello" : id}
               </a>
