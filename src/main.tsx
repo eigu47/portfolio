@@ -3,7 +3,11 @@ import React from "react";
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 import ReactDOM from "react-dom/client";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import {
+  Navigate,
+  RouterProvider,
+  createBrowserRouter,
+} from "react-router-dom";
 
 import "./global.css";
 
@@ -27,6 +31,10 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
             lazy: async () => ({
               Component: (await import("./components/resume/Index")).default,
             }),
+          },
+          {
+            path: "*",
+            element: <Navigate to="/" replace />,
           },
         ])}
       />

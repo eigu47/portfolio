@@ -21,5 +21,11 @@
       "destination": "https://keyboard-sniper.web.app/",
       "permanent": true
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
   ]
 }
