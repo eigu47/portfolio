@@ -20,7 +20,12 @@
       "source": "/keyboard-sniper",
       "destination": "https://keyboard-sniper.web.app/",
       "permanent": true
-    }
+    },
+    {
+      "source": "/camera-ascii",
+      "destination": "https://ascii-camera-eigu.vercel.app/",
+      "permanent": true
+    },
   ],
   "rewrites": [
     {
