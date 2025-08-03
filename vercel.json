@@ -22,7 +22,7 @@
       "permanent": true
     },
     {
-      "source": "/camera-ascii",
+      "source": "/ascii-camera",
       "destination": "https://ascii-camera-eigu.vercel.app/",
       "permanent": true
     },
