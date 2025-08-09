@@ -25,6 +25,11 @@
       "source": "/ascii-camera",
       "destination": "https://ascii-camera-eigu.vercel.app/",
       "permanent": true
+    },
+    {
+      "source": "/emoji2movie",
+      "destination": "https://emoji2movie.vercel.app/",
+      "permanent": true
     }
   ],
   "rewrites": [
