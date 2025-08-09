@@ -3,32 +3,32 @@
   "redirects": [
     {
       "source": "/playpool",
-      "destination": "https://playpool.vercel.app/",
+      "destination": "https://playpool.eiguchipablo.dev/",
       "permanent": true
     },
     {
       "source": "/country-quiz",
-      "destination": "https://country-quiz-eigu.vercel.app/",
+      "destination": "https://country-quiz.eiguchipablo.dev/",
       "permanent": true
     },
     {
       "source": "/traveler",
-      "destination": "https://traveler-eigu.vercel.app/",
+      "destination": "https://traveler.eiguchipablo.dev/",
       "permanent": true
     },
     {
       "source": "/keyboard-sniper",
-      "destination": "https://keyboard-sniper.web.app/",
+      "destination": "https://keyboard-sniper.eiguchipablo.dev/",
       "permanent": true
     },
     {
       "source": "/ascii-camera",
-      "destination": "https://ascii-camera-eigu.vercel.app/",
+      "destination": "https://ascii-camera.eiguchipablo.dev/",
       "permanent": true
     },
     {
       "source": "/emoji2movie",
-      "destination": "https://emoji2movie.vercel.app/",
+      "destination": "https://emoji2movie.eiguchipablo.dev/",
       "permanent": true
     }
   ],
