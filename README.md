@@ -17,3 +17,11 @@ This portfolio showcases my skills and my passion for learning new tools and tec
 #### Additional links
 - [View resume](/public/EiguchiPablo.pdf).
 - [Contact me in LinkedIn](https://www.linkedin.com/in/eiguchipablo/).
+
+## Terminal Version
+
+You can also visit from your terminal:
+
+```bash
+curl eiguchipablo.dev
+```
