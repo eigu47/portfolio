@@ -1,30 +1,32 @@
 [0m
 [0m
- [0m         [38;5;223m▛▀▘▗          ▌  ▗  ▛▀▖   ▌  ▜              [0m         [1m[38;5;223mDEVELOPER[0m
- [0m         [38;5;223m▙▄ ▄ ▞▀▌▌ ▌▞▀▖▛▀▖▄  ▙▄▘▝▀▖▛▀▖▐ ▞▀▖[0m
- [0m         [38;5;223m▌  ▐ ▚▄▌▌ ▌▌ ▖▌ ▌▐  ▌  ▞▀▌▌ ▌▐ ▌ ▌          [0m         [38;5;223mYokohama, Japan[0m
- [0m         [38;5;223m▀▀▘▀▘▗▄▘▝▀▘▝▀ ▘ ▘▀▘ ▘  ▝▀▘▀▀  ▘▝▀           [0m         [38;5;87meiguchipablo.dev[0m
+ [0m        [38;5;223m▛▀▘▗          ▌  ▗  ▛▀▖   ▌  ▜            [0m [0m        [38;5;223m[1mDEVELOPER[0m
+ [0m        [38;5;223m▙▄ ▄ ▞▀▌▌ ▌▞▀▖▛▀▖▄  ▙▄▘▝▀▖▛▀▖▐ ▞▀▖[0m
+ [0m        [38;5;223m▌  ▐ ▚▄▌▌ ▌▌ ▖▌ ▌▐  ▌  ▞▀▌▌ ▌▐ ▌ ▌        [0m [0m        [38;5;223mYokohama, Japan[0m
+ [0m        [38;5;223m▀▀▘▀▘▗▄▘▝▀▘▝▀ ▘ ▘▀▘ ▘  ▝▀▘▀▀  ▘▝▀         [0m [0m        [38;5;87m[3meiguchipablo.dev[0m
 [0m
 [0m
-┌─[38;5;241m About [0m──────────────────────────────────────┐[0m  ┌─[38;5;241m Skills [0m──┬─────────────────────────────┐[0m
-│[0m                                              │[0m  │[0m           │[0m                             │[0m
-│[0m [1mHELLO![0m I'm a Japanese-Argentinian developer  │[0m  │[0m Frontend: │[0m JS/TS, React/Next, Tailwind │[0m
-│[0m mainly focused on Next/React and TypeScript. │[0m  │[0m Backend:  │[0m Node, Express, Golang       │[0m
-│[0m I like to learn new technologies and keep    │[0m  │[0m Tools:    │[0m Bash, SQL                   │[0m
-│[0m improving as developer.                      │[0m  │[0m Other:    │[0m Three.js, React Native      │[0m
-│[0m                                              │[0m  │[0m           │[0m                             │[0m
-└──────────────────────────────────────────────┘[0m  └───────────┴─────────────────────────────┘[0m
+┌─[38;5;241m About [0m──────────────────────────────┐[0m
+│[0m                                      [0m│[0m  ┌─[38;5;241m Skills [0m──┬─────────────────────────────┐[0m
+│[0m [1mHELLO![0m                               [0m│[0m  │[0m           [0m│[0m                             [0m│[0m
+│[0m I'm a Japanese-Argentinian developer [0m│[0m  │[0m Frontend: [0m│[0m [3mJS/TS, React/Next, Tailwind [0m│[0m
+│[0m mainly focused on Next/React and     [0m│[0m  │[0m Backend:  [0m│[0m [3mNode, Express, Golang       [0m│[0m
+│[0m TypeScript. I like to learn new      [0m│[0m  │[0m Tools:    [0m│[0m [3mBash, SQL                   [0m│[0m
+│[0m technologies and keep improving      [0m│[0m  │[0m Other:    [0m│[0m [3mThree.js, React Native      [0m│[0m
+│[0m as developer.                        [0m│[0m  │[0m           [0m│[0m                             [0m│[0m
+│[0m                                      [0m│[0m  └───────────┴─────────────────────────────┘[0m
+└──────────────────────────────────────┘[0m
 [0m
- [0m                                 █▀▀▀▀▀█ ▄▄▄█▄ █▀▀▀▀▀█[0m
- [0m                                 █ ███ █ ▄█ ██ █ ███ █[0m
- [0m                                 █ ▀▀▀ █ ▄▄█▄▄ █ ▀▀▀ █[0m
- [0m                                 ▀▀▀▀▀▀▀ ▀ █ █ ▀▀▀▀▀▀▀[0m
- [0m                                 ▀█▀▀█ ▀██▀▄▀▀▀ ▀▄▀ ▀▄[0m
- [0m                                 ▀ ▀█  ▀▀▀█▄▀▀▄   ███[0m
- [0m                                 ▀▀▀▀ ▀▀ █ █▀  ▀██▄▄▀▄[0m
- [0m                                 █▀▀▀▀▀█ ▀▀█▄▀█ ▄ █▄▀[0m
- [0m                                 █ ███ █ ███▀  ▀███▄▄[0m
- [0m                                 █ ▀▀▀ █ █▄ ▀█▄▀ ▄██[0m
- [0m                                 ▀▀▀▀▀▀▀ ▀▀ ▀  ▀▀   ▀[0m
- [0m                               [1m$[0m curl [38;5;120meiguchipablo.dev[0m
+ [0m                               █▀▀▀▀▀█ ▄▄▄█▄ █▀▀▀▀▀█[0m
+ [0m                               █ ███ █ ▄█ ██ █ ███ █[0m
+ [0m                               █ ▀▀▀ █ ▄▄█▄▄ █ ▀▀▀ █[0m
+ [0m                               ▀▀▀▀▀▀▀ ▀ █ █ ▀▀▀▀▀▀▀[0m
+ [0m                               ▀█▀▀█ ▀██▀▄▀▀▀ ▀▄▀ ▀▄[0m
+ [0m                               ▀ ▀█  ▀▀▀█▄▀▀▄   ███[0m
+ [0m                               ▀▀▀▀ ▀▀ █ █▀  ▀██▄▄▀▄[0m
+ [0m                               █▀▀▀▀▀█ ▀▀█▄▀█ ▄ █▄▀[0m
+ [0m                               █ ███ █ ███▀  ▀███▄▄[0m
+ [0m                               █ ▀▀▀ █ █▄ ▀█▄▀ ▄██[0m
+ [0m                               ▀▀▀▀▀▀▀ ▀▀ ▀  ▀▀   ▀[0m
+ [0m                              [38;5;120m[1m$ curl[0m [38;5;223meiguchipablo.dev[0m
 [0m

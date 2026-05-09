@@ -3,16 +3,16 @@
 # Output resume in terminal
 # Heavily inspired by ysap.sh
 #
-# Author: Eiguchi Pablo <eiguchi.pablo@gmail.com>
 
 set -e
 
-COLOR1=$'\x1b[38;5;87m'  # cyan
-COLOR3=$'\x1b[38;5;120m' # green
-COLOR4=$'\x1b[38;5;241m' # dim
-COLOR5=$'\x1b[38;5;223m' # off-white (text)
-BOLD=$'\033[1m'
-RST=$'\x1b[0m'
+COLOR1=$'\e[38;5;87m'  # cyan
+COLOR3=$'\e[38;5;120m' # green
+COLOR4=$'\e[38;5;241m' # dim
+COLOR5=$'\e[38;5;223m' # off-white (text)
+BOLD=$'\e[1m'
+ITALIC=$'\e[3m'
+RST=$'\e[0m'
 
 fatal() {
 	echo '[FATAL]' "$@" >&2
@@ -25,21 +25,12 @@ repeat() {
 	printf "%s" "${s// /$1}"
 }
 
-# example: cat thing.txt | strip-ansi
-strip-ansi() (
+# example: printable-len thing.txt
+printable-len() (
 	shopt -s extglob
-	local line
-
-	while IFS= read -r line || [[ -n $line ]]; do
-		printf '%s\n' "${line//$'\e'[\[(]*([0-9;])[@-n]/}"
-	done
+	local stripped=${1//$'\e'[\[(]*([0-9;])[@-n]/}
+	echo "${#stripped}"
 )
-
-printable-len() {
-	local len
-	len=$(strip-ansi <<<"$1")
-	echo ${#len}
-}
 
 # example: cat thing.txt | rtrim
 rtrim() (
@@ -116,26 +107,22 @@ box() {
 	# read the entire input first
 	local input
 	mapfile -t input
-	# declare -p input
 
 	# process input
-	local max_cols=()
+	local max_len=()
 	local num_cols=1
-	local line len cells cell i cell_len
+	local line len cells i
 
 	# calculate length for each line
 	for line in "${input[@]}"; do
-		len=${line//$separator/}
-		len=${#len}
-
 		# calculate length for each cell
 		IFS=$separator read -ra cells <<<"$line"
 		for i in "${!cells[@]}"; do
-			((cell_len = $(printable-len "${cells[i]}") + xpadding * 2))
+			((len = $(printable-len "${cells[i]}") + xpadding * 2))
 
 			# get max for each col
-			if ((cell_len > max_cols[i])); then
-				max_cols[i]=$cell_len
+			if ((len > max_len[i])); then
+				max_len[i]=$len
 			fi
 
 			# get total cols
@@ -148,7 +135,7 @@ box() {
 	# top part
 	line=$color$SE
 	for ((i = 0; i < num_cols; i++)); do
-		line+=$(repeat "$WE" "${max_cols[i]}")
+		line+=$(repeat "$WE" "${max_len[i]}")
 
 		# add vertical separator
 		if ((i < num_cols - 1)); then
@@ -159,8 +146,7 @@ box() {
 
 	# insert title
 	if [[ -n $title ]]; then
-		# ((len = $(printable-len "$color$SE") + 1))
-		((len = ${#color} + ${#SE} + 1))
+		((len = ${#color} + ${#SE} + ${#WE}))
 
 		title=$title_color$title$RST
 		line="${line:0:len}$title${line:$((len + $(printable-len "$title")))}"
@@ -189,10 +175,9 @@ box() {
 			line+=$cell
 
 			# left pad
-			cell_len=$(printable-len "$cell")
-			line+=$(repeat ' ' "$((max_cols[i] - cell_len))")
+			line+=$(repeat ' ' "$((max_len[i] - $(printable-len "$cell")))")
 
-			line+=$color$NS$RST
+			line+=$RST$color$NS$RST
 		done
 
 		# print line
@@ -202,7 +187,7 @@ box() {
 	# bottom line
 	line=$color$NE
 	for ((i = 0; i < num_cols; i++)); do
-		line+=$(repeat "$WE" "${max_cols[i]}")
+		line+=$(repeat "$WE" "${max_len[i]}")
 
 		# add vertical separator
 		if ((i < num_cols - 1)); then
@@ -214,55 +199,57 @@ box() {
 }
 
 # https://patorjk.com/software/taag/#p=display&f=Small%20Block&t=Eiguchi%20Pablo&x=none
-mapfile -t NAME <<EOF
-${COLOR5}▛▀▘▗          ▌  ▗  ▛▀▖   ▌  ▜    
-${COLOR5}▙▄ ▄ ▞▀▌▌ ▌▞▀▖▛▀▖▄  ▙▄▘▝▀▖▛▀▖▐ ▞▀▖
-${COLOR5}▌  ▐ ▚▄▌▌ ▌▌ ▖▌ ▌▐  ▌  ▞▀▌▌ ▌▐ ▌ ▌
-${COLOR5}▀▀▘▀▘▗▄▘▝▀▘▝▀ ▘ ▘▀▘ ▘  ▝▀▘▀▀  ▘▝▀ 
+mapfile -t NAME <<-EOF
+	▛▀▘▗          ▌  ▗  ▛▀▖   ▌  ▜    
+	▙▄ ▄ ▞▀▌▌ ▌▞▀▖▛▀▖▄  ▙▄▘▝▀▖▛▀▖▐ ▞▀▖
+	▌  ▐ ▚▄▌▌ ▌▌ ▖▌ ▌▐  ▌  ▞▀▌▌ ▌▐ ▌ ▌
+	▀▀▘▀▘▗▄▘▝▀▘▝▀ ▘ ▘▀▘ ▘  ▝▀▘▀▀  ▘▝▀ 
 EOF
 
-mapfile -t CONTACT <<EOF
-${BOLD}${COLOR5}DEVELOPER
+mapfile -t CONTACT <<-EOF
+	${COLOR5}${BOLD}DEVELOPER
 
-${COLOR5}Yokohama, Japan
-${COLOR1}eiguchipablo.dev
+	${COLOR5}Yokohama, Japan
+	${COLOR1}${ITALIC}eiguchipablo.dev
 EOF
 
 mapfile -t ABOUT <<EOF
-${BOLD}HELLO!${RST} I'm a Japanese-Argentinian developer
-mainly focused on Next/React and TypeScript.
-I like to learn new technologies and keep
-improving as developer.
+${BOLD}HELLO!${RST}
+I'm a Japanese-Argentinian developer
+mainly focused on Next/React and
+TypeScript. I like to learn new
+technologies and keep improving
+as developer.
 EOF
 
 mapfile -t SKILLS <<EOF
-Frontend:|JS/TS, React/Next, Tailwind
-Backend:|Node, Express, Golang
-Tools:|Bash, SQL
-Other:|Three.js, React Native
+Frontend:|${ITALIC}JS/TS, React/Next, Tailwind
+Backend:|${ITALIC}Node, Express, Golang
+Tools:|${ITALIC}Bash, SQL
+Other:|${ITALIC}Three.js, React Native
 EOF
 
-mapfile -t QR <<EOF
-  █▀▀▀▀▀█ ▄▄▄█▄ █▀▀▀▀▀█ 
-  █ ███ █ ▄█ ██ █ ███ █ 
-  █ ▀▀▀ █ ▄▄█▄▄ █ ▀▀▀ █ 
-  ▀▀▀▀▀▀▀ ▀ █ █ ▀▀▀▀▀▀▀ 
-  ▀█▀▀█ ▀██▀▄▀▀▀ ▀▄▀ ▀▄ 
-  ▀ ▀█  ▀▀▀█▄▀▀▄   ███  
-  ▀▀▀▀ ▀▀ █ █▀  ▀██▄▄▀▄ 
-  █▀▀▀▀▀█ ▀▀█▄▀█ ▄ █▄▀  
-  █ ███ █ ███▀  ▀███▄▄  
-  █ ▀▀▀ █ █▄ ▀█▄▀ ▄██   
-  ▀▀▀▀▀▀▀ ▀▀ ▀  ▀▀   ▀  
-${BOLD}\$${RST} curl ${COLOR3}eiguchipablo.dev${RST}
+mapfile -t QR <<-EOF
+	 █▀▀▀▀▀█ ▄▄▄█▄ █▀▀▀▀▀█ 
+	 █ ███ █ ▄█ ██ █ ███ █ 
+	 █ ▀▀▀ █ ▄▄█▄▄ █ ▀▀▀ █ 
+	 ▀▀▀▀▀▀▀ ▀ █ █ ▀▀▀▀▀▀▀ 
+	 ▀█▀▀█ ▀██▀▄▀▀▀ ▀▄▀ ▀▄ 
+	 ▀ ▀█  ▀▀▀█▄▀▀▄   ███  
+	 ▀▀▀▀ ▀▀ █ █▀  ▀██▄▄▀▄ 
+	 █▀▀▀▀▀█ ▀▀█▄▀█ ▄ █▄▀  
+	 █ ███ █ ███▀  ▀███▄▄  
+	 █ ▀▀▀ █ █▄ ▀█▄▀ ▄██   
+	 ▀▀▀▀▀▀▀ ▀▀ ▀  ▀▀   ▀  
+	${COLOR3}${BOLD}\$ curl${RST} ${COLOR5}eiguchipablo.dev
 EOF
 
 # generate output
-mapfile -t output < <(
-	# add header
+{
+	# print header
 	for ((i = 0; i < ${#NAME[@]} || i < ${#CONTACT[@]}; i++)); do
-		echo "${NAME[i]}|${CONTACT[i]}"
-	done | box -y 1 -x 9 -s "|" -T plain | rtrim
+		echo "${COLOR5}${NAME[i]:-$(repeat ' ' "$(printable-len "${#NAME[@]}")")}|${CONTACT[i]}"
+	done | box -y 1 -x 8 -s "|" -T plain
 
 	# generate about
 	mapfile -t aboutbox < <(
@@ -271,19 +258,15 @@ mapfile -t output < <(
 
 	# generate skills
 	mapfile -t skillsbox < <(
+		echo
 		printf '%s\n' "${SKILLS[@]}" | box -y 1 -x 1 -t " Skills " -C "$COLOR4" -s "|"
 	)
 
-	# add them both
+	# join and print them both
 	for ((i = 0; i < ${#aboutbox[@]} || i < ${#skillsbox[@]}; i++)); do
-		if ((i >= ${#aboutbox[@]})); then
-			aboutbox[i]=$(repeat ' ' "$(printable-len "${aboutbox[0]}")")
-		fi
-		echo "${aboutbox[i]}  ${skillsbox[i]}"
+		echo "${aboutbox[i]:-$(repeat ' ' "$(printable-len "${aboutbox[0]}")")}  ${skillsbox[i]}"
 	done
 
-	# add qr
-	printf '%s\n' "${QR[@]}" | box -x 31 -T plain
-)
-
-printf '%s\n' "${output[@]}" | rtrim
+	# print qr
+	printf '%s\n' "${QR[@]}" | box -x 30 -T plain
+} | rtrim
