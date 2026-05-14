@@ -5,6 +5,7 @@
 #
 
 set -e
+shopt -s extglob
 
 COLOR1=$'\e[38;5;87m'  # cyan
 COLOR3=$'\e[38;5;120m' # green
@@ -15,36 +16,31 @@ ITALIC=$'\e[3m'
 RST=$'\e[0m'
 
 fatal() {
-	echo '[FATAL]' "$@" >&2
+	echo '[FATAL]' "$*" >&2
 	exit 1
 }
 
 # example: repeat '=' 50
 repeat() {
-	printf -v s "%*s" "$2" ""
-	printf "%s" "${s// /$1}"
+	local pad
+	printf -v pad "%*s" "$2" ""
+	printf "%s" "${pad// /$1}"
 }
 
 # example: printable-len thing.txt
-printable-len() (
-	shopt -s extglob
+printable-len() {
 	local stripped=${1//$'\e'[\[(]*([0-9;])[@-n]/}
 	echo "${#stripped}"
-)
+}
 
 # example: cat thing.txt | rtrim
-rtrim() (
-	shopt -s extglob
+rtrim() {
 	local line
-
 	while IFS= read -r line || [[ -n $line ]]; do
-		while [[ $line == *"$RST" ]] || [[ $line == *' ' ]]; do
-			line=${line%"$RST"}
-			line=${line%%+([ ])}
-		done
+		line=${line%%*([ ]|"$RST")}
 		echo "$line$RST"
 	done
-)
+}
 
 box() {
 	local title=
@@ -69,54 +65,41 @@ box() {
 	done
 	shift $((OPTIND - 1))
 
-	local WE NS SE NE SW NW SWE NWE
+	local -a charset
 	case "$theme" in
 	unicode)
-		WE='─'
-		NS='│'
-		SE='┌'
-		NE='└'
-		SW='┐'
-		NW='┘'
-		SWE='┬'
-		NWE='┴'
+		charset=('─' '│' '┌' '└' '┐' '┘' '┬' '┴')
 		;;
 	ascii)
-		WE='-'
-		NS='|'
-		SE='+'
-		NE='+'
-		SW='+'
-		NW='+'
-		SWE='+'
-		NWE='+'
+		charset=('-' '|' '+' '+' '+' '+' '+' '+')
 		;;
 	plain)
-		WE=' '
-		NS=' '
-		SE=' '
-		NE=' '
-		SW=' '
-		NW=' '
-		SWE=' '
-		NWE=' '
+		charset=(' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ')
 		;;
 	*) fatal "invalid theme name: $theme" ;;
 	esac
 
+	local WE="${charset[0]}"
+	local NS="${charset[1]}"
+	local SE="${charset[2]}"
+	local NE="${charset[3]}"
+	local SW="${charset[4]}"
+	local NW="${charset[5]}"
+	local SWE="${charset[6]}"
+	local NWE="${charset[7]}"
+
 	# read the entire input first
-	local input
+	local -a input
 	mapfile -t input
 
 	# process input
-	local max_len=()
-	local num_cols=1
-	local line len cells i
+	local num_cols=1 line len i
+	local -a max_len=() cells
 
 	# calculate length for each line
 	for line in "${input[@]}"; do
 		# calculate length for each cell
-		IFS=$separator read -ra cells <<<"$line"
+		IFS="$separator" read -ra cells <<<"$line"
 		for i in "${!cells[@]}"; do
 			((len = $(printable-len "${cells[i]}") + xpadding * 2))
 
@@ -154,7 +137,7 @@ box() {
 	echo "$line"
 
 	# add vertical padding
-	local ypad=()
+	local -a ypad
 	for ((i = 0; i < ypadding; i++)); do
 		ypad+=("$(repeat "$separator" "$num_cols")")
 	done
@@ -166,7 +149,7 @@ box() {
 
 	# read each line
 	for line in "${input[@]}"; do
-		IFS=$separator read -ra cells <<<"$line"
+		IFS="$separator" read -ra cells <<<"$line"
 
 		# read each cell
 		line=$color$NS$RST
@@ -248,7 +231,7 @@ EOF
 {
 	# print header
 	for ((i = 0; i < ${#NAME[@]} || i < ${#CONTACT[@]}; i++)); do
-		echo "${COLOR5}${NAME[i]:-$(repeat ' ' "$(printable-len "${#NAME[@]}")")}|${CONTACT[i]}"
+		echo "${COLOR5}${NAME[i]:-$(repeat ' ' "$(printable-len "${NAME[0]}")")}|${CONTACT[i]}"
 	done | box -y 1 -x 8 -s "|" -T plain
 
 	# generate about
