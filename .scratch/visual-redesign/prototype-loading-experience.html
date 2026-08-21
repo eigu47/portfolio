@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PROTOTYPE — loading experience (throwaway)</title>
+<!--
+  PROTOTYPE — throwaway, answers ticket 03 (Loading experience design)
+  Question: what should visitors see while the 3D assets load?
+  Three structurally different loader variants over a simulated dark-premium
+  scene reveal. Switch with the bottom bar or ← / → keys.
+  Speed controls (top-left) simulate fast load / slow connection / stall.
+  Double-click to open — no build, no server.
+-->
+<style>
+  :root {
+    --bg-base: #09090b;
+    --bg-grad-top: #0d0d11;
+    --accent: #34d399;
+    --accent-glow: rgba(52, 211, 153, 0.3);
+    --text-hi: #f1f5f9;
+    --text-lo: #94a3b8;
+    --hairline: rgba(255, 255, 255, 0.08);
+    --radius: 14px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    font-family: "Calibre", "Noto Sans JP", system-ui, sans-serif;
+    background: var(--bg-base);
+    color: var(--text-hi);
+    overflow: hidden;
+  }
+
+  /* ---- background treatment (from design system ticket 01) ---- */
+  .bg {
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(52,211,153,0.10), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 90% 110%, rgba(56,89,244,0.08), transparent 60%),
+      linear-gradient(to bottom, var(--bg-grad-top), var(--bg-base));
+  }
+  .grain {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---- mock "loaded" scene (stands in for the real 3D canvas) ---- */
+  .scene {
+    position: fixed; inset: 0; z-index: 2;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transform: scale(1.04);
+    transition: opacity 900ms ease, transform 1200ms cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+  .scene.revealed { opacity: 1; transform: scale(1); pointer-events: auto; }
+  .scene svg { width: min(70vw, 720px); height: auto; }
+
+  /* ---- loader overlay ---- */
+  .loader {
+    position: fixed; inset: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: center; flex-direction: column;
+    transition: opacity 700ms ease, filter 700ms ease;
+  }
+  .loader.exiting { opacity: 0; filter: blur(6px); pointer-events: none; }
+  .loader.hidden { display: none; }
+
+  /* Variant A — monogram + hairline progress bar */
+  .va-monogram {
+    font-size: 64px; font-weight: 500; letter-spacing: -0.02em; line-height: 1;
+    margin-bottom: 36px;
+  }
+  .va-monogram span { color: var(--accent); }
+  .va-barwrap { width: 220px; height: 2px; background: var(--hairline); border-radius: 999px; overflow: hidden; }
+  .va-bar { height: 100%; width: 0%; background: linear-gradient(90deg, rgba(52,211,153,0.5), var(--accent)); box-shadow: 0 0 12px var(--accent-glow); border-radius: 999px; }
+  .va-pct { margin-top: 16px; font-size: 13px; letter-spacing: 0.15em; color: var(--text-lo); font-variant-numeric: tabular-nums; }
+
+  /* Variant B — counter hero */
+  .vb-counter {
+    font-size: clamp(96px, 18vw, 200px); font-weight: 300; line-height: 1;
+    letter-spacing: -0.04em; font-variant-numeric: tabular-nums;
+    background: linear-gradient(to bottom, var(--text-hi), rgba(241,245,249,0.25));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .vb-label { margin-top: 12px; font-size: 13px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--text-lo); }
+  .vb-dot { position: absolute; bottom: 18vh; left: 50%; transform: translateX(-50%); width: 48px; height: 2px; background: var(--hairline); border-radius: 999px; overflow: hidden; }
+  .vb-dot i { display: block; height: 100%; width: 0%; background: var(--accent); }
+
+  /* Variant C — wireframe draw */
+  .vc-svg { width: min(60vw, 420px); height: auto; }
+  .vc-path {
+    fill: none; stroke: rgba(255,255,255,0.14); stroke-width: 1.5;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  .vc-trace {
+    fill: none; stroke: var(--accent); stroke-width: 1.5;
+    stroke-linecap: round; stroke-linejoin: round;
+    filter: drop-shadow(0 0 6px var(--accent-glow));
+  }
+  .vc-caption { margin-top: 28px; font-size: 13px; letter-spacing: 0.15em; color: var(--text-lo); font-variant-numeric: tabular-nums; }
+
+  /* Variant D — wireframe monogram: letters drawn in as progress */
+  .vd-svg { width: min(44vw, 260px); height: auto; }
+  .vd-label {
+    margin-top: 36px; font-size: 12px; letter-spacing: 0.4em;
+    text-transform: uppercase; color: var(--text-lo);
+  }
+
+  /* ---- prototype chrome (not part of any design) ---- */
+  .proto-tag {
+    position: fixed; top: 16px; left: 16px; z-index: 50;
+    display: flex; gap: 8px; align-items: center;
+    font-family: ui-monospace, monospace; font-size: 11px;
+  }
+  .proto-tag .badge { background: #7c2d12; color: #fed7aa; padding: 4px 8px; border-radius: 6px; }
+  .proto-tag button {
+    background: rgba(255,255,255,0.06); border: 1px solid var(--hairline); color: var(--text-lo);
+    padding: 4px 10px; border-radius: 6px; cursor: pointer; font: inherit;
+  }
+  .proto-tag button.active { color: var(--text-hi); border-color: rgba(52,211,153,0.35); }
+  .proto-status {
+    position: fixed; top: 52px; left: 16px; z-index: 50;
+    font-family: ui-monospace, monospace; font-size: 10px; color: rgba(148,163,184,0.6);
+  }
+
+  .switcher {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 50;
+    display: flex; align-items: center; gap: 4px;
+    background: #18181b; border: 1px solid rgba(255,255,255,0.15); border-radius: 999px;
+    padding: 6px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    font-family: ui-monospace, monospace; font-size: 12px;
+  }
+  .switcher button {
+    background: none; border: none; color: #d4d4d8; cursor: pointer;
+    font: inherit; padding: 6px 12px; border-radius: 999px;
+  }
+  .switcher button:hover { background: rgba(255,255,255,0.1); }
+  .switcher .label { color: #fafafa; padding: 0 10px; min-width: 190px; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="grain"></div>
+
+<!-- mock loaded scene -->
+<div class="scene" id="scene">
+  <svg viewBox="0 0 720 420">
+    <defs>
+      <linearGradient id="lg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#1e293b"/><stop offset="1" stop-color="#0f172a"/>
+      </linearGradient>
+    </defs>
+    <rect x="140" y="60" width="440" height="270" rx="14" fill="url(#lg)" stroke="rgba(255,255,255,0.08)"/>
+    <rect x="160" y="80" width="400" height="230" rx="8" fill="#0b1220"/>
+    <circle cx="360" cy="195" r="46" fill="none" stroke="#34d399" stroke-opacity="0.5"/>
+    <g fill="#334155">
+      <rect x="250" y="170" width="70" height="10" rx="5"/>
+      <rect x="250" y="192" width="110" height="10" rx="5"/>
+      <rect x="250" y="214" width="90" height="10" rx="5"/>
+    </g>
+    <path d="M100 330 L620 330 L660 380 Q664 388 654 388 L66 388 Q56 388 60 380 Z"
+          fill="#111827" stroke="rgba(255,255,255,0.08)"/>
+    <rect x="290" y="344" width="140" height="8" rx="4" fill="#1e293b"/>
+  </svg>
+</div>
+
+<!-- loader variants -->
+<div class="loader" id="loader">
+
+  <!-- A: monogram + hairline bar -->
+  <div class="variant" data-variant="A">
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <div class="va-monogram">e<span>/</span>p</div>
+      <div class="va-barwrap"><div class="va-bar" id="vaBar"></div></div>
+      <div class="va-pct" id="vaPct">loading 0%</div>
+    </div>
+  </div>
+
+  <!-- B: counter hero -->
+  <div class="variant" data-variant="B" hidden>
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <div class="vb-counter"><span id="vbPct">0</span><span style="font-size:0.35em;color:#94a3b8;">%</span></div>
+      <div class="vb-label">eiguchi pablo</div>
+    </div>
+    <div class="vb-dot"><i id="vbBar"></i></div>
+  </div>
+
+  <!-- C: wireframe draw -->
+  <div class="variant" data-variant="C" hidden>
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <svg class="vc-svg" viewBox="0 0 300 180">
+        <!-- laptop outline -->
+        <path class="vc-path" d="M75 30 H225 V125 H75 Z M55 145 L245 145 L262 162 H38 Z"/>
+        <path class="vc-trace" id="vcTrace" d="M75 30 H225 V125 H75 Z M55 145 L245 145 L262 162 H38 Z"/>
+        <path d="M95 105 q20 -45 40 0 t40 0 t40 0" fill="none" stroke="none"/>
+        <path class="vc-path" d="M95 105 q20 -45 40 0 t40 0 t40 0" opacity="0.5"/>
+      </svg>
+      <div class="vc-caption" id="vcCaption">assembling scene · 0%</div>
+    </div>
+  </div>
+
+  <!-- D: wireframe monogram — the letters themselves trace in -->
+  <div class="variant" data-variant="D" hidden>
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <svg class="vd-svg" viewBox="0 0 200 110">
+        <!-- faint ghost of the full monogram -->
+        <path class="vc-path"
+          d="M23 52 H66 M66 52 A22 22 0 1 0 60 74 M92 92 L112 18 M132 15 V95 M132 40 C160 32 172 50 168 62 C164 76 146 82 132 78"/>
+        <!-- accent trace, drawn in sync with load progress -->
+        <path class="vc-trace" id="vdTrace"
+          d="M23 52 H66 M66 52 A22 22 0 1 0 60 74 M92 92 L112 18 M132 15 V95 M132 40 C160 32 172 50 168 62 C164 76 146 82 132 78"/>
+      </svg>
+      <div class="vd-label">eiguchi pablo</div>
+    </div>
+  </div>
+
+</div>
+
+  /* prototype chrome */
+<div class="proto-tag">
+  <span class="badge">PROTOTYPE</span>
+  <button data-speed="fast" class="active">fast (~2.5s)</button>
+  <button data-speed="slow">slow conn (~9s)</button>
+  <button data-speed="stall">stall @ 62%</button>
+  <button id="forceReveal">skip → reveal</button>
+</div>
+<div class="proto-status" id="status"></div>
+
+<div class="switcher">
+  <button id="prev">←</button>
+  <span class="label" id="vLabel">A — Monogram + bar</span>
+  <button id="next">→</button>
+</div>
+
+<script>
+  // ---------- variant switching ----------
+  const NAMES = {
+    A: "A — Monogram + hairline bar",
+    B: "B — Counter hero",
+    C: "C — Wireframe draw",
+    D: "D — Wireframe monogram",
+  };
+  const ORDER = ["A", "B", "C", "D"];
+  const params = new URLSearchParams(location.search);
+  let current = ORDER.includes(params.get("variant")) ? params.get("variant") : "A";
+
+  function showVariant(v) {
+    current = v;
+    document.querySelectorAll(".variant").forEach(el => el.hidden = el.dataset.variant !== v);
+    document.getElementById("vLabel").textContent = NAMES[v];
+    const url = new URL(location); url.searchParams.set("variant", v);
+    history.replaceState(null, "", url);
+  }
+  document.getElementById("prev").onclick = () => showVariant(ORDER[(ORDER.indexOf(current) + ORDER.length - 1) % ORDER.length]);
+  document.getElementById("next").onclick = () => showVariant(ORDER[(ORDER.indexOf(current) + 1) % ORDER.length]);
+  addEventListener("keydown", e => {
+    if (/input|textarea/i.test(document.activeElement.tagName)) return;
+    if (e.key === "ArrowLeft") document.getElementById("prev").click();
+    if (e.key === "ArrowRight") document.getElementById("next").click();
+  });
+  showVariant(current);
+
+  // ---------- simulated asset loading ----------
+  const MIN_DISPLAY_MS = 800;   // decision under test: fast loads shouldn't flash
+  let speed = "fast";
+  let progress = 0;             // 0..1
+  let startedAt = performance.now();
+  let revealed = false;
+
+  document.querySelectorAll("[data-speed]").forEach(b => b.onclick = () => {
+    speed = b.dataset.speed;
+    document.querySelectorAll("[data-speed]").forEach(x => x.classList.toggle("active", x === b));
+    reset();
+  });
+  document.getElementById("forceReveal").onclick = () => reveal();
+
+  function reset() {
+    progress = 0; startedAt = performance.now(); revealed = false;
+    document.getElementById("loader").classList.remove("exiting", "hidden");
+    document.getElementById("scene").classList.remove("revealed");
+  }
+
+  // piecewise fake progress: quick early gains, mid crawl, late finish
+  function tick(now) {
+    if (!revealed) {
+      const elapsed = now - startedAt;
+      const rate = speed === "stall" && elapsed > 1500 ? 0
+                 : speed === "slow" ? 0.00009 : 0.00042;
+      // ease-out shape so % climbs fast then crawls, like real asset loads
+      const target = Math.min(1, elapsed * rate);
+      progress += (target - progress) * 0.08;
+      if (speed !== "stall") progress = Math.max(progress, target * 0.98);
+
+      render();
+
+      const minTimeMet = elapsed >= MIN_DISPLAY_MS;
+      if (progress > 0.999 && minTimeMet) reveal();
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  function render() {
+    const pct = Math.round(progress * 100);
+    const elapsed = ((performance.now() - startedAt) / 1000).toFixed(1);
+    document.getElementById("vaBar").style.width = pct + "%";
+    document.getElementById("vaPct").textContent = "loading " + pct + "%";
+    document.getElementById("vbPct").textContent = pct;
+    document.getElementById("vbBar").style.width = pct + "%";
+    document.getElementById("vcCaption").textContent = "assembling scene · " + pct + "%";
+    const trace = document.getElementById("vcTrace");
+    const len = trace.getTotalLength();
+    trace.style.strokeDasharray = len;
+    trace.style.strokeDashoffset = len * (1 - Math.min(1, progress * 1.05));
+    const dTrace = document.getElementById("vdTrace");
+    dTrace.style.strokeDasharray = len;
+    dTrace.style.strokeDashoffset = len * (1 - Math.min(1, progress * 1.05));
+
+    document.getElementById("status").textContent =
+      `progress ${pct}% · ${elapsed}s elapsed · min-display 0.8s · speed: ${speed}`;
+  }
+
+  function reveal() {
+    if (revealed) return;
+    revealed = true;
+    render();
+    document.getElementById("vaBar").style.width = "100%";
+    document.getElementById("vaPct").textContent = "ready";
+    setTimeout(() => {
+      document.getElementById("loader").classList.add("exiting");
+      document.getElementById("scene").classList.add("revealed");
+      setTimeout(() => document.getElementById("loader").classList.add("hidden"), 750);
+    }, 250);
+  }
+  render();
+</script>
+</body>
+</html>
