@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<!-- PROTOTYPE — throwaway, answers: "flat near-black vs dark-gradient+grain background,
+     and which type pairing?" for the visual-redesign design-system ticket.
+     Open directly in a browser. Switch variants with the bottom bar or ← → keys.
+     Variants cross two axes:
+       A  flat black   × Calibre (current)
+       B  flat black   × Inter grotesque
+       C  gradient+grain × Calibre
+       D  gradient+grain × Inter
+       E  gradient+grain × Instrument Serif display + Inter body -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Design system prototype — visual redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Noto+Sans+JP:wght@400;500&display=swap"
+  rel="stylesheet"
+/>
+<style>
+  /* ---- fonts ---- */
+  @font-face {
+    font-family: "Calibre";
+    src: url("../../src/assets/fonts/Calibre-Regular.ttf") format("truetype");
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: "Calibre";
+    src: url("../../src/assets/fonts/Calibre-Medium.ttf") format("truetype");
+    font-weight: 500;
+  }
+  @font-face {
+    font-family: "Calibre";
+    src: url("../../src/assets/fonts/Calibre-Light.ttf") format("truetype");
+    font-weight: 300;
+  }
+
+  :root {
+    --accent: #34d399;
+    --radius: 14px;
+    --hairline: rgba(255, 255, 255, 0.08);
+    --text-hi: #f1f5f9;
+    --text-lo: #94a3b8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    min-height: 100vh;
+    color: var(--text-hi);
+    overflow-x: hidden;
+  }
+
+  /* ---- axis 1: backgrounds ---- */
+  [data-bg="flat"] {
+    background: #09090b;
+  }
+  [data-bg="grad"] {
+    background-color: #0a0a0c;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(52, 211, 153, 0.10), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 85% 110%, rgba(56, 89, 244, 0.08), transparent 65%),
+      linear-gradient(180deg, #0d0d11 0%, #09090b 100%);
+  }
+  [data-bg="grad"]::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---- axis 2: typography ---- */
+  [data-type="calibre"] { --font-body: "Calibre", sans-serif; --font-display: var(--font-body); --display-weight: 500; --display-transform: none; }
+  [data-type="inter"]   { --font-body: "Inter", "Noto Sans JP", sans-serif; --font-display: var(--font-body); --display-weight: 600; --display-transform: none; }
+  [data-type="serif"]   { --font-body: "Inter", "Noto Sans JP", sans-serif; --font-display: "Instrument Serif", serif; --display-weight: 400; --display-transform: none; }
+
+  body { font-family: var(--font-body); }
+  h1, h2 { font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: -0.02em; }
+
+  /* ---- mock content ---- */
+  .page { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 0 32px 120px; }
+
+  nav {
+    position: sticky; top: 16px; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 20px; border-radius: var(--radius);
+    background: rgba(15, 15, 18, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--hairline);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  }
+  nav .logo { color: var(--accent); font-weight: 600; }
+  nav .links { display: flex; gap: 24px; color: var(--text-lo); font-size: 15px; }
+
+  .hero { padding: 120px 0 80px; max-width: 720px; }
+  .hero .eyebrow { color: var(--accent); font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(40px, 7vw, 72px); line-height: 1.05; margin-bottom: 24px; }
+  [data-type="serif"] .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero p { font-size: 19px; line-height: 1.6; color: var(--text-lo); max-width: 520px; margin-bottom: 36px; }
+  .jp { font-family: "Noto Sans JP", sans-serif; font-size: 13px; color: var(--text-lo); margin-top: 12px; }
+
+  .actions { display: flex; gap: 14px; }
+  .btn {
+    display: inline-block; padding: 12px 26px; border-radius: calc(var(--radius) - 2px);
+    font-size: 15px; font-weight: 500; text-decoration: none; cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn-primary {
+    background: var(--accent); color: #052e1c;
+    box-shadow: 0 4px 20px rgba(52, 211, 153, 0.25);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(52, 211, 153, 0.35); }
+  .btn-ghost { color: var(--text-hi); border: 1px solid var(--hairline); background: rgba(255,255,255,0.03); }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; padding-top: 40px; }
+  .card {
+    padding: 24px; border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--hairline);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+  .card:hover { transform: translateY(-3px); border-color: rgba(52, 211, 153, 0.35); }
+  .card .tag { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+  .card h2 { font-size: 22px; margin-bottom: 8px; }
+  .card p { font-size: 15px; line-height: 1.55; color: var(--text-lo); }
+
+  footer { margin-top: 100px; padding-top: 24px; border-top: 1px solid var(--hairline); color: var(--text-lo); font-size: 14px; display: flex; justify-content: space-between; }
+
+  /* ---- prototype switcher (not part of the design) ---- */
+  #switcher {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    z-index: 999; display: flex; align-items: center; gap: 14px;
+    background: #18181d; border: 1px solid #3f3f46; border-radius: 999px;
+    padding: 8px 16px; box-shadow: 0 10px 40px rgba(0,0,0,.6);
+    font-family: monospace; font-size: 13px; color: #e4e4e7;
+  }
+  #switcher button {
+    background: #27272a; color: #fff; border: none; border-radius: 50%;
+    width: 30px; height: 30px; cursor: pointer; font-size: 15px;
+  }
+  #switcher button:hover { background: #3f3f46; }
+  #variant-label b { color: #34d399; }
+</style>
+</head>
+<body data-bg="flat" data-type="calibre">
+  <div class="page">
+    <nav>
+      <span class="logo">eiguchi pablo</span>
+      <div class="links"><span>about</span><span>projects</span><span>resume</span></div>
+    </nav>
+
+    <section class="hero">
+      <div class="eyebrow">Tokyo · Software Engineer</div>
+      <h1 id="headline">Building playful things for the web<span id="serif-accent"></span></h1>
+      <p>
+        I design and engineer interactive experiences — 3D scenes, crisp interfaces,
+        and the boring-but-critical plumbing underneath them.
+      </p>
+      <p class="jp">栄口パブロ — 東京在住のソフトウェアエンジニアです。3Dとインタラクションが得意です。</p>
+      <div class="actions">
+        <a class="btn btn-primary">View projects</a>
+        <a class="btn btn-ghost">Download resume</a>
+      </div>
+    </section>
+
+    <section class="cards">
+      <div class="card">
+        <div class="tag">Featured</div>
+        <h2>Interactive portfolio</h2>
+        <p>A draggable 3D scene built with react-three-fiber, snap-scrolled sections and physics-y cables.</p>
+      </div>
+      <div class="card">
+        <div class="tag">Open source</div>
+        <h2>Tooling & experiments</h2>
+        <p>Small libraries, editor plugins and generative sketches — the workshop drawer of my brain.</p>
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2026 Pablo Eiguchi</span>
+      <span>github · twitter · linkedin</span>
+    </footer>
+  </div>
+
+  <div id="switcher">
+    <button id="prev" aria-label="previous variant">←</button>
+    <span id="variant-label"></span>
+    <button id="next" aria-label="next variant">→</button>
+  </div>
+
+<script>
+  const VARIANTS = [
+    { key: "A", bg: "flat", type: "calibre", name: "Flat black × Calibre", serifAccent: "" },
+    { key: "B", bg: "flat", type: "inter", name: "Flat black × Inter", serifAccent: "" },
+    { key: "C", bg: "grad", type: "calibre", name: "Gradient+grain × Calibre", serifAccent: "" },
+    { key: "D", bg: "grad", type: "inter", name: "Gradient+grain × Inter", serifAccent: "" },
+    { key: "E", bg: "grad", type: "serif", name: "Gradient+grain × Serif display", serifAccent: " web." },
+  ];
+
+  const params = new URLSearchParams(location.search);
+  let i = Math.max(0, VARIANTS.findIndex((v) => v.key === params.get("variant")));
+
+  function apply() {
+    const v = VARIANTS[i];
+    document.body.dataset.bg = v.bg;
+    document.body.dataset.type = v.type;
+    document.getElementById("serif-accent").textContent = v.serifAccent;
+    document.getElementById(
+      "variant-label"
+    ).innerHTML = `<b>${v.key}</b> — ${v.name}`;
+    const url = new URL(location);
+    url.searchParams.set("variant", v.key);
+    history.replaceState(null, "", url);
+  }
+
+  document.getElementById("prev").onclick = () => { i = (i - 1 + VARIANTS.length) % VARIANTS.length; apply(); };
+  document.getElementById("next").onclick = () => { i = (i + 1) % VARIANTS.length; apply(); };
+  addEventListener("keydown", (e) => {
+    if (/input|textarea/i.test(document.activeElement.tagName)) return;
+    if (e.key === "ArrowLeft") document.getElementById("prev").click();
+    if (e.key === "ArrowRight") document.getElementById("next").click();
+  });
+
+  apply();
+</script>
+</body>
+</html>
