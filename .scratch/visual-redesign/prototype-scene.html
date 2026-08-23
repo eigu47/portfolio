@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<!-- PROTOTYPE — throwaway. Answers the 3D-scene look questions for wayfinder ticket
+     "3D scene restyle direction": lighting rig, material treatment, canvas atmosphere,
+     post-processing grade, prop retextures. (Motion was decided separately: -30%.)
+     Switch looks with the bottom bar or ← → keys.
+       A  Today (baseline)          — current lights, original materials, bare void
+       B  Graphite + emerald rim    — studio rig, graphite family + emerald accents, fog+stars, bloom+vignette   ← recommended
+       C  Muted original colours    — studio rig, original colours desaturated/darkened, fog, bloom+vignette
+       D  Centerpiece + glow floor  — like B plus a reflective floor and a full filmic grade
+       E  Monochrome graphite       — like B but zero emerald in the scene
+     Run over HTTP so the real keyboard.gltf / laptop.glb load:
+       python3 -m http.server 8000     (from repo root)
+       open http://localhost:8000/.scratch/visual-redesign/prototype-scene.html
+     Opened via file:// it still runs with proxy stand-ins. -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Scene restyle prototype — visual redesign</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { overflow: hidden; background: #09090b; height: 100vh; }
+  canvas { display: block; }
+
+  /* vignette overlay — CSS on purpose, keeps composer simple */
+  #vignette {
+    position: fixed; inset: 0; pointer-events: none; z-index: 5; display: none;
+    background: radial-gradient(ellipse at center, transparent 52%, rgba(0,0,0,.45) 100%);
+  }
+
+  #hint {
+    position: fixed; top: 14px; left: 16px; z-index: 6;
+    font: 12px monospace; color: #52525b; user-select: none;
+  }
+  #note {
+    position: fixed; top: 32px; left: 16px; z-index: 6;
+    font: 12px monospace; color: #f59e0b; user-select: none;
+  }
+
+  #switcher {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    z-index: 999; display: flex; align-items: center; gap: 14px;
+    background: #18181d; border: 1px solid #3f3f46; border-radius: 999px;
+    padding: 8px 16px; box-shadow: 0 10px 40px rgba(0,0,0,.6);
+    font-family: monospace; font-size: 13px; color: #e4e4e7;
+  }
+  #switcher button {
+    background: #27272a; color: #fff; border: none; border-radius: 50%;
+    width: 30px; height: 30px; cursor: pointer; font-size: 15px;
+  }
+  #switcher button:hover { background: #3f3f46; }
+  #variant-label b { color: #34d399; }
+  #variant-detail { display: block; margin-top: 6px; font-size: 11px; color: #71717a; max-width: 420px; text-align: center; line-height: 1.5; }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.150.1/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<div id="vignette"></div>
+<div id="hint">drag to orbit · scroll to zoom · ← → switch look</div>
+<div id="note"></div>
+<div id="switcher">
+  <button id="prev" aria-label="previous variant">←</button>
+  <span>
+    <span id="variant-label"></span>
+    <span id="variant-detail"></span>
+  </span>
+  <button id="next" aria-label="next variant">→</button>
+</div>
+
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
+import { GammaCorrectionShader } from "three/addons/shaders/GammaCorrectionShader.js";
+
+/* ---------------- looks ---------------- */
+
+const EMERALD = new THREE.Color("#34d399");
+const ACCENT_GLOW = new THREE.Color("#34d399").multiplyScalar(1.25); // brand emerald, nudged past 1 so the bloom pass catches it
+// darker emerald for in-scene accents (user decision: accents read deep, not glowing mint)
+const ACCENT_DEEP = new THREE.Color("#0a7a58");
+const DEEP_GLOW = ACCENT_DEEP.clone().multiplyScalar(1.2);
+
+const LOOKS = [
+  {
+    key: "A", name: "Today (baseline)",
+    detail: "ambient 0.2 + one directional · original GLB materials · transparent void · bloom only (0.3) · full motion",
+    lighting: "today", material: "original",
+    atmosphere: { fog: false, stars: false, floor: false },
+    post: { bloom: 0.3, vignette: false, ca: false },
+    motion: 1.0,
+  },
+  {
+    key: "B", name: "Graphite + emerald rim",
+    detail: "three-point rig + emerald rim · graphite family, one emerald accent per prop group · fog + starfield · tuned bloom + vignette · motion −30%",
+    lighting: "studio", material: "graphite",
+    atmosphere: { fog: true, stars: true, floor: false },
+    post: { bloom: 0.2, vignette: true, ca: false },
+    motion: 0.7,
+  },
+  {
+    key: "C", name: "Muted original colours",
+    detail: "same rig · laptop blue/red/orange kept but desaturated + darkened · atom stays cyan · fog · tuned bloom + vignette · motion −30%",
+    lighting: "studio", material: "muted",
+    atmosphere: { fog: true, stars: false, floor: false },
+    post: { bloom: 0.25, vignette: true, ca: false },
+    motion: 0.7,
+  },
+  {
+    key: "D", name: "Centerpiece + glow floor",
+    detail: "graphite family · reflective glow floor under props · subtle chromatic aberration added · motion −30%",
+    lighting: "studio", material: "graphite",
+    atmosphere: { fog: true, stars: false, floor: true },
+    post: { bloom: 0.22, vignette: true, ca: true },
+    motion: 0.7,
+  },
+  {
+    key: "E", name: "Monochrome graphite (no emerald)",
+    detail: "graphite family but every emerald accent removed — cool rim light instead · fog + starfield · softest bloom · motion −30%",
+    lighting: "studio-cool", material: "mono",
+    atmosphere: { fog: true, stars: true, floor: false },
+    post: { bloom: 0.18, vignette: true, ca: false },
+    motion: 0.7,
+  },
+  {
+    key: "F", name: "Muted + starfield",
+    detail: "look C's muted colours · darker-emerald accents (atom, cable sheen) · fog + faint starfield · bloom + vignette · motion −30%",
+    lighting: "studio", material: "muted", deepAccent: true,
+    atmosphere: { fog: true, stars: true, floor: false },
+    post: { bloom: 0.22, vignette: true, ca: false },
+    motion: 0.7,
+  },
+  {
+    key: "G", name: "Muted + glow floor",
+    detail: "look C's muted colours · darker-emerald accents · reflective glow floor · subtle chromatic aberration · motion −30%",
+    lighting: "studio", material: "muted", deepAccent: true,
+    atmosphere: { fog: true, stars: false, floor: true },
+    post: { bloom: 0.22, vignette: true, ca: true },
+    motion: 0.7,
+  },
+  {
+    key: "H", name: "Muted + floor & stars",
+    detail: "look C's muted colours · darker-emerald accents · glow floor AND starfield combined · motion −30%",
+    lighting: "studio", material: "muted", deepAccent: true,
+    atmosphere: { fog: true, stars: true, floor: true },
+    post: { bloom: 0.2, vignette: true, ca: false },
+    motion: 0.7,
+  },
+];
+
+function accentFor(look) {
+  return look.material === "mono" ? null : EMERALD;
+}
+
+/* ---------------- renderer / scene / camera ---------------- */
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+// NB: no renderer.outputEncoding here — GammaCorrectionShader at the end of the
+// composer does the linear→sRGB conversion (classic pre-r152 EffectComposer setup)
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(48, innerWidth / innerHeight, 0.1, 100);
+camera.position.set(0, 1.0, 7.6);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, -0.1, 0);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.minDistance = 4;
+controls.maxDistance = 12;
+controls.maxPolarAngle = 1.5;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.7;
+
+/* lights live in their own group so looks can swap them wholesale */
+const lightGroup = new THREE.Group();
+scene.add(lightGroup);
+
+function buildLights(look) {
+  while (lightGroup.children.length) lightGroup.remove(lightGroup.children[0]);
+
+  if (look.lighting === "today") {
+    const ambient = new THREE.AmbientLight(0xffffff, 0.2);
+    const dir = new THREE.DirectionalLight(0xffffff, 0.5);
+    dir.position.set(10, 15, 10);
+    lightGroup.add(ambient, dir);
+    return;
+  }
+
+  // studio three-point
+  const ambient = new THREE.AmbientLight(0xbcc4d4, 0.14);
+
+  const key = new THREE.DirectionalLight(0xfff4e5, 1.25); // warm-neutral key, top-front
+  key.position.set(5, 8, 5);
+  key.castShadow = true;
+  key.shadow.mapSize.set(1024, 1024);
+  key.shadow.bias = -0.0005;
+  Object.assign(key.shadow.camera, { left: -7, right: 7, top: 7, bottom: -7, near: 1, far: 30 });
+
+  const fill = new THREE.DirectionalLight(0x8a94a8, 0.35); // cool fill, behind-left
+  fill.position.set(-6, 3, 6);
+
+  const rimColor = look.lighting === "studio-cool" ? 0x93c5fd : new THREE.Color(0x34d399).lerp(new THREE.Color(0xffffff), 0.45);
+  // spotlight rim from behind-right: kisses edges without flooding surfaces
+  const rim = new THREE.SpotLight(rimColor, 0.55, 0, 0.65, 0.7);
+  rim.position.set(3.5, 4.5, -6.5);
+  rim.target.position.set(0, -0.3, 0);
+  lightGroup.add(rim.target);
+
+  const under = new THREE.PointLight(rimColor, 0.15, 12); // faint under-glow for separation
+  under.position.set(0, -2.2, 2);
+
+  lightGroup.add(ambient, key, fill, rim, under);
+}
+
+/* ---------------- backdrop ---------------- */
+
+// flat colour for "today"; layered gradient + grain texture for the redesign looks,
+// reproducing the design-system background decided in ticket 01.
+// today's bg-slate-900; converted to linear so the composer's gamma pass
+// rounds it back to exactly #0f172a on screen (r150 backgrounds aren't colour-managed)
+const FLAT_BG = new THREE.Color("#0f172a").convertSRGBToLinear();
+
+function makeBackdropTexture() {
+  const c = document.createElement("canvas");
+  c.width = c.height = 1024;
+  const g = c.getContext("2d");
+
+  const lin = g.createLinearGradient(0, 0, 0, 1024);
+  lin.addColorStop(0, "#0d0d11");
+  lin.addColorStop(1, "#09090b");
+  g.fillStyle = lin;
+  g.fillRect(0, 0, 1024, 1024);
+
+  let rad = g.createRadialGradient(512, -60, 40, 512, -60, 700);
+  rad.addColorStop(0, "rgba(52,211,153,0.10)");
+  rad.addColorStop(1, "rgba(52,211,153,0)");
+  g.fillStyle = rad;
+  g.fillRect(0, 0, 1024, 1024);
+
+  rad = g.createRadialGradient(980, 1050, 40, 980, 1050, 650);
+  rad.addColorStop(0, "rgba(56,89,244,0.08)");
+  rad.addColorStop(1, "rgba(56,89,244,0)");
+  g.fillStyle = rad;
+  g.fillRect(0, 0, 1024, 1024);
+
+  for (let i = 0; i < 9000; i++) {
+    g.fillStyle = `rgba(255,255,255,${Math.random() * 0.03})`;
+    g.fillRect(Math.random() * 1024, Math.random() * 1024, 1, 1);
+  }
+
+  const tex = new THREE.CanvasTexture(c);
+  tex.encoding = THREE.sRGBEncoding;
+  return tex;
+}
+const GRADIENT_BG = makeBackdropTexture();
+
+/* ---------------- atmosphere: stars & floor ---------------- */
+
+function makeStars() {
+  const n = 350;
+  const pos = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) {
+    const r = 14 + Math.random() * 14;
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+    pos[i * 3 + 1] = r * Math.cos(phi) * 0.6;
+    pos[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+  const mat = new THREE.PointsMaterial({
+    size: 0.06, color: 0xcbd5e1, transparent: true, opacity: 0.55,
+    sizeAttenuation: true, depthWrite: false,
+  });
+  return new THREE.Points(geo, mat);
+}
+const stars = makeStars();
+scene.add(stars);
+
+function makeFloor(envMap) {
+  const geo = new THREE.CircleGeometry(9, 64);
+  const mat = new THREE.MeshStandardMaterial({
+    color: 0x101013,
+    metalness: 0.9,
+    roughness: 0.22,
+    envMap,
+    envMapIntensity: 0.55,
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.rotation.x = -Math.PI / 2;
+  mesh.position.y = -1.7;
+  mesh.receiveShadow = true;
+  return mesh;
+}
+
+// dark custom environment so metal reflections read moody, not studio-white
+function makeEnvMap() {
+  const envScene = new THREE.Scene();
+  envScene.background = new THREE.Color(0x050506);
+  const panel1 = new THREE.Mesh(
+    new THREE.PlaneGeometry(4, 2),
+    new THREE.MeshBasicMaterial({ color: ACCENT_GLOW })
+  );
+  panel1.position.set(0, 3, -4);
+  panel1.rotation.x = Math.PI / 2.5;
+  const panel2 = new THREE.Mesh(
+    new THREE.PlaneGeometry(3, 1.5),
+    new THREE.MeshBasicMaterial({ color: new THREE.Color(0.35, 0.42, 0.6).multiplyScalar(1.4) })
+  );
+  panel2.position.set(-4, 2, 0);
+  panel2.rotation.y = Math.PI / 2;
+  envScene.add(panel1, panel2);
+
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  const rt = pmrem.fromScene(envScene, 0.04);
+  pmrem.dispose();
+  return rt.texture;
+}
+const ENV_MAP = makeEnvMap();
+const floor = makeFloor(ENV_MAP);
+scene.add(floor);
+
+/* ---------------- props: atom, logo balls, cable ---------------- */
+
+const floaters = []; // { obj, baseY, amp, speed, rotAmp, baseRotX, baseRotZ }
+function makeFloater(obj, amp, speed, rotAmp = 0.08) {
+  floaters.push({
+    obj,
+    baseY: obj.position.y,
+    amp,
+    speed,
+    rotAmp,
+    baseRotZ: obj.rotation.z,
+  });
+}
+
+function buildAtom(accent) {
+  const group = new THREE.Group();
+  const nucleusMat = new THREE.MeshBasicMaterial({ toneMapped: false });
+
+  const orbits = [];
+  const curve = new THREE.EllipseCurve(0, 0, 1.5, 0.58, 0, Math.PI * 2).getPoints(120);
+  const orbitGeo = new THREE.BufferGeometry().setFromPoints(curve.map((p) => new THREE.Vector3(p.x, p.y, 0)));
+  const orbitMat = new THREE.LineBasicMaterial({ transparent: true, opacity: 0.85, toneMapped: false });
+
+  const electrons = [];
+  for (let i = 0; i < 3; i++) {
+    const orbitLine = new THREE.LineLoop(orbitGeo, orbitMat);
+    if (i === 1) orbitLine.rotation.z = 1;
+    if (i === 2) orbitLine.rotation.z = -1;
+    orbits.push(orbitLine);
+
+    const holder = new THREE.Group();
+    const e = new THREE.Mesh(new THREE.SphereGeometry(0.09), nucleusMat);
+    holder.add(e);
+    // tilt matches the orbit line rotations set below
+    const tilt = i === 1 ? 1 : i === 2 ? -1 : 0;
+    electrons.push({ holder, speed: 2.6 + i * 0.6, phase: (i / 3) * Math.PI * 2, tilt });
+    group.add(orbitLine, holder);
+  }
+
+  const nucleus = new THREE.Mesh(new THREE.SphereGeometry(0.34), nucleusMat);
+  group.add(nucleus);
+
+  group.userData.setColors = (look) => {
+    if (look.material === "original") {
+      // today's cyan
+      nucleusMat.color.setRGB(0.2, 2.0, 2.0);
+      orbitMat.color.set("#22d3ee");
+      orbitMat.opacity = 0.85;
+    } else if (look.material === "mono") {
+      nucleusMat.color.setRGB(0.9, 0.95, 1.05);
+      orbitMat.color.set("#64748b");
+      orbitMat.opacity = 0.5;
+    } else if (look.deepAccent) {
+      nucleusMat.color.copy(DEEP_GLOW);
+      orbitMat.color.copy(ACCENT_DEEP);
+      orbitMat.opacity = 0.9;
+    } else {
+      nucleusMat.color.copy(ACCENT_GLOW);
+      orbitMat.color.copy(EMERALD);
+      orbitMat.opacity = 0.85;
+    }
+  };
+
+  group.userData.electrons = electrons;
+  group.userData.setColors({ material: 'original' });
+  return group;
+}
+
+function buildLogoBalls() {
+  const group = new THREE.Group();
+  const mat = new THREE.MeshStandardMaterial({ flatShading: true, roughness: 0.55, metalness: 0.15 });
+  const balls = [];
+  [
+    [-1.05, -0.95, 0.6],
+    [0.15, -1.15, 0.9],
+    [1.25, -0.85, 0.5],
+  ].forEach((p, i) => {
+    const m = new THREE.Mesh(new THREE.IcosahedronGeometry(0.38 - i * 0.03, 1), mat.clone());
+    m.castShadow = true;
+    m.position.set(...p);
+    balls.push(m);
+    group.add(m);
+  });
+
+  group.userData.setColors = (accent, treatment) => {
+    let c;
+    if (treatment === "original") c = "#e2e8f0";
+    else if (treatment === "mono") c = "#71717a";
+    else c = "#94a3b8"; // graphite: light enough for decals to sit on later
+    balls.forEach((b) => b.material.color.set(c));
+  };
+  return group;
+}
+
+function buildCable(from, to, accent) {
+  const mid = new THREE.Vector3().lerpVectors(from, to, 0.5);
+  mid.y -= 1.4;
+  mid.z -= 1.6;
+  const sag = new THREE.Vector3().lerpVectors(from, to, 0.75);
+  sag.y -= 0.5;
+  sag.z += 0.6;
+  const curve = new THREE.CatmullRomCurve3([from, mid.clone().add(new THREE.Vector3(0.8, 0.3, 0)), sag, to]);
+  const tube = new THREE.Mesh(
+    new THREE.TubeGeometry(curve, 128, 0.022, 8),
+    new THREE.MeshStandardMaterial({ color: "#020617", roughness: 0.6, metalness: 0.3 })
+  );
+  tube.castShadow = true;
+
+  tube.userData.setColors = (accentColor) => {
+    tube.material.color.set(accentColor ? "#0b1512" : "#09090b"); // faint emerald-tinted black when accent on
+  };
+  return tube;
+}
+
+/* ---------------- models: real GLTFs or proxies ---------------- */
+
+const noteEl = document.getElementById("note");
+
+async function loadFirst(paths) {
+  const loader = new GLTFLoader();
+  // the repo's models are Draco-compressed (drei's useGLTF wires this up automatically)
+  const draco = new DRACOLoader();
+  draco.setDecoderPath("https://cdn.jsdelivr.net/npm/three@0.150.1/examples/jsm/libs/draco/gltf/");
+  draco.setDecoderConfig({ type: "js" }); // avoid wasm fetch issues; small scene, plenty fast
+  loader.setDRACOLoader(draco);
+  for (const path of paths) {
+    try {
+      return await loader.loadAsync(path);
+    } catch (e) {
+      /* try next */
+    }
+  }
+  throw new Error("none loaded");
+}
+
+function rememberOriginals(root) {
+  root.traverse((o) => {
+    if (o.isMesh) {
+      o.castShadow = true;
+      o.receiveShadow = false;
+      o.userData.origMats = Array.isArray(o.material) ? o.material.map((m) => m.clone()) : o.material.clone();
+    }
+  });
+}
+
+function applyTreatmentToModel(root, treatment, kind) {
+  const LAPTOP_GRAPHITE = {
+    "1A1A1A": [0x1b1b1e, 0.55, 0.4],
+    "455A64": [0x2c2c31, 0.5, 0.45],
+    "039BE5": ["#34d399", 0.5, 0.2], // lid becomes the single emerald accent (diffuse, so it stays deep emerald)
+    F44336: [0x333338, 0.55, 0.4],
+    FF9800: [0x2a2a2f, 0.55, 0.4],
+  };
+  const KEYBOARD_GRAPHITE = {
+    "Black rubber": [0x16161a, 0.6, 0.3],
+    "Keycap material": [0xaab2bf, 0.7, 0.05],
+  };
+
+  root.traverse((o) => {
+    if (!o.isMesh || !o.userData.origMats) return;
+    const origs = Array.isArray(o.userData.origMats) ? o.userData.origMats : [o.userData.origMats];
+    const mats = Array.isArray(o.material) ? o.material : [o.material];
+
+    mats.forEach((mat, i) => {
+      const orig = origs[i % origs.length];
+      if (!orig) return;
+      mat.copy(orig);
+
+      if (treatment === "original") {
+        if (o.name === "Keycaps") mat.color.set("#cbd5e1"); // what the app does today
+        return;
+      }
+      // the laptop's screen plane is an unnamed MeshBasicMaterial — give it
+      // the emerald screen-glow accent in graphite mode, cool white in mono
+      if (kind === "laptop" && mat.isMeshBasicMaterial && !mat.name) {
+        mat.color.copy(treatment === "mono" ? new THREE.Color(0.55, 0.62, 0.72) : ACCENT_GLOW);
+        mat.toneMapped = false;
+        return;
+      }
+      if (treatment === "muted") {
+        const hsl = { h: 0, s: 0, l: 0 };
+        mat.color.getHSL(hsl);
+        hsl.s *= 0.35;
+        hsl.l = Math.min(hsl.l * 0.55, 0.45);
+        mat.color.setHSL(hsl.h, hsl.s, hsl.l);
+        mat.roughness = Math.max(mat.roughness, 0.5);
+        return;
+      }
+      // graphite / mono
+      const table = isLaptopName(o) ? LAPTOP_GRAPHITE : KEYBOARD_GRAPHITE;
+      const entry = Object.entries(table).find(([name]) => nameHas(o, name));
+      if (entry) {
+        const [color, rough, metal] = entry[1];
+        let c = color;
+        if (treatment === "mono" && typeof color === "string") c = 0x3a3a42; // strip the emerald lid
+        mat.color.set(c);
+        mat.roughness = rough;
+        mat.metalness = metal;
+      } else if (mat.isMeshStandardMaterial) {
+        const hsl = { h: 0, s: 0, l: 0 };
+        mat.color.getHSL(hsl);
+        hsl.s *= 0.2;
+        hsl.l = Math.min(hsl.l * 0.5, 0.28);
+        mat.color.setHSL(hsl.h, hsl.s, hsl.l);
+      }
+    });
+  });
+}
+
+function nameHas(obj, needle) {
+  return (
+    obj.name?.toLowerCase().includes(needle.toLowerCase()) ||
+    (Array.isArray(obj.material) ? obj.material.some((m) => m.name === needle) : obj.material?.name === needle)
+  );
+}
+function isLaptopName(obj) {
+  return ["1A1A1A", "455A64", "039BE5", "F44336", "FF9800"].some((n) => nameHas(obj, n)) ||
+         !["Black rubber", "Keycap material"].some((n) => nameHas(obj, n)); // default → laptop rules
+}
+
+/* proxies (file:// fallback) */
+function proxyKeyboard() {
+  const g = new THREE.Group();
+  g.name = "Case";
+  const caseMesh = new THREE.Mesh(
+    new THREE.BoxGeometry(2.3, 0.16, 0.86),
+    new THREE.MeshStandardMaterial({ name: "Black rubber", color: 0x111114, roughness: 0.55, metalness: 0.5 })
+  );
+  caseMesh.name = "Case";
+  g.add(caseMesh);
+  const keyMat = new THREE.MeshStandardMaterial({ name: "Keycap material", color: 0xcbd5e1, roughness: 0.7, metalness: 0.1 });
+  for (let row = 0; row < 4; row++)
+    for (let col = 0; col < 11; col++) {
+      const k = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.07, 0.14), keyMat);
+      k.name = "Keycaps";
+      k.position.set(-0.98 + col * 0.196, 0.11, -0.26 + row * 0.19);
+      g.add(k);
+    }
+  return g;
+}
+function proxyLaptop() {
+  const g = new THREE.Group();
+  const dark = new THREE.MeshStandardMaterial({ name: "1A1A1A", color: 0x1a1a1a, roughness: 0.5, metalness: 0.6 });
+  const lidMat = new THREE.MeshStandardMaterial({ name: "039BE5", color: 0x039be5, roughness: 0.4, metalness: 0.5 });
+  const base = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.12, 1.8), dark);
+  const lidPivot = new THREE.Group();
+  lidPivot.position.set(0, 0.06, -0.9);
+  const lid = new THREE.Mesh(new THREE.BoxGeometry(2.6, 1.7, 0.08), lidMat);
+  lid.position.set(0, 0.85, 0);
+  lidPivot.rotation.x = -Math.PI / 2.6;
+  lidPivot.add(lid);
+  const screen = new THREE.Mesh(
+    new THREE.PlaneGeometry(2.3, 1.45),
+    new THREE.MeshBasicMaterial({ color: new THREE.Color(0.2, 1.4, 1.0), toneMapped: false })
+  );
+  screen.position.set(0, 0.87, 0.05);
+  screen.rotation.x = Math.PI / 2.6 - Math.PI / 2 + 0.02;
+  lidPivot.add(screen);
+  g.add(base, lidPivot);
+  return g;
+}
+
+/* ---------------- assemble the stage ---------------- */
+
+const stage = new THREE.Group();
+scene.add(stage);
+
+const atom = buildAtom();
+atom.position.set(0, 0.8, -0.5);
+stage.add(atom);
+makeFloater(atom, 0.12, 0.9, 0.05);
+
+const logos = buildLogoBalls();
+stage.add(logos);
+makeFloater(logos, 0.07, 1.2, 0.03);
+
+let keyboardRoot = null;
+let laptopRoot = null;
+
+async function loadModels() {
+  const useHttp = location.protocol !== "file:";
+  try {
+    if (!useHttp) throw new Error("file protocol");
+    const [kb, lp] = await Promise.all([
+      loadFirst(["../../public/keyboard.gltf", "/keyboard.gltf"]),
+      loadFirst(["../../public/laptop.glb", "/laptop.glb"]),
+    ]);
+    rememberOriginals(kb.scene);
+    rememberOriginals(lp.scene);
+    kb.scene.scale.setScalar(0.8);
+    kb.scene.position.set(-2.7, -0.45, 0.5);
+    kb.scene.rotation.y = 0.55;
+    lp.scene.scale.setScalar(0.22);
+    lp.scene.position.set(2.75, -0.75, -0.3);
+    lp.scene.rotation.y = -0.6;
+    keyboardRoot = kb.scene;
+    laptopRoot = lp.scene;
+    stage.add(keyboardRoot, laptopRoot);
+  } catch {
+    noteEl.textContent = "(proxy stand-ins — serve over http from repo root to see the real props)";
+    keyboardRoot = proxyKeyboard();
+    laptopRoot = proxyLaptop();
+    rememberOriginals(keyboardRoot);
+    rememberOriginals(laptopRoot);
+    keyboardRoot.scale.setScalar(1.0);
+    keyboardRoot.position.set(-2.7, -0.45, 0.5);
+    keyboardRoot.rotation.y = 0.55;
+    laptopRoot.scale.setScalar(1.0);
+    laptopRoot.position.set(2.75, -0.75, -0.3);
+    laptopRoot.rotation.y = -0.6;
+    stage.add(keyboardRoot, laptopRoot);
+  }
+
+  const cableFrom = new THREE.Vector3(-2.0, -0.35, 1.1);
+  const cableTo = new THREE.Vector3(2.2, -0.7, -0.9);
+  const cable = buildCable(cableFrom, cableTo, EMERALD);
+  cable.name = "__cable__";
+  stage.add(cable);
+  props.push(cable);
+}
+
+/* primitive props whose colors are set per-look */
+const props = [];
+props.push(atom, logos);
+
+/* ---------------- post-processing ---------------- */
+
+const composer = new EffectComposer(renderer);
+composer.setSize(innerWidth, innerHeight);
+
+const renderPass = new RenderPass(scene, camera);
+composer.addPass(renderPass);
+
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.3, 0.2, 0.7);
+composer.addPass(bloomPass);
+
+const CAShader = {
+  uniforms: {
+    tDiffuse: { value: null },
+    amount: { value: 0.0018 },
+  },
+  vertexShader: /* glsl */ `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }`,
+  fragmentShader: /* glsl */ `
+    uniform sampler2D tDiffuse;
+    uniform float amount;
+    varying vec2 vUv;
+    void main() {
+      vec2 dir = vUv - 0.5;
+      float d = length(dir);
+      vec2 off = dir * amount * smoothstep(0.15, 0.75, d);
+      float r = texture2D(tDiffuse, vUv + off).r;
+      vec4 g = texture2D(tDiffuse, vUv);
+      float b = texture2D(tDiffuse, vUv - off).b;
+      gl_FragColor = vec4(r, g.g, b, g.a);
+    }`,
+};
+const caPass = new ShaderPass(CAShader);
+caPass.enabled = false;
+composer.addPass(caPass);
+
+const gammaPass = new ShaderPass(GammaCorrectionShader);
+composer.addPass(gammaPass);
+
+/* ---------------- apply a look ---------------- */
+
+let currentLookIndex = 0;
+let motionFactor = 1;
+
+function apply(i) {
+  const look = LOOKS[i];
+  currentLookIndex = i;
+  const accent = accentFor(look);
+
+  buildLights(look);
+
+  scene.fog = look.atmosphere.fog ? new THREE.FogExp2(0x0a0a0e, 0.026) : null;
+  scene.background =
+    look.material === "original" && look.lighting === "today" ? FLAT_BG : GRADIENT_BG;
+
+  stars.visible = look.atmosphere.stars;
+  floor.visible = look.atmosphere.floor;
+
+  document.getElementById("vignette").style.display = look.post.vignette ? "block" : "none";
+
+  bloomPass.strength = look.post.bloom;
+  caPass.enabled = look.post.ca;
+
+  motionFactor = look.motion;
+
+  if (keyboardRoot) applyTreatmentToModel(keyboardRoot, look.material, "keyboard");
+  if (laptopRoot) applyTreatmentToModel(laptopRoot, look.material, "laptop");
+
+  atom.userData.setColors(look);
+  logos.userData.setColors(accent, look.material);
+  stage.getObjectByName("__cable__")?.userData.setColors(look.deepAccent ? ACCENT_DEEP : accent);
+
+  document.getElementById("variant-label").innerHTML = `<b>${look.key}</b> — ${look.name}`;
+  document.getElementById("variant-detail").textContent = look.detail;
+  const url = new URL(location);
+  url.searchParams.set("variant", look.key);
+  history.replaceState(null, "", url);
+}
+
+/* ---------------- animation ---------------- */
+
+const clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+  const t = clock.elapsedTime;
+
+  controls.update();
+
+  for (const f of floaters) {
+    const tt = t * f.speed * motionFactor;
+    f.obj.position.y = f.baseY + Math.sin(tt) * f.amp;
+    f.obj.rotation.z = f.baseRotZ + Math.sin(tt * 0.7) * f.rotAmp;
+  }
+
+  const eScale = motionFactor;
+  for (const el of atom.userData.electrons) {
+    const a = t * el.speed * eScale + el.phase;
+    const x = Math.cos(a) * 1.5;
+    const y = Math.sin(a) * 0.58;
+    // rotate the orbit position by the orbit line's z-tilt
+    el.holder.position.set(
+      x * Math.cos(el.tilt) - y * Math.sin(el.tilt),
+      x * Math.sin(el.tilt) + y * Math.cos(el.tilt),
+      0
+    );
+  }
+
+  composer.render();
+}
+
+addEventListener("resize", () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+  composer.setSize(innerWidth, innerHeight);
+});
+
+/* ---------------- switcher UI ---------------- */
+
+document.getElementById("prev").onclick = () =>
+  apply((currentLookIndex - 1 + LOOKS.length) % LOOKS.length);
+document.getElementById("next").onclick = () => apply((currentLookIndex + 1) % LOOKS.length);
+addEventListener("keydown", (e) => {
+  if (e.key === "ArrowLeft") document.getElementById("prev").click();
+  if (e.key === "ArrowRight") document.getElementById("next").click();
+});
+
+/* ---------------- go ---------------- */
+
+try {
+  await loadModels();
+  const params = new URLSearchParams(location.search);
+  apply(Math.max(0, LOOKS.findIndex((v) => v.key === params.get("variant"))));
+  animate();
+} catch (e) {
+  noteEl.textContent = "INIT ERROR: " + (e && e.stack ? e.stack.split("\n").slice(0, 3).join(" | ") : String(e));
+}
+window.__dbg = { scene, camera, renderer, stage, composer, THREE };
+</script>
+</body>
+</html>

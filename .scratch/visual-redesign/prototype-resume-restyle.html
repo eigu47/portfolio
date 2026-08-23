@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROTOTYPE — Resume route restyle</title>
+<style>
+  /* ============ PROTOTYPE — throwaway, answers ticket 05 ============
+     Chrome layout: A (top bar) / B (side rail) / C (floating dock)
+     PDF direction: 1 (light+emerald) / 2 (dark premium) / 3 (monochrome)
+     Switch independently with the two bottom bars. */
+
+  :root {
+    --bg-base: #09090b;
+    --bg-grad-top: #0d0d11;
+    --accent: #34d399;
+    --accent-glow: rgba(52, 211, 153, 0.3);
+    --text-hi: #f1f5f9;
+    --text-lo: #94a3b8;
+    --surface: rgba(255, 255, 255, 0.03);
+    --hairline: rgba(255, 255, 255, 0.08);
+    --radius: 14px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Calibre', 'Inter', -apple-system, sans-serif;
+    background: linear-gradient(180deg, var(--bg-grad-top), var(--bg-base));
+    background-attachment: fixed;
+    color: var(--text-hi);
+    min-height: 100vh;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(52,211,153,0.10), transparent 60%);
+    pointer-events: none;
+  }
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+
+  /* ---------- shared button language ---------- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    font-size: 15px; font-weight: 500;
+    cursor: pointer; text-decoration: none;
+    border: 1px solid var(--hairline);
+    transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease, background .15s ease;
+    white-space: nowrap;
+  }
+  .btn:hover { transform: translateY(-2px); border-color: rgba(52,211,153,0.35); }
+  .btn-primary {
+    background: var(--accent); color: #052e22; border-color: transparent;
+    box-shadow: 0 4px 20px var(--accent-glow);
+    font-weight: 600;
+  }
+  .btn-primary:hover { box-shadow: 0 6px 28px var(--accent-glow); }
+  .btn-ghost { background: var(--surface); color: var(--text-hi); backdrop-filter: blur(12px); }
+  .btn-tertiary {
+    background: none; border: none; color: var(--text-lo);
+    font-size: 13px; padding: 8px 10px; border-radius: 8px;
+  }
+  .btn-tertiary:hover { color: var(--text-hi); text-decoration: underline; transform: none; }
+
+  /* ================= CHROME A — top action bar ================= */
+  .chrome-a { display: flex; flex-direction: column; height: 100vh; }
+  .chrome-a .topbar {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 24px;
+    background: rgba(9,9,11,0.7);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--hairline);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+  }
+  .chrome-a .actions { display: flex; align-items: center; gap: 12px; }
+  .chrome-a .pdf-area { flex: 1; overflow-y: auto; padding: 32px 16px; }
+
+  /* ================= CHROME B — side rail ================= */
+  .chrome-b { display: flex; height: 100vh; }
+  .chrome-b .rail {
+    width: 280px; flex-shrink: 0;
+    display: flex; flex-direction: column; justify-content: center; gap: 14px;
+    padding: 40px 28px;
+    background: var(--surface);
+    border-right: 1px solid var(--hairline);
+  }
+  .chrome-b .rail h1 { font-size: 20px; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .chrome-b .rail p { font-size: 13px; color: var(--text-lo); margin-bottom: 16px; }
+  .chrome-b .rail .btn { width: 100%; justify-content: center; }
+  .chrome-b .rail .btn-tertiary { width: auto; align-self: center; }
+  .chrome-b .pdf-area { flex: 1; overflow-y: auto; padding: 32px 16px; }
+
+  /* ================= CHROME C — floating dock ================= */
+  .chrome-c { height: 100vh; overflow-y: auto; padding: 32px 16px 110px; }
+  .chrome-c .dock {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 10;
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    background: rgba(9,9,11,0.75);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+  }
+  .dock-sep { width: 1px; height: 22px; background: var(--hairline); }
+
+  /* ---------- shared pdf area ---------- */
+  .pdf-area { display: flex; justify-content: center; align-items: flex-start; }
+  .page-wrap { filter: drop-shadow(0 12px 40px rgba(0,0,0,0.5)); }
+
+  /* ================= PDF MOCKS ================= */
+  .a4 {
+    width: 794px; max-width: 92vw; aspect-ratio: 210 / 297;
+    padding: 44px 48px;
+    display: grid;
+    grid-template-columns: 58% 1fr;
+    grid-template-rows: auto 1fr;
+    column-gap: 34px;
+    font-size: 13px; line-height: 1.55;
+  }
+
+  /* --- style 1: light + emerald --- */
+  .pdf-light { background: #fdfdfd; color: #1e293b; }
+  .pdf-light .head { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; padding-bottom: 22px; border-bottom: 2px solid var(--accent); margin-bottom: 26px; }
+  .pdf-light .name { font-size: 34px; font-weight: 500; letter-spacing: -0.02em; color: #0f172a; }
+  .pdf-light .role { font-size: 17px; color: var(--accent); font-weight: 500; margin-top: 2px; }
+  .pdf-light .contacts { text-align: right; font-size: 11.5px; color: #64748b; line-height: 1.9; }
+  .pdf-light .sec-title { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #64748b; font-weight: 600; margin-bottom: 4px; }
+  .pdf-light .rule { height: 1.5px; background: var(--accent); opacity: 0.75; margin-bottom: 10px; }
+  .pdf-light .col-l > section, .pdf-light .col-r > section { margin-bottom: 24px; }
+  .pdf-light .avatar { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
+  .pdf-light .cert { margin-bottom: 10px; }
+  .pdf-light .cert b { color: #0f172a; font-weight: 500; }
+  .pdf-light .cert .sub { font-size: 11.5px; color: #64748b; }
+  .pdf-light .cert .score { float: right; font-size: 11.5px; color: var(--accent); font-weight: 600; }
+  .pdf-light .skill { display: inline-block; font-size: 11.5px; padding: 3px 10px; margin: 0 5px 6px 0; border-radius: 999px; background: rgba(52,211,153,0.09); color: #0f766e; font-weight: 500; }
+  .pdf-light .lang { display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; }
+  .pdf-light .dots span { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-left: 4px; background: #e2e8f0; }
+  .pdf-light .dots span.on { background: var(--accent); }
+  .pdf-light .ints { display: flex; gap: 18px; font-size: 11.5px; color: #475569; }
+  .pdf-light .qr { width: 74px; height: 74px; background:
+    conic-gradient(#0f172a 25%, transparent 0 50%, #0f172a 0 75%, transparent 0);
+    background-size: 12px 12px; border: 4px solid #fff; outline: 1px solid #cbd5e1; }
+  .pdf-light .qrcap { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #94a3b8; margin-top: 6px; }
+
+  /* --- style 2: dark premium --- */
+  .pdf-dark { background: #101014; color: #cbd5e1; }
+  .pdf-dark .head { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; padding: 20px 22px; margin-bottom: 26px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; }
+  .pdf-dark .name { font-size: 34px; font-weight: 500; letter-spacing: -0.02em; color: #f1f5f9; }
+  .pdf-dark .role { font-size: 17px; color: var(--accent); margin-top: 2px; }
+  .pdf-dark .contacts { text-align: right; font-size: 11.5px; color: #94a3b8; line-height: 1.9; }
+  .pdf-dark .sec-title { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #94a3b8; font-weight: 600; margin-bottom: 4px; }
+  .pdf-dark .rule { height: 1.5px; background: var(--accent); opacity: 0.7; margin-bottom: 10px; }
+  .pdf-dark .col-l > section, .pdf-dark .col-r > section { margin-bottom: 24px; }
+  .pdf-dark .avatar { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
+  .pdf-dark .cert b { color: #f1f5f9; font-weight: 500; }
+  .pdf-dark .cert .sub { font-size: 11.5px; color: #94a3b8; }
+  .pdf-dark .cert .score { float: right; font-size: 11.5px; color: var(--accent); font-weight: 600; }
+  .pdf-dark .skill { display: inline-block; font-size: 11.5px; padding: 3px 10px; margin: 0 5px 6px 0; border-radius: 999px; background: rgba(52,211,153,0.12); color: var(--accent); }
+  .pdf-dark .lang { display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; color: #e2e8f0; }
+  .pdf-dark .dots span { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-left: 4px; background: rgba(255,255,255,0.12); }
+  .pdf-dark .dots span.on { background: var(--accent); }
+  .pdf-dark .ints { display: flex; gap: 18px; font-size: 11.5px; color: #94a3b8; }
+  .pdf-dark .qr { width: 74px; height: 74px; background:
+    conic-gradient(#f1f5f9 25%, transparent 0 50%, #f1f5f9 0 75%, transparent 0);
+    background-size: 12px 12px; border: 4px solid #101014; outline: 1px solid rgba(255,255,255,0.2); }
+  .pdf-dark .qrcap { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #64748b; margin-top: 6px; }
+
+  /* --- style 3: monochrome --- */
+  .pdf-mono { background: #ffffff; color: #222; }
+  .pdf-mono .head { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 2px solid #222; margin-bottom: 26px; }
+  .pdf-mono .name { font-size: 34px; font-weight: 500; letter-spacing: -0.02em; color: #000; }
+  .pdf-mono .role { font-size: 17px; color: #555; margin-top: 2px; }
+  .pdf-mono .contacts { text-align: right; font-size: 11.5px; color: #666; line-height: 1.9; }
+  .pdf-mono .sec-title { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #888; font-weight: 600; margin-bottom: 4px; }
+  .pdf-mono .rule { height: 1px; background: #bbb; margin-bottom: 10px; }
+  .pdf-mono .col-l > section, .pdf-mono .col-r > section { margin-bottom: 24px; }
+  .pdf-mono .avatar { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 1px solid #ccc; filter: grayscale(1); }
+  .pdf-mono .cert b { color: #000; font-weight: 500; }
+  .pdf-mono .cert .sub { font-size: 11.5px; color: #666; }
+  .pdf-mono .cert .score { float: right; font-size: 11.5px; color: #444; }
+  .pdf-mono .skill { display: inline-block; font-size: 11.5px; padding: 3px 10px; margin: 0 5px 6px 0; border-radius: 999px; background: #eee; color: #333; }
+  .pdf-mono .lang { display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; }
+  .pdf-mono .dots span { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-left: 4px; background: #ddd; }
+  .pdf-mono .dots span.on { background: #333; }
+  .pdf-mono .ints { display: flex; gap: 18px; font-size: 11.5px; color: #555; }
+  .pdf-mono .qr { width: 74px; height: 74px; background:
+    conic-gradient(#000 25%, transparent 0 50%, #000 0 75%, transparent 0);
+    background-size: 12px 12px; border: 4px solid #fff; outline: 1px solid #ccc; }
+  .pdf-mono .qrcap { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #999; margin-top: 6px; }
+
+  /* shared inner bits */
+  .col-l, .col-r { min-width: 0; }
+  .summary-body { text-align: justify; }
+  .lang-label b { font-weight: 500; }
+
+  /* ================= switcher bars (not part of the design) ================= */
+  .switcher {
+    position: fixed; z-index: 50;
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 12px;
+    background: #1e293b; border: 1px solid #475569; border-radius: 999px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    font-family: ui-monospace, monospace; font-size: 12px; color: #cbd5e1;
+  }
+  #sw-chrome { bottom: 16px; left: 16px; }
+  #sw-pdf { bottom: 64px; left: 16px; }
+  .switcher { position: fixed; z-index: 9999; }
+  .switcher button {
+    background: #334155; color: #e2e8f0; border: none; border-radius: 999px;
+    padding: 5px 12px; cursor: pointer; font: inherit;
+  }
+  .switcher button.active { background: #38bdf8; color: #082f49; font-weight: 700; }
+  .switcher .lbl { opacity: 0.7; margin-right: 4px; }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- ========== CHROME A ========== -->
+<div class="chrome-a" data-chrome="A">
+  <div class="topbar">
+    <a href="#" class="btn btn-ghost">← Back to portfolio</a>
+    <div class="actions">
+      <span class="btn btn-primary">↓ Download PDF</span>
+      <span class="btn btn-ghost">日本語 PDF ↓</span>
+      <button class="btn-tertiary">Excel 形式 (.xls)</button>
+    </div>
+  </div>
+  <div class="pdf-area" data-pdf-slot></div>
+</div>
+
+<!-- ========== CHROME B ========== -->
+<div class="chrome-b hidden" data-chrome="B">
+  <aside class="rail">
+    <h1>Eiguchi Pablo Martín</h1>
+    <p>Web Developer — Kawasaki, Japan</p>
+    <span class="btn btn-primary">↓ Download PDF</span>
+    <span class="btn btn-ghost">日本語 PDF ↓</span>
+    <a href="#" class="btn btn-ghost">← Back to portfolio</a>
+    <button class="btn-tertiary">Excel 形式 (.xls)</button>
+  </aside>
+  <div class="pdf-area" data-pdf-slot></div>
+</div>
+
+<!-- ========== CHROME C ========== -->
+<div class="chrome-c hidden" data-chrome="C">
+  <div class="pdf-area" data-pdf-slot></div>
+  <div class="dock">
+    <a href="#" class="btn btn-ghost">← Back</a>
+    <div class="dock-sep"></div>
+    <span class="btn btn-primary">↓ PDF</span>
+    <span class="btn btn-ghost">日本語 ↓</span>
+    <button class="btn-tertiary">.xls</button>
+  </div>
+</div>
+
+<!-- switchers (prototype chrome, not the design) -->
+<div class="switcher" id="sw-chrome">
+  <span class="lbl">CHROME</span>
+  <button data-set-chrome="A">A top bar</button>
+  <button data-set-chrome="B">B side rail</button>
+  <button data-set-chrome="C">C dock</button>
+</div>
+<div class="switcher" id="sw-pdf">
+  <span class="lbl">PDF</span>
+  <button data-set-pdf="1">1 light+emerald</button>
+  <button data-set-pdf="2">2 dark</button>
+  <button data-set-pdf="3">3 mono</button>
+</div>
+
+<template id="pdf-template">
+  <div class="page-wrap"><div class="a4">
+    <div class="head">
+      <div>
+        <div class="name">Eiguchi Pablo Martín</div>
+        <div class="role">Web Developer</div>
+      </div>
+      <img class="avatar" src="/avatar.jpg" alt=""
+           onerror="this.style.visibility='hidden'">
+      <div class="contacts">
+        (+81) 070-4325-1645<br>
+        pablo.eiguchi@gmail.com<br>
+        www.eiguchipablo.dev<br>
+        Kawasaki, Japan
+      </div>
+    </div>
+
+    <div class="col col-l">
+      <section>
+        <div class="sec-title">Summary</div><div class="rule"></div>
+        <p class="summary-body">Bilingual web developer (Spanish / Japanese / English) building
+        interactive front-ends with React and TypeScript. Comfortable across the stack —
+        from 3D WebGL experiences to PDF generation pipelines — and experienced working
+        in Japanese business environments.</p>
+      </section>
+      <section>
+        <div class="sec-title">Certifications</div><div class="rule"></div>
+        <div class="cert"><b>JLPT N2</b><div class="sub">Japanese Language Proficiency Test</div></div>
+        <div class="cert"><b>TOEIC Listening &amp; Reading</b> <span class="score">840 / 990</span>
+          <div class="sub">TOEIC Program IIBC — 2021</div></div>
+      </section>
+      <section>
+        <div class="sec-title">QR Code</div><div class="rule"></div>
+        <div class="qr"></div>
+        <div class="qrcap">eiguchipablo.dev</div>
+      </section>
+    </div>
+
+    <div class="col col-r">
+      <section>
+        <div class="sec-title">Skills</div><div class="rule"></div>
+        <span class="skill">HTML/CSS/JS</span><span class="skill">React.js</span>
+        <span class="skill">TypeScript</span><span class="skill">Next.js</span>
+        <span class="skill">React Native</span><span class="skill">Tailwind</span>
+        <span class="skill">Redux</span><span class="skill">Three.js</span>
+        <span class="skill">Node.js</span>
+      </section>
+      <section>
+        <div class="sec-title">Languages</div><div class="rule"></div>
+        <div class="lang lang-label"><span><b>Spanish</b></span><span class="dots"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span></span></div>
+        <div class="lang lang-label"><span><b>Japanese</b></span><span class="dots"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span></span></div>
+        <div class="lang lang-label"><span><b>English</b></span><span class="dots"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span></span></div>
+      </section>
+      <section>
+        <div class="sec-title">Interests</div><div class="rule"></div>
+        <div class="ints"><span>Cycling</span><span>Travel</span><span>Learning</span></div>
+      </section>
+    </div>
+  </div></div>
+</template>
+
+<noscript><div style="position:fixed;inset:auto 0 0 0;background:#dc2626;color:#fff;padding:16px;z-index:99999;text-align:center">JavaScript is disabled or blocked — this prototype cannot switch without it.</div></noscript>
+
+<script>
+  window.onerror = function (msg) {
+    var b = document.createElement('div');
+    b.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#dc2626;color:#fff;padding:12px;z-index:99999;font-family:monospace;font-size:13px';
+    b.textContent = 'PROTOTYPE ERROR: ' + msg;
+    document.body.appendChild(b);
+  };
+
+  var chrome = 'A', pdf = 1;
+
+  function pdfClass() {
+    return 'pdf-' + { 1: 'light', 2: 'dark', 3: 'mono' }[pdf];
+  }
+
+  function render() {
+    var chromes = document.querySelectorAll('[data-chrome]');
+    for (var i = 0; i < chromes.length; i++) {
+      chromes[i].className = chromes[i].className.replace(/ ?hidden/g, '');
+      if (chromes[i].getAttribute('data-chrome') !== chrome) chromes[i].className += ' hidden';
+    }
+    var slots = document.querySelectorAll('[data-pdf-slot]');
+    for (var j = 0; j < slots.length; j++) {
+      slots[j].innerHTML = '';
+      var node = document.getElementById('pdf-template').content.cloneNode(true);
+      node.querySelector('.a4').className += ' ' + pdfClass();
+      slots[j].appendChild(node);
+    }
+    var bc = document.querySelectorAll('[data-set-chrome]');
+    for (var k = 0; k < bc.length; k++)
+      bc[k].className = bc[k].className.replace(/ ?active/g, '') + (bc[k].getAttribute('data-set-chrome') === chrome ? ' active' : '');
+    var bp = document.querySelectorAll('[data-set-pdf]');
+    for (var m = 0; m < bp.length; m++)
+      bp[m].className = bp[m].className.replace(/ ?active/g, '') + (+bp[m].getAttribute('data-set-pdf') === pdf ? ' active' : '');
+  }
+
+  function wire(attr, setter) {
+    var els = document.querySelectorAll('[' + attr + ']');
+    for (var i = 0; i < els.length; i++) {
+      (function (el) {
+        el.addEventListener('click', function () { setter(el.getAttribute(attr)); render(); });
+      })(els[i]);
+    }
+  }
+  wire('data-set-chrome', function (v) { chrome = v; });
+  wire('data-set-pdf', function (v) { pdf = +v; });
+
+  render();
+</script>
+</body>
+</html>
