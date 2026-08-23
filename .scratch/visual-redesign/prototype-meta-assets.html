@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<!--
+  PROTOTYPE — throwaway, not production.
+
+  Question (wayfinder ticket: Meta assets refresh):
+  Which favicon mark and OG image carry the locked dark-premium system
+  (emerald #34d399 accent, gradient+grain dark background, Calibre)?
+
+  Favicon candidates F1–F4 are rendered as inline SVG at real sizes:
+  16px inside mock browser tabs (light AND dark chrome), plus 32/64px.
+  OG candidates O1–O3 are laid out at half-scale (600×315 stands in for
+  1200×630) plus a small share-card preview (~180px wide) to judge
+  legibility when shrunk in feeds/chats.
+
+  Run: double-click this file. Pick winners by eye; record on the ticket.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PROTOTYPE — meta assets (favicon + OG)</title>
+<style>
+  :root {
+    --bg-base: #09090b;
+    --bg-grad-top: #0d0d11;
+    --accent: #34d399;
+    --accent-glow: rgba(52, 211, 153, 0.3);
+    --text-hi: #f1f5f9;
+    --text-lo: #94a3b8;
+    --text-faint: #64748b;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    font-family: Calibre, "Noto Sans JP", system-ui, sans-serif;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(52,211,153,0.10), transparent 60%),
+      linear-gradient(to bottom, var(--bg-grad-top), var(--bg-base));
+    background-attachment: scroll;
+    color: var(--text-hi);
+    min-height: 100vh;
+    padding: 48px 24px 120px;
+  }
+  .grain { position: fixed; inset: -50%; width: 200%; height: 200%; pointer-events: none; opacity: 0.04; z-index: 5; }
+  .wrap { max-width: 920px; margin: 0 auto; position: relative; z-index: 10; }
+
+  .proto-banner {
+    display: inline-block; font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase; padding: 4px 10px; border-radius: 999px;
+    border: 1px solid rgba(52,211,153,0.4); color: var(--accent); margin-bottom: 16px;
+  }
+  header.proto h1 { font-size: 28px; letter-spacing: -0.02em; font-weight: 500; }
+  header.proto p  { margin-top: 8px; max-width: 680px; line-height: 1.6; }
+
+  section { margin-top: 64px; }
+  section > h2 {
+    font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 6px;
+  }
+  section > .sub { font-size: 14px; opacity: 0.7; margin-bottom: 20px; line-height: 1.55; }
+
+  /* variant tag buttons (loader-prototype pattern) */
+  .proto-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .proto-tags button {
+    font: inherit; font-size: 13px; letter-spacing: 0.02em;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+    color: var(--text-lo); padding: 7px 14px; border-radius: 999px; cursor: pointer;
+  }
+  .proto-tags button.active { color: var(--text-hi); border-color: rgba(52,211,153,0.35); }
+
+  /* ---- favicon stage ---- */
+  .tab-strip { display: flex; align-items: flex-end; gap: 2px; padding: 0 12px; border-radius: 12px 12px 0 0; overflow: hidden; width: fit-content; max-width: 100%; }
+  .tab-strip.light { background: #dee1e6; padding-top: 8px; }
+  .tab-strip.darkc { background: #202124; padding-top: 8px; }
+  .tab {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 12px; min-width: 210px; max-width: 240px;
+    border-radius: 10px 10px 0 0; font-size: 12px; white-space: nowrap; overflow: hidden;
+  }
+  .light .tab { background: #f1f3f4; color: #202124; }
+  .light .tab.active { background: #ffffff; }
+  .darkc .tab { background: #292a2d; color: #e8eaed; }
+  .darkc .tab.active { background: #35363a; }
+  .tab .t-title { overflow: hidden; text-overflow: ellipsis; flex: 1; }
+  .tab .x { opacity: 0.5; font-size: 13px; }
+  .browser-body { border-radius: 0 12px 12px 12px; height: 44px; display: flex; align-items: center; padding: 0 16px; gap: 10px; font-size: 13px; }
+  .browser-body.light { background: #ffffff; color: #5f6368; }
+  .browser-body.darkc { background: #35363a; color: #9aa0a6; }
+  .browser-body .urlbar { background: rgba(128,134,139,0.15); border-radius: 999px; padding: 6px 14px; flex: 1; max-width: 380px; }
+  .chrome-label { font-family: ui-monospace, monospace; font-size: 12px; opacity: 0.65; margin: 18px 0 8px; }
+
+  .size-row { display: flex; align-items: flex-end; gap: 28px; margin-top: 26px; flex-wrap: wrap; }
+  .size-cell { text-align: center; }
+  .size-cell .lbl { font-family: ui-monospace, monospace; font-size: 11px; color: var(--text-faint); margin-top: 8px; }
+  .fav-tile-demo {
+    display: grid; place-items: center;
+    background: linear-gradient(to bottom, var(--bg-grad-top), var(--bg-base));
+    border-radius: 12px;
+  }
+
+  /* ---- OG stage ---- */
+  .og-frame { width: 100%; max-width: 640px; }
+  .og-meta {
+    position: absolute; top: -34px; right: 0;
+    font-family: ui-monospace, monospace; font-size: 11px; color: var(--text-faint);
+  }
+  .og-stage { position: relative; }
+  .og {
+    position: relative; width: 100%; aspect-ratio: 1200 / 630;
+    border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    /* designed at 1200×630; everything inside uses cqw units (container = 1200 design px) */
+    container-type: inline-size;
+  }
+  .og .grain2 {
+    position: absolute; inset: 0; opacity: 0.05; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 240px 240px;
+  }
+  .og-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 45% at 50% -5%, rgba(52,211,153,0.16), transparent 62%),
+      radial-gradient(ellipse 50% 40% at 92% 108%, rgba(56,89,244,0.10), transparent 60%),
+      linear-gradient(to bottom, #0d0d11 0%, #09090b 70%);
+  }
+  .mono { font-weight: 500; letter-spacing: -0.02em; }
+  .mono .sl { color: var(--accent); }
+  .microcap { letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-lo); font-weight: 500; }
+
+  /* O1 — monogram hero */
+  .o1-grid { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 3cqw; }
+  .o1-mono { font-size: 17cqw; line-height: 1; }
+  .o1-name { font-size: 3.4cqw; letter-spacing: -0.01em; }
+  .o1-role { font-size: 1.7cqw; }
+  .o1-url  { position: absolute; bottom: 3.4cqw; font-size: 1.6cqw; color: var(--text-faint); font-family: ui-monospace, monospace; letter-spacing: 0.08em; }
+
+  /* name block centred; role stays pinned left */
+  #o2-mid { text-align: center; }
+  #o2-mid .o2-role { text-align: left; }
+  /* O2 — typographic card */
+  .o2-grid { position: absolute; inset: 0; padding: 5cqw 5.8cqw; display: flex; flex-direction: column; justify-content: space-between; }
+  .o2-top { display: flex; justify-content: space-between; align-items: baseline; }
+  .o2-kicker { font-size: 1.7cqw; }
+  .o2-corner { font-size: 3cqw; line-height: 1; }
+  .o2-name { font-size: 9.5cqw; line-height: 1.08; letter-spacing: -0.03em; font-weight: 500; }
+  .o2-name .r { display: block; padding-left: 7cqw; }
+  .o2-role { margin-top: 2.6cqw; margin-bottom: 2.4cqw; font-size: 2.6cqw; color: var(--text-lo); }
+  .o2-role b { color: var(--accent); font-weight: 500; }
+  .o2-mid.o2-big .o2-name, .o2-big .o2-name { font-size: 12cqw; }
+  .o2-xl .o2-name { font-size: 14cqw; letter-spacing: -0.04em; }
+  .o2-rule-row { display: flex; align-items: center; gap: 2.2cqw; }
+  .o2-rule-row::after { content: ""; flex: 1; height: 1px; background: rgba(255,255,255,0.10); }
+  .o2-chip {
+    font-size: 1.8cqw; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent); border: 1px solid rgba(52,211,153,0.4);
+    padding: 1cqw 2cqw; border-radius: 999px;
+  }
+  .o2-spread { text-align: justify; text-align-last: justify; }
+  .o2-desc { margin-top: 1.4cqw; font-size: 1.8cqw; color: var(--text-faint); letter-spacing: 0.02em; }
+  .o2-bottom { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid rgba(255,255,255,0.09); padding-top: 2.4cqw; }
+  .o2-bottom span { font-size: 1.7cqw; color: var(--text-faint); font-family: ui-monospace, monospace; letter-spacing: 0.08em; }
+
+  /* O3 — scene echo */
+  .o3-orb {
+    position: absolute; left: 50%; top: 34%; transform: translate(-50%, -50%);
+    width: 26cqw; height: 26cqw; border-radius: 50%;
+    background: radial-gradient(circle at 38% 32%, #4be3ab, #0a7a58 68%, #053b2b);
+    box-shadow: 0 3cqw 9cqw rgba(52,211,153,0.35), 0 0.6cqw 2cqw rgba(52,211,153,0.5);
+  }
+  .o3-floor { position: absolute; left: 8%; right: 8%; bottom: 22%; height: 1px; background: linear-gradient(90deg, transparent, rgba(52,211,153,0.35), transparent); }
+  .o3-refl {
+    position: absolute; left: 50%; top: 34%; transform: translate(-50%, calc(-50% + 27.5cqw)) scaleY(-0.35);
+    width: 26cqw; height: 26cqw; border-radius: 50%;
+    background: radial-gradient(circle at 38% 32%, rgba(75,227,171,0.5), rgba(10,122,88,0.25) 70%);
+    filter: blur(1.2cqw); opacity: 0.5;
+  }
+  .o3-copy { position: absolute; inset: auto 0 6.5cqw; text-align: center; }
+  .o3-name { font-size: 4.6cqw; letter-spacing: -0.02em; font-weight: 500; }
+  .o3-role { margin-top: 1.2cqw; font-size: 1.7cqw; }
+
+  /* share-preview strip */
+  .share-row { display: flex; gap: 22px; align-items: flex-start; margin-top: 26px; flex-wrap: wrap; }
+  .share-card { width: 190px; }
+  .share-card .thumb {
+    position: relative; width: 100%; aspect-ratio: 1200 / 630; border-radius: 8px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.12);
+    container-type: inline-size;
+  }
+  .share-card .thumb > * { pointer-events: none; }
+  .share-card .cap { font-family: ui-monospace, monospace; font-size: 11px; color: var(--text-faint); margin-top: 6px; }
+
+  .note { font-size: 13px; opacity: 0.7; margin-top: 14px; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<svg class="grain" xmlns="http://www.w3.org/2000/svg">
+  <filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/></filter>
+  <rect width="100%" height="100%" filter="url(#n)"/>
+</svg>
+
+<div class="wrap">
+
+<header class="proto">
+  <span class="proto-banner">Prototype — throwaway</span>
+  <h1>Meta assets against the dark-premium system</h1>
+  <p>Favicons are judged at <strong>real tab scale</strong> (16px) in both light and dark browser chrome,
+     then at 32/64px on the site background. OG images are composed at 1200×630
+     (shown half-scale) and again as a ~190px share-card thumbnail — if the name
+     can't be read there, the composition fails.</p>
+</header>
+
+<section id="sec-fav">
+  <h2>Favicon · pick a mark</h2>
+  <p class="sub">All marks derive from the locked loader monogram <span class="mono">e<span class="sl">/</span>p</span>.
+     F4 is the dark-mode-aware option: no tile, glyph only — assumes the browser supplies its own surface.</p>
+  <div class="proto-tags" id="tags-fav"></div>
+
+  <div class="chrome-label">Chrome · light tabs</div>
+  <div class="tab-strip light"><div class="tab active"><span data-slot="tab"></span><span class="t-title">Eiguchi Pablo's portfolio</span><span class="x">×</span></div></div>
+  <div class="browser-body light"><span data-slot="omni"></span><span class="urlbar">eiguchipablo.dev</span></div>
+
+  <div class="chrome-label">Chrome · dark tabs</div>
+  <div class="tab-strip darkc"><div class="tab active"><span data-slot="tab"></span><span class="t-title">Eiguchi Pablo's portfolio</span><span class="x">×</span></div></div>
+  <div class="browser-body darkc"><span data-slot="omni"></span><span class="urlbar">eiguchipablo.dev</span></div>
+
+  <div class="chrome-label">Scale ladder · on site background</div>
+  <div class="size-row">
+    <div class="size-cell"><div class="fav-tile-demo" style="padding:14px" data-slot="s16"></div><div class="lbl">16</div></div>
+    <div class="size-cell"><div class="fav-tile-demo" style="padding:12px" data-slot="s32"></div><div class="lbl">32</div></div>
+    <div class="size-cell"><div class="fav-tile-demo" style="padding:14px" data-slot="s64"></div><div class="lbl">64</div></div>
+    <div class="size-cell"><div class="fav-tile-demo" style="padding:14px" data-slot="s180"></div><div class="lbl">180 · apple-touch</div></div>
+  </div>
+  <p class="note">Verdict guide: at 16px the mark must survive as <em>shape</em>, not type —
+     judge whether the monogram collapses into noise or still reads as “e/p”.</p>
+</section>
+
+<section id="sec-og">
+  <h2>OG image · pick a composition</h2>
+  <p class="sub">1200×630, gradient + grain background per ticket 01. Copy kept minimal:
+     name, role, domain — the description meta stays out of the image.</p>
+  <div class="proto-tags" id="tags-og"></div>
+  <div class="proto-tags" id="tags-o2mid" style="display:none; margin-top:-8px"></div>
+
+  <div class="og-stage">
+    <div class="og-meta">1200 × 630 · shown half-scale</div>
+    <div class="og" id="og-host"></div>
+  </div>
+
+  <div class="share-row">
+    <div class="share-card">
+      <div class="thumb" id="og-thumb"></div>
+      <div class="cap">share-card thumbnail ≈ 190px wide</div>
+    </div>
+    <p class="note" style="max-width:340px;margin-top:0">
+      The same live variant renders in the thumbnail. Check: does the name survive?
+      Does the accent still register at this size, or has the grain swallowed it?
+    </p>
+  </div>
+</section>
+
+<p class="note" style="margin-top:80px">
+  Winners get recorded on the ticket with exact specs (SVG viewBox, tile radius,
+  safe areas, export set: ICO/PNG/SVG + apple-touch-icon 180, og-image.jpg).
+</p>
+
+</div>
+
+<script>
+/* ---------- favicon marks ---------- */
+function favSVG(kind, px) {
+  const r = Math.round(px * 0.22);
+  const fs = kind === 'slash' ? px * 0.72 : px * 0.52;
+  let inner;
+  const gid = 'g' + kind + px;
+  if (kind !== 'bare') {
+    inner = `<defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#16161b"/><stop offset="1" stop-color="#0a0a0c"/></linearGradient></defs>
+      <rect width="${px}" height="${px}" rx="${r}" ${kind === 'emerald'
+        ? 'fill="#34d399"'
+        : `fill="url(#${gid})" stroke="rgba(255,255,255,0.16)" stroke-width="${Math.max(px * 0.02, 0.5)}"`}/>`;
+  } else {
+    inner = '';
+  }
+  const fgTile = kind === 'emerald';
+  if (kind === 'slash') {
+    inner += `<path d="M ${px * 0.38} ${px * 0.82} L ${px * 0.62} ${px * 0.18}" stroke="#34d399"
+      stroke-width="${Math.max(px * 0.11, 1.6)}" stroke-linecap="round"/>`;
+  } else {
+    inner += `<text x="50%" y="50%" dominant-baseline="central" dy="${(-fs * 0.11).toFixed(2)}" text-anchor="middle"
+      font-family="Calibre, system-ui, sans-serif" font-weight="500" font-size="${fs}"
+      letter-spacing="${(-fs * 0.04).toFixed(2)}" fill="${fgTile ? '#06281c' : '#f1f5f9'}">e<tspan fill="#34d399">/</tspan>p</text>`;
+  }
+  return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="${px}" height="${px}" viewBox="0 0 ${px} ${px}">${inner}</svg>`)}`;
+}
+
+const FAVS = [
+  { key: 'F1', name: 'monogram on dark tile',   kind: 'dark' },
+  { key: 'F2', name: 'slash-only on dark tile', kind: 'slash' },
+  { key: 'F3', name: 'inverted · emerald tile', kind: 'emerald' },
+  { key: 'F4', name: 'bare glyph · no tile',    kind: 'bare' },
+];
+
+let favIdx = 0;
+
+function renderFav() {
+  const f = FAVS[favIdx];
+  document.querySelectorAll('[data-slot]').forEach(el => {
+    const px = { tab: 16, omni: 16, s16: 16, s32: 32, s64: 64, s180: 180 }[el.dataset.slot];
+    el.innerHTML = `<img src="${favSVG(f.kind, px)}" width="${px}" height="${px}" alt="">`;
+  });
+  document.querySelectorAll('#tags-fav button').forEach((b, i) =>
+    b.classList.toggle('active', i === favIdx));
+}
+
+const tagsFav = document.getElementById('tags-fav');
+FAVS.forEach((f, i) => {
+  const b = document.createElement('button');
+  b.textContent = `${f.key}: ${f.name}`;
+  b.onclick = () => { favIdx = i; renderFav(); };
+  tagsFav.appendChild(b);
+});
+
+/* ---------- OG variants ---------- */
+function grainLayer() {
+  return '<div class="grain2"></div>';
+}
+const BG = `<div class="og-bg"></div>${grainLayer()}`;
+const URL_LINE = '<span>eiguchipablo.dev</span>';
+
+const OGS = [
+  { key: 'O1', name: 'monogram hero', html: `
+    ${BG}
+    <div class="o1-grid">
+      <div class="mono o1-mono">e<span class="sl">/</span>p</div>
+      <div class="o1-name">Eiguchi Pablo</div>
+      <div class="microcap o1-role">full-stack developer</div>
+    </div>
+    <div class="o1-url">eiguchipablo.dev</div>` },
+  { key: 'O2', name: 'typographic card', html: `
+    ${BG}
+    <div class="o2-grid">
+      <div class="o2-top">
+        <span class="microcap" style="font-size:1.7cqw">portfolio</span>
+        <span class="mono o2-corner">e<span class="sl">/</span>p</span>
+      </div>
+      <div id="o2-mid"></div>
+      <div class="o2-bottom">${URL_LINE}<span>Yokohama, JP</span></div>
+    </div>` },
+  { key: 'O3', name: 'scene echo', html: `
+    ${BG}
+    <div class="o3-orb"></div>
+    <div class="o3-refl"></div>
+    <div class="o3-floor"></div>
+    <div class="o3-copy">
+      <div class="o3-name mono">Eiguchi Pablo</div>
+      <div class="microcap o3-role">full-stack developer</div>
+    </div>` },
+];
+
+let ogIdx = 0;
+
+/* O2 sub-variants — name centred (Pablo keeps its left margin), role pinned LEFT */
+const NAME = '<div class="o2-name">Eiguchi<span class="r">Pablo</span></div>';
+const ROLE = '<div class="o2-role"><b>/</b>&nbsp; full-stack developer</div>';
+const O2MIDS = [
+  { key: 'E1', name: 'big name fills width · role left',
+    css: 'o2-big',
+    html: `${NAME}${ROLE}` },
+  { key: 'E2', name: 'role + Yokohama inline, left',
+    css: '',
+    html: `${NAME}<div class="o2-role"><b>/</b>&nbsp; full-stack developer <span style="color:var(--text-faint)">— Yokohama, JP</span></div>` },
+  { key: 'E3', name: 'role left over hairline rule',
+    css: '',
+    html: `${NAME}<div class="o2-rule-row">${ROLE}</div>` },
+  { key: 'E4', name: 'oversized name · role left + chip',
+    css: 'o2-xl',
+    html: `${NAME}<div style="display:flex;align-items:center;justify-content:space-between">${ROLE}<span class="o2-chip">open to work</span></div>` },
+];
+let o2MidIdx = 0;
+
+function renderOG() {
+  const v = OGS[ogIdx];
+  document.getElementById('og-host').innerHTML = v.html;
+  if (ogIdx === 1) {
+    const mid = document.getElementById('o2-mid');
+    mid.className = O2MIDS[o2MidIdx].css;
+    mid.innerHTML = O2MIDS[o2MidIdx].html;
+  }
+  // thumbnail: clone at reduced fidelity
+  const t = document.getElementById('og-thumb');
+  t.innerHTML = document.getElementById('og-host').innerHTML.replace(/class="grain2"/g, 'class=""');
+  document.querySelectorAll('#tags-og button').forEach((b, i) =>
+    b.classList.toggle('active', i === ogIdx));
+  const sub = document.getElementById('tags-o2mid');
+  sub.style.display = ogIdx === 1 ? 'flex' : 'none';
+  document.querySelectorAll('#tags-o2mid button').forEach((b, i) =>
+    b.classList.toggle('active', i === o2MidIdx));
+}
+
+const tagsOG = document.getElementById('tags-og');
+OGS.forEach((v, i) => {
+  const b = document.createElement('button');
+  b.textContent = `${v.key}: ${v.name}`;
+  b.onclick = () => { ogIdx = i; renderOG(); };
+  tagsOG.appendChild(b);
+});
+
+const tagsO2Mid = document.getElementById('tags-o2mid');
+O2MIDS.forEach((m, i) => {
+  const b = document.createElement('button');
+  b.textContent = `${m.key}: ${m.name}`;
+  b.onclick = () => { o2MidIdx = i; renderOG(); };
+  tagsO2Mid.appendChild(b);
+});
+
+renderFav();
+renderOG();
+</script>
+</body>
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<!--
+  PROTOTYPE — throwaway, not production.
+
+  Question (wayfinder ticket: Muted-text contrast prototype):
+  Which muted-grey tokens pass WCAG AA against the locked dark-premium
+  background (gradient #0d0d11→#09090b + 4% film grain + 3% glass fills),
+  and where does emerald #34d399 hold up — small text, large text,
+  hairlines, focus outlines, text over blurred glass?
+
+  Bars agreed in ticket 09: 4.5:1 body/small text · 3:1 large text + UI.
+  Ratios are computed live in JS against two backgrounds:
+    base      = #09090b
+    worst-case = base blended 7% toward white (grain 4% + glass fill 3%)
+
+  Run: double-click this file. Toggles top-right for grain / glow.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PROTOTYPE — muted-text contrast</title>
+<style>
+  :root {
+    --bg-base: #09090b;
+    --bg-grad-top: #0d0d11;
+    --accent: #34d399;
+    --text-hi: #f1f5f9;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: Calibre, "Noto Sans JP", system-ui, sans-serif;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(52,211,153,0.10), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 85% 100%, rgba(56,89,244,0.08), transparent 60%),
+      linear-gradient(to bottom, var(--bg-grad-top), var(--bg-base));
+    background-attachment: fixed;
+    color: var(--text-hi);
+    min-height: 100vh;
+    padding: 48px 24px 120px;
+  }
+  /* film grain */
+  .grain {
+    position: fixed; inset: -50%;
+    width: 200%; height: 200%;
+    pointer-events: none;
+    opacity: 0.04;
+    z-index: 5;
+  }
+  body.no-grain .grain { display: none; }
+
+  .wrap { max-width: 880px; margin: 0 auto; position: relative; z-index: 10; }
+
+  header.proto h1 { font-size: 28px; letter-spacing: -0.02em; font-weight: 500; }
+  header.proto p  { margin-top: 8px; max-width: 640px; line-height: 1.6; }
+  .proto-banner {
+    display: inline-block; font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase; padding: 4px 10px; border-radius: 999px;
+    border: 1px solid rgba(52,211,153,0.4); color: var(--accent); margin-bottom: 16px;
+  }
+
+  section { margin-top: 72px; }
+  section > h2 {
+    font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 6px;
+  }
+  section > .sub { font-size: 14px; opacity: 0.7; margin-bottom: 24px; line-height: 1.5; }
+
+  /* toggles */
+  .toggles {
+    position: fixed; top: 16px; right: 16px; z-index: 50;
+    display: flex; gap: 8px;
+    background: rgba(9,9,11,0.85); backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.15); border-radius: 999px; padding: 6px 10px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    font-size: 12px;
+  }
+  .toggles button {
+    background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 999px; padding: 5px 12px; cursor: pointer; font: inherit;
+  }
+  .toggles button.off { opacity: 0.45; text-decoration: line-through; }
+
+  /* sample rows */
+  .row {
+    padding: 18px 20px; border-radius: var(--radius);
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    margin-bottom: 14px;
+  }
+  .row .sample-body   { font-size: 16px; line-height: 1.65; }
+  .row .sample-large  { font-size: 26px; letter-spacing: -0.01em; font-weight: 400; }
+  .row .sample-micro  { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; }
+  .row .meta { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .row .hexcode { font-family: ui-monospace, monospace; font-size: 12px; color: var(--text-hi); opacity: 0.9; margin-right: 4px; }
+
+  .badge {
+    font-family: ui-monospace, monospace; font-size: 11px;
+    padding: 3px 8px; border-radius: 6px; border: 1px solid currentColor;
+    white-space: nowrap;
+  }
+  .pass { color: var(--accent); }        /* ≥ bar */
+  .aaa  { color: var(--accent); }        /* ≥ 7 */
+  .fail { color: #f87171; }              /* below bar */
+
+  /* glass card for blur tests */
+  .glass-card {
+    border-radius: var(--radius);
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 28px 26px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  }
+  .glow-pad { height: 140px; margin-top: -180px; pointer-events: none;
+    background: radial-gradient(ellipse 70% 90% at 30% 100%, rgba(52,211,153,0.35), transparent 70%); }
+
+  /* buttons / focus */
+  .btn-row { display: flex; gap: 20px; flex-wrap: wrap; }
+  .btn {
+    font: inherit; font-size: 15px; font-weight: 500;
+    padding: 10px 22px; border-radius: 12px; cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn-solid { background: var(--accent); color: #06281c; border: none; }
+  .btn-ghost { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: inherit; }
+  .btn:focus-visible { outline: none; transform: translateY(-2px); }
+  .btn.ring-emerald:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; box-shadow: 0 0 0 6px rgba(52,211,153,0.25); }
+  .btn.ring-white:focus-visible   { outline: 2px solid #f1f5f9; outline-offset: 3px; box-shadow: 0 0 0 6px rgba(241,245,249,0.2); }
+  .btn.ring-grey:focus-visible    { outline: 2px solid #94a3b8; outline-offset: 3px; box-shadow: none; }
+  .hint { font-size: 13px; opacity: 0.7; margin-top: 14px; line-height: 1.5; }
+
+  a.inline-link { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+
+  /* hairlines */
+  .hairline-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; }
+  .hairline-cell { padding-top: 14px; }
+  .hairline-cell .line { height: 0; border-top: 1px solid; margin-bottom: 10px; }
+  .hairline-cell span { font-size: 12px; opacity: 0.75; font-family: ui-monospace, monospace; }
+
+  table.legend { border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+  table.legend td, table.legend th { text-align: left; padding: 4px 14px 4px 0; opacity: 0.85; font-weight: 400; }
+</style>
+</head>
+<body>
+
+<svg class="grain" xmlns="http://www.w3.org/2000/svg">
+  <filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/></filter>
+  <rect width="100%" height="100%" filter="url(#n)"/>
+</svg>
+
+<div class="toggles" role="toolbar" aria-label="Prototype controls">
+  <button id="tgl-grain" onclick="toggleGrain()">grain on</button>
+  <button id="tgl-glow" onclick="toggleGlow()">emerald glow on</button>
+</div>
+
+<div class="wrap">
+
+<header class="proto">
+  <span class="proto-banner">Prototype — throwaway</span>
+  <h1>Muted-text contrast against the dark-premium background</h1>
+  <p>Every ratio below is computed live against the real background composite.
+     Bars: <strong>AA = 4.5:1</strong> body/small text, <strong>3:1</strong> large text &amp; UI.
+     Two annotations per sample: vs <code>base</code> (#09090b) and vs
+     <strong>worst-case</strong> (base + 4% grain + 3% glass fill blended toward white).</p>
+  <table class="legend">
+    <tr><th>Badge</th><th>Meaning</th></tr>
+    <tr><td><span class="badge aaa">AAA</span></td><td>≥ 7:1</td></tr>
+    <tr><td><span class="badge pass">PASS</span></td><td>≥ bar (4.5 or 3)</td></tr>
+    <tr><td><span class="badge fail">FAIL</span></td><td>below bar</td></tr>
+  </table>
+</header>
+
+<section id="s1">
+  <h2>A · Muted body copy ramp</h2>
+  <p class="sub">16px regular — the workhorse secondary-text size. Bar 4.5:1.</p>
+  <div id="ramp"></div>
+</section>
+
+<section id="s2">
+  <h2>B · Large muted text &amp; headings</h2>
+  <p class="sub">26px regular (≥24px counts as large). Bar 3:1.</p>
+  <div id="ramp-large"></div>
+</section>
+
+<section id="s3">
+  <h2>C · Micro labels / small-caps</h2>
+  <p class="sub">11px uppercase tracked labels — still “small text”, so 4.5:1 applies.</p>
+  <div id="ramp-micro"></div>
+</section>
+
+<section id="s4">
+  <h2>D · Emerald accent usage</h2>
+  <p class="sub">#34d399 in its real contexts: inline link inside muted copy, standalone emphasis, and button pairs.</p>
+  <div class="row">
+    <p class="sample-body" style="color:#94a3b8">
+      This paragraph is set in the current muted grey so you can judge an inline
+      <a class="inline-link" href="#" onclick="return false">emerald link</a>
+      sitting inside it — link affordance depends on both hues being distinguishable
+      from each other <em>and</em> from the background.
+    </p>
+    <div class="meta" data-ratio="#34d399" data-bg="worst" data-bar="4.5"></div>
+  </div>
+  <div class="row">
+    <p class="sample-large" style="color:#34d399">Large emerald heading at 26px — bar 3:1</p>
+    <div class="meta" data-ratio="#34d399" data-bg="worst" data-bar="3"></div>
+  </div>
+  <div class="row">
+    <div class="btn-row">
+      <button class="btn btn-solid ring-emerald">Solid emerald · dark text #06281c</button>
+      <button class="btn btn-ghost ring-white" style="color:#34d399">Ghost · emerald label</button>
+    </div>
+    <div class="meta">
+      <span class="badge" data-ratio-pair="#34d399|#06281c"></span>
+      <span style="font-size:12px;opacity:.7">dark-on-emerald button text (bar 4.5)</span>
+    </div>
+  </div>
+</section>
+
+<section id="s5">
+  <h2>E · Hairlines &amp; borders</h2>
+  <p class="sub">Borders are decorative (no WCAG minimum) but must stay visible over the gradient. Judge by eye.</p>
+  <div class="hairline-strip">
+    <div class="hairline-cell"><div class="line" style="border-color:rgba(255,255,255,0.06)"></div><span>white @ .06</span></div>
+    <div class="hairline-cell"><div class="line" style="border-color:rgba(255,255,255,0.08)"></div><span>white @ .08 (locked)</span></div>
+    <div class="hairline-cell"><div class="line" style="border-color:rgba(255,255,255,0.12)"></div><span>white @ .12</span></div>
+    <div class="hairline-cell"><div class="line" style="border-color:rgba(52,211,153,0.35)"></div><span>emerald @ .35 (hover)</span></div>
+  </div>
+</section>
+
+<section id="s6">
+  <h2>F · Focus outlines</h2>
+  <p class="sub">Tab into these three buttons. UI-component bar is 3:1 — all three candidates clear it numerically; pick by eye for glare/visibility.</p>
+  <div class="btn-row">
+    <button class="btn btn-solid ring-emerald">ring: emerald</button>
+    <button class="btn btn-ghost ring-white" style="color:var(--text-hi)">ring: white</button>
+    <button class="btn btn-ghost ring-grey" style="color:var(--text-hi)">ring: grey #94a3b8</button>
+  </div>
+  <p class="hint">Focus rings sit over varying background (gradient + glow), which is why the halo shadow accompanies the emerald ring — a bare hairline ring can vanish over the glow.</p>
+</section>
+
+<section id="s7">
+  <h2>G · Text over blurred glass</h2>
+  <p class="sub">Backdrop-blur brightens what’s behind text (the glow smears into it). The glow pad under this card feeds it colour to blur.</p>
+  <div class="glass-card">
+    <p class="sample-large" style="color:var(--text-hi)">Heading over glass — hi text</p>
+    <p class="sample-body" style="color:#94a3b8; margin-top:10px">
+      Muted body over blurred glass with the emerald glow behind it. This is the
+      worst realistic case for the muted token: grain + fill + smeared glow all lift
+      the effective background luminance.
+    </p>
+    <p class="sample-micro" style="color:#94a3b8; margin-top:14px">Micro label over glass · same worst case</p>
+    <p class="sample-body" style="color:#34d399; margin-top:10px">
+      Emerald text over the same glass — check it doesn’t bloom against the glow.
+    </p>
+    <div class="meta" data-ratio="#94a3b8" data-bg="worst" data-bar="4.5"></div>
+  </div>
+  <div class="glow-pad" aria-hidden="true"></div>
+</section>
+
+<p class="hint" style="margin-top:80px">
+  Toggle grain / emerald glow (top right) to isolate variables. The winner becomes
+  <code>text-lo</code> (+ possibly a second dimmer token) in the design system.
+</p>
+
+</div>
+
+<script>
+const BASE = [0x09, 0x09, 0x0b];
+// worst-case background: base lifted by grain (4%) + glass fill (3%) → blend 7% toward white
+const WORST = BASE.map(c => Math.round(c + (255 - c) * 0.07));
+
+function lum([r, g, b]) {
+  const f = c => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+  return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+}
+function ratio(fg, bg) {
+  const [l1, l2] = [lum(fg), lum(bg)].sort((a, b) => b - a);
+  return (l1 + 0.05) / (l2 + 0.05);
+}
+function parse(hex) {
+  const h = hex.replace('#', '');
+  return [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16));
+}
+function fmt(r) { return r.toFixed(2) + ':1'; }
+
+function badge(el, r, bar) {
+  const cls = r >= 7 ? 'aaa' : r >= bar ? 'pass' : 'fail';
+  el.className = 'badge ' + cls;
+  el.textContent = (r >= 7 ? 'AAA' : r >= bar ? 'PASS' : 'FAIL') + ' ' + fmt(r);
+}
+
+// annotate every element carrying data-ratio / data-bar
+document.querySelectorAll('[data-ratio]').forEach(meta => {
+  const fg = parse(meta.dataset.ratio);
+  const bar = parseFloat(meta.dataset.bar || '4.5');
+  meta.innerHTML = '';
+  const mk = (label, bg) => {
+    const b = document.createElement('span');
+    badge(b, ratio(fg, bg), bar);
+    const l = document.createElement('span');
+    l.style.cssText = 'font-size:12px;opacity:.7;margin-right:10px';
+    l.textContent = label;
+    meta.append(l, b, Object.assign(document.createElement('span'), { style: 'width:8px;display:inline-block' }));
+  };
+  mk('vs base', BASE);
+  mk('vs worst-case', WORST);
+});
+
+// button pair annotation (fg|bg)
+document.querySelectorAll('[data-ratio-pair]').forEach(el => {
+  const [a, b] = el.dataset.ratioPair.split('|').map(parse);
+  badge(el, ratio(a, b), 4.5);
+});
+
+// build the ramps
+const CANDIDATES = [
+  ['#64748b', 'slate-500'],
+  ['#78869c', '+1 step'],
+  ['#94a3b8', 'slate-400 · current text-lo'],
+  ['#a5b1c2', '+1 step lighter'],
+  ['#b6c0ce', '+2 steps'],
+  ['#cbd5e1', 'slate-300'],
+];
+
+function ramp(hostId, cls, bar, sampleTextFn) {
+  const host = document.getElementById(hostId);
+  CANDIDATES.forEach(([hex, name]) => {
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.innerHTML =
+      `<p class="${cls}" style="color:${hex}">${sampleTextFn(name)}</p>` +
+      `<div class="meta"><span class="hexcode">${hex}</span></div>`;
+    const meta = row.querySelector('.meta');
+    const fg = parse(hex);
+    [['base', BASE], ['worst-case', WORST]].forEach(([label, bg]) => {
+      const l = document.createElement('span');
+      l.style.cssText = 'font-size:12px;opacity:.7';
+      l.textContent = label;
+      const b = document.createElement('span');
+      badge(b, ratio(fg, bg), bar);
+      meta.append(l, b, Object.assign(document.createElement('span'), { style: 'width:10px;display:inline-block' }));
+    });
+    host.appendChild(row);
+  });
+}
+
+ramp('ramp', 'sample-body', 4.5,
+  n => `${name(n)} — secondary copy at 16px. Projects, writing, and résumé summaries all live here; if this fails, most of the page fails with it.`);
+ramp('ramp-large', 'sample-large', 3,
+  n => `${name(n)} — large heading`);
+ramp('ramp-micro', 'sample-micro', 4.5,
+  n => name(n) + ' · micro label');
+
+function name(n) { return n.charAt(0).toUpperCase() + n.slice(1); }
+
+function toggleGrain() {
+  document.body.classList.toggle('no-grain');
+  const off = document.body.classList.contains('no-grain');
+  document.getElementById('tgl-grain').textContent = off ? 'grain off' : 'grain on';
+  document.getElementById('tgl-grain').classList.toggle('off', off);
+}
+function toggleGlow() {
+  const on = document.body.style.getPropertyValue('--glow-hidden') !== '1';
+  // hide the fixed radial glows by overriding first background layer
+  if (on) {
+    document.body.style.background = 'linear-gradient(to bottom, var(--bg-grad-top), var(--bg-base))';
+    document.querySelector('.glow-pad').style.display = 'none';
+  } else {
+    document.body.style.background = '';
+    document.querySelector('.glow-pad').style.display = '';
+  }
+  document.getElementById('tgl-glow').textContent = on ? 'emerald glow off' : 'emerald glow on';
+  document.getElementById('tgl-glow').classList.toggle('off', on);
+}
+</script>
+</body>
+</html>
