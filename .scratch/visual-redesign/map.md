@@ -16,6 +16,7 @@ A complete visual-redesign spec for eiguchipablo.dev: dark-premium design system
 - Plan-don't-do default: tickets resolve decisions; execution happens after the map is done.
 - Skills to consult per session: `/grilling` + `/domain-modeling` for grilling tickets, `/prototype` for prototype tickets.
 - Stack facts: Vite 4 + React 18 + react-three-fiber 8 + three 0.150 + zustand 4 + Tailwind 3; fonts Calibre + Noto Sans JP; no dedicated loader today (Suspense fallback only); /resume embeds a live PDF via @react-pdf/renderer plus a `.xls` Japanese download.
+- Execution published: implementation tracer-bullet tickets live in [`../visual-redesign-execution/issues/`](../visual-redesign-execution/) (01–14), broken from this spec.
 
 ## Decisions so far
 
