@@ -4,10 +4,10 @@
 
 **Blocked by:** None — can start immediately.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] `vitest` + Testing Library installed and runnable via a `test` script
-- [ ] Root-app seam renders in jsdom with WebGL stubbed; a behavioural smoke test passes (what renders / what the user can do)
-- [ ] A WebGL-unavailable variant of the seam exists (drives ticket 06)
-- [ ] Before-baseline captured: build output sizes and a Lighthouse/perf snapshot committed under `.scratch/visual-redesign-execution/baseline.md`
-- [ ] No production code changed by this ticket beyond what the harness requires
+- [x] `vitest` + Testing Library installed and runnable via a `test` script
+- [x] Root-app seam renders in jsdom with WebGL stubbed; a behavioural smoke test passes (what renders / what the user can do)
+- [x] A WebGL-unavailable variant of the seam exists (drives ticket 06)
+- [x] Before-baseline captured: build output sizes and a Lighthouse/perf snapshot committed under `.scratch/visual-redesign-execution/baseline.md`
+- [x] No production code changed by this ticket beyond what the harness requires
