@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { type ThreeElements } from "@react-three/fiber";
+
 import { useCursor } from "@react-three/drei";
 import { useGesture } from "@use-gesture/react";
 
@@ -22,5 +24,5 @@ export default function useCursorGrab() {
     },
   });
 
-  return bind() as JSX.IntrinsicElements["group"];
+  return bind() as ThreeElements["group"];
 }

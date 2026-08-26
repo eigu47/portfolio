@@ -1,3 +1,5 @@
+import type * as THREE from "three";
+
 import { useRef } from "react";
 
 import { PerspectiveCamera } from "@react-three/drei";

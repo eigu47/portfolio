@@ -48,7 +48,9 @@ export function renderApp(
 
   let boundaryRef: ProbeBoundary | null = null;
   const { unmount, ...result } = render(
-    <ProbeBoundary ref={(instance) => (boundaryRef = instance)}>
+    <ProbeBoundary ref={(instance) => {
+      boundaryRef = instance;
+    }}>
       <App />
     </ProbeBoundary>
   );

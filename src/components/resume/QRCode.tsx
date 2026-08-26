@@ -23,7 +23,7 @@ export default function QRCode() {
 
 function QRSvg() {
   return (
-    <Svg viewBox="0 0 1155 1155" width={180} height={180}>
+    <Svg viewBox="0 0 1155 1155" width={165} height={165}>
       <G fill={COLORS.slate900} transform="translate(0,1155) scale(0.1,-0.1)">
         <Path
           d="M1398 10840 c-175 -30 -355 -127 -471 -254 -90 -99 -152 -207 -194

@@ -15,7 +15,7 @@ export default function Skills() {
                 height: "0.5px",
                 width: "90%",
                 backgroundColor: COLORS.slate800,
-                borderRadius: "50%",
+                borderRadius: 0.25,
               }}
             />
           </View>

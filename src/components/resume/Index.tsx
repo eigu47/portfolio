@@ -108,7 +108,10 @@ export function MyDocument() {
             flexGrow: 1,
             flexDirection: "row",
             gap: 30,
-            margin: 30,
+            marginTop: 30,
+            marginRight: 30,
+            marginBottom: 26,
+            marginLeft: 30,
           }}
         >
           <View style={{ flex: 0.6, flexDirection: "column", gap: 30 }}>
@@ -148,7 +151,7 @@ export function Section({
         style={{
           height: "2px",
           backgroundColor: COLORS.slate900,
-          borderRadius: "50%",
+          borderRadius: 1,
           marginBottom: 12,
         }}
       />

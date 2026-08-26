@@ -1,3 +1,5 @@
+import type * as THREE from "three";
+
 import { create } from "zustand";
 
 import { type ValidIndex } from "~/utils/types";
@@ -11,12 +13,12 @@ export const TRANSFORM_MODES = [
 let modeId: ValidIndex<typeof TRANSFORM_MODES> = 0;
 
 export const useDebugStore = create<{
-  selectedObject: THREE.Object3D<THREE.Event> | null;
+  selectedObject: THREE.Object3D | null;
   transformActive: boolean;
   transformMode: (typeof TRANSFORM_MODES)[number];
   camera: THREE.Camera | null;
 
-  setSelectedObject: (object: THREE.Object3D<THREE.Event> | null) => void;
+  setSelectedObject: (object: THREE.Object3D | null) => void;
   setTransformActive: (active: boolean) => void;
   cycleTransformMode: () => void;
   setCamera: (camera: THREE.Camera) => void;

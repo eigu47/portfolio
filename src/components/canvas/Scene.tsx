@@ -1,3 +1,5 @@
+import type * as THREE from "three";
+
 import { Suspense, useRef } from "react";
 
 import { Preload, useDetectGPU } from "@react-three/drei";

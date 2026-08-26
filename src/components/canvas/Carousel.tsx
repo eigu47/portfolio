@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { type ThreeElements } from "@react-three/fiber";
+
 import {
   Box,
   Image,
@@ -23,7 +25,7 @@ import usePreventScroll from "~/hooks/usePreventScroll";
 import useViewport from "~/hooks/useViewport";
 import { COLORS } from "~/utils/config";
 
-export default function Carousel(props: JSX.IntrinsicElements["group"]) {
+export default function Carousel(props: ThreeElements["group"]) {
   const { width, height, mobile } = useViewport();
   const [hover, setHover] = useState(false);
   const [textHover, setTextHover] = useState(false);
@@ -68,7 +70,7 @@ export default function Carousel(props: JSX.IntrinsicElements["group"]) {
         polar={[0, 0]}
         speed={mobile ? 1.5 : 2}
       >
-        <group {...(bind() as JSX.IntrinsicElements["group"])} {...debug}>
+        <group {...(bind() as ThreeElements["group"])} {...debug}>
           {PROJECTS.map((project, i) => (
             <Project
               key={i}
@@ -92,7 +94,7 @@ function Project({
 }: {
   project: (typeof PROJECTS)[number];
   size: number;
-} & JSX.IntrinsicElements["group"]) {
+} & ThreeElements["group"]) {
   const { height, mobile } = useViewport();
   const [hover, setHover] = useState(false);
   const { debugOn } = useControls({ debugOn: false });

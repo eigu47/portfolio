@@ -1,7 +1,9 @@
+import type * as THREE from "three";
+
 import { useMemo, useRef, useState } from "react";
 
 import { useCursor } from "@react-three/drei";
-import { useFrame, useThree } from "@react-three/fiber";
+import { useFrame, useThree, type ThreeElements } from "@react-three/fiber";
 import { useGesture } from "@use-gesture/react";
 import { Quaternion, Vector3 } from "three";
 
@@ -18,13 +20,13 @@ export default function Draggable({
   far?: number;
   hoverColor?: [
     object:
-      | React.RefObject<THREE.MeshBasicMaterial>
-      | React.RefObject<THREE.MeshPhysicalMaterial>,
+      | React.RefObject<THREE.MeshBasicMaterial | null>
+      | React.RefObject<THREE.MeshPhysicalMaterial | null>,
     colorFrom: THREE.Color,
     colorTo: THREE.Color,
     speed?: number
   ];
-} & JSX.IntrinsicElements["group"]) {
+} & ThreeElements["group"]) {
   const groupRef = useRef<THREE.Group>(null);
   const camera = useThree((state) => state.camera);
   const { width, height } = useThree((state) => state.size);
@@ -83,7 +85,7 @@ export default function Draggable({
     <group
       ref={groupRef}
       {...props}
-      {...(bind() as JSX.IntrinsicElements["group"])}
+      {...(bind() as ThreeElements["group"])}
     >
       {children}
     </group>

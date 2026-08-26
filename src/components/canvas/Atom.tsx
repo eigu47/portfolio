@@ -1,5 +1,7 @@
 import { useRef, useState } from "react";
 
+import type * as THREE from "three";
+
 import {
   Float,
   Icosahedron,
@@ -8,7 +10,7 @@ import {
   Trail,
   useDetectGPU,
 } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, type ThreeElements } from "@react-three/fiber";
 import { useControls } from "leva";
 import { Color, EllipseCurve } from "three";
 
@@ -23,7 +25,7 @@ const normalNucleous = new Color(2, 2, 2);
 export default function Atom({
   scale = 0.1,
   ...props
-}: { scale?: number } & JSX.IntrinsicElements["group"]) {
+}: { scale?: number } & ThreeElements["group"]) {
   const basicRef = useRef<THREE.MeshBasicMaterial>(null);
   const physicalRef = useRef<THREE.MeshPhysicalMaterial>(null);
   const { debugOn } = useControls({ debugOn: false });
@@ -110,7 +112,7 @@ function Electron({
   radius?: number;
   speed?: number;
   scale?: number;
-} & JSX.IntrinsicElements["group"]) {
+} & ThreeElements["group"]) {
   const electronRef = useRef<THREE.Mesh>(null);
   const [trailWidth, setTrailWidth] = useState(0);
 

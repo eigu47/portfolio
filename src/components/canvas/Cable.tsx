@@ -1,3 +1,5 @@
+import type * as THREE from "three";
+
 import { useState } from "react";
 
 import { Icosahedron, Tube } from "@react-three/drei";
@@ -11,7 +13,7 @@ import useViewport from "~/hooks/useViewport";
 export default function Cable({
   cableRef,
 }: {
-  cableRef: React.RefObject<THREE.Mesh>;
+  cableRef: React.RefObject<THREE.Mesh | null>;
 }) {
   const { width, height, mobile } = useViewport();
   const { position: page1 } = usePage(1);
@@ -60,7 +62,7 @@ export default function Cable({
 
 const keyboardPos = new Vector3();
 
-function LooseCable({ cableRef }: { cableRef: React.RefObject<THREE.Mesh> }) {
+function LooseCable({ cableRef }: { cableRef: React.RefObject<THREE.Mesh | null> }) {
   const { width, height, mobile } = useViewport();
   const [startPoint, setStartPoint] = useState<THREE.Vector3Tuple>([0, 0, 0]);
 

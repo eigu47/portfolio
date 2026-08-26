@@ -23,11 +23,13 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           {
             path: "/",
             // element: <App />,
+            HydrateFallback: () => null,
             lazy: async () => ({ Component: (await import("./App")).default }),
           },
           {
             path: "/resume",
             // element: <Resume />,
+            HydrateFallback: () => null,
             lazy: async () => ({
               Component: (await import("./components/resume/Index")).default,
             }),

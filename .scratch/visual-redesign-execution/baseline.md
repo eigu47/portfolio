@@ -59,3 +59,25 @@ npx lighthouse http://localhost:4174/ --quiet \
 - `iconBase` chunk: react-icons pulls ~1.5 MB for a handful of icons.
 - `leva` (0.9.34) ships in the prod bundle though dormant (perf spec: remove).
 - Main scene chunk 1.9 MB raw / 593 kB gzip (three + fiber + drei + postprocessing).
+
+## Post-upgrade note — ticket 02 (dependency upgrade)
+
+Captured after the single-transaction bump (React 19, fiber v9, drei v10,
+three 0.185, @react-pdf/renderer 4, react-router 7). Bundle **shape** is
+unchanged (same chunk roles); sizes moved marginally:
+
+| Asset | Before (raw / gzip) | After (raw / gzip) |
+| --- | --- | --- |
+| `App-*.js` | 1,855.0 kB / 592.7 kB | 1,636.7 kB / 480.8 kB |
+| `iconBase-*.js` | 1,469.4 kB / 467.4 kB | 1,485.3 kB / 528.3 kB |
+| `index-*.js` (entry/vendor) | 312.4 kB / 100.8 kB | 406.0 kB / 129.3 kB |
+| `Index-*.js` (resume route) | 16.1 kB / 4.0 kB | 16.2 kB / 4.0 kB |
+| `index-*.css` | 16.5 kB / 3.5 kB | 16.4 kB / 3.5 kB |
+| `dist/` total | ~22.8 MB | ~22 MB |
+
+No unexpected shape change, so no action item: the entry chunk grew ~29 kB
+gzip (fiber v9 + router v7 vendor code), the main scene chunk shrank ~112 kB
+gzip. Font weight (17.2 MB of NotoSansJP TTFs) is untouched — ticket 12's
+target. A Lighthouse after-run was skipped: absolute numbers on this machine
+are dominated by the font payload and software-WebGL TBT, which this ticket
+did not change; ticket 12 will run the real before/after comparison.

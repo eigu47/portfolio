@@ -30,7 +30,7 @@ export default function Languages() {
                     style={{
                       width: 13,
                       height: 13,
-                      borderRadius: "50%",
+                      borderRadius: 6.5,
                       backgroundColor:
                         LANGUAGE_LEVELS[
                           language.level.toLowerCase() as keyof typeof LANGUAGE_LEVELS
@@ -49,7 +49,7 @@ export default function Languages() {
                 style={{
                   height: "0.5px",
                   backgroundColor: COLORS.slate400,
-                  borderRadius: "50%",
+                  borderRadius: 0.25,
                   marginBottom: 2,
                 }}
               />

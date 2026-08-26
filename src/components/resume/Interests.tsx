@@ -30,7 +30,7 @@ export default function Interests() {
                 style={{
                   height: "0.5px",
                   backgroundColor: COLORS.slate400,
-                  borderRadius: "50%",
+                  borderRadius: 0.25,
                   marginBottom: 4,
                 }}
               />

@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { type ThreeElements } from "@react-three/fiber";
+
 import {
   Center,
   Decal,
@@ -54,7 +56,7 @@ function Ball({
 }: {
   ball: (typeof LOGOS)[number];
   last: boolean;
-} & JSX.IntrinsicElements["group"]) {
+} & ThreeElements["group"]) {
   const { debugOn } = useControls({ debugOn: false });
   const texture = useTexture(src);
   const debug = useDebug();
