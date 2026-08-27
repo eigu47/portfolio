@@ -4,8 +4,17 @@
 
 **Blocked by:** 02 — Dependency upgrade, single transaction.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Hero, About, and Carousel render from the content module; no copy inline in scene JSX
-- [ ] Resume content has one home with a locale-aware shape (EN populated, JP placeholder-ready)
-- [ ] Scene looks pixel-identical before/after; tests green
+- [x] Hero, About, and Carousel render from the content module; no copy inline in scene JSX
+- [x] Resume content has one home with a locale-aware shape (EN populated, JP placeholder-ready)
+- [x] Scene looks pixel-identical before/after; tests green
+
+## Notes
+
+- Content now lives in `src/content/index.ts`; the resume data is plain and locale-shaped so the Japanese document can be added without reshaping consumers.
+- PDF components own presentation only; the summary copy and its Japanese glyph are data rather than a React node stored in configuration.
+
+## Answer
+
+Content extraction is complete in `src/content/index.ts`. Scene copy and projects now use the shared module, and resume data has an English locale plus a Japanese placeholder shape.

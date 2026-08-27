@@ -2,6 +2,7 @@ import { Text } from "@react-three/drei";
 
 import { calibre300, calibre400, calibre500 } from "~/assets/fonts";
 import { useDebug } from "~/components/canvas/Debug";
+import { siteContent } from "~/content";
 import useViewport from "~/hooks/useViewport";
 import { COLORS } from "~/utils/config";
 
@@ -24,7 +25,7 @@ export default function Hero() {
         font={calibre400}
         {...debug}
       >
-        Hello, I am
+        {siteContent.hero.greeting}
       </Text>
       <Text
         scale={mobile ? width * 0.16 : 0.7}
@@ -36,7 +37,7 @@ export default function Hero() {
         font={calibre500}
         {...debug}
       >
-        Eiguchi Pablo
+        {siteContent.hero.name}
       </Text>
       <Text
         position={
@@ -48,7 +49,7 @@ export default function Hero() {
         font={calibre300}
         {...debug}
       >
-        - Web Developer -
+        {siteContent.hero.role}
       </Text>
     </>
   );

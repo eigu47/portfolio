@@ -12,13 +12,8 @@ import { useGesture } from "@use-gesture/react";
 import { DoubleSide, FrontSide } from "three";
 
 import { calibre400 } from "~/assets/fonts";
-import {
-  playpool,
-  countryQuiz,
-  traveler,
-  keyboardSniper,
-} from "~/assets/images";
 import { useDebug } from "~/components/canvas/Debug";
+import { siteContent } from "~/content";
 import usePreventScroll from "~/hooks/usePreventScroll";
 import useViewport from "~/hooks/useViewport";
 import { COLORS } from "~/utils/config";
@@ -70,11 +65,15 @@ export default function Carousel(props: ThreeElements["group"]) {
         speed={mobile ? 1.5 : 2}
       >
         <group {...(bind() as ThreeElements["group"])} {...debug}>
-          {PROJECTS.map((project, i) => (
+          {siteContent.projects.map((project, i) => (
             <Project
               key={i}
               project={project}
-              rotation={[0, ((Math.PI * 2) / PROJECTS.length) * i, 0]}
+              rotation={[
+                0,
+                ((Math.PI * 2) / siteContent.projects.length) * i,
+                0,
+              ]}
               size={size}
             />
           ))}
@@ -91,7 +90,7 @@ function Project({
   size,
   ...props
 }: {
-  project: (typeof PROJECTS)[number];
+  project: (typeof siteContent.projects)[number];
   size: number;
 } & ThreeElements["group"]) {
   const { height, mobile } = useViewport();
@@ -100,7 +99,7 @@ function Project({
 
   return (
     <group {...props}>
-      <group position={[0, 0, (PROJECTS.length * size) / 4]}>
+      <group position={[0, 0, (siteContent.projects.length * size) / 4]}>
         <Image
           // @ts-expect-error - material.side is not typed
           ref={(ref) => ref && (ref.material.side = DoubleSide)}
@@ -133,26 +132,3 @@ function Project({
     </group>
   );
 }
-
-const PROJECTS = [
-  {
-    name: "Playpool",
-    url: "https://playpool.vercel.app/",
-    image: playpool,
-  },
-  {
-    name: "Country Quiz",
-    url: "https://country-quiz-eigu.vercel.app/",
-    image: countryQuiz,
-  },
-  {
-    name: "Traveler",
-    url: "https://traveler-eigu.vercel.app/",
-    image: traveler,
-  },
-  {
-    name: "Keyboard Sniper",
-    url: "https://keyboard-sniper.web.app/",
-    image: keyboardSniper,
-  },
-] as const;

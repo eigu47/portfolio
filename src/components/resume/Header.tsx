@@ -1,6 +1,7 @@
 import { View, Text, Svg, Path, Image } from "@react-pdf/renderer";
 
-import { COLORS, RESUME } from "~/utils/config";
+import { resumeContent } from "~/content";
+import { COLORS } from "~/utils/config";
 
 export default function Header() {
   return (
@@ -60,7 +61,7 @@ export default function Header() {
                   gap: 3,
                 }}
               >
-                {RESUME.contact.map(
+                {resumeContent.contact.map(
                   ({ text, svgPath, svgProps }, index) =>
                     index % 2 === colum && (
                       <View
