@@ -17,19 +17,19 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`chrome fixed top-0 z-10 w-full duration-200 sm:translate-y-0 sm:transition-none ${
+        className={`glass fixed top-0 z-10 w-full duration-200 sm:translate-y-0 sm:transition-none ${
           showMenu ? "" : "-translate-y-[calc(100%-56px)]"
         }`}
       >
         <ul
-          className={`container mx-auto my-6 flex flex-col items-center gap-10 duration-200 sm:translate-y-0 sm:flex-row sm:transition-none ${
+          className={`container mx-auto my-6 flex flex-col items-center gap-10 px-4 duration-200 sm:translate-y-0 sm:flex-row sm:px-6 sm:transition-none lg:px-8 ${
             showMenu ? "" : "-translate-y-[56px]"
           }`}
         >
           {PAGES.map(({ id, href }, i) => (
             <li key={i} className="relative flex gap-10 first:grow">
               <a
-                className={`interactive after:bg-accent hover:text-text-hi relative p-3 capitalize after:absolute after:right-1/2 after:bottom-1 after:h-[2px] after:w-4/6 after:origin-center after:translate-x-1/2 after:scale-x-0 after:transition hover:after:scale-x-100 ${
+                className={`after:bg-accent hover:text-text-hi relative p-3 capitalize after:absolute after:right-1/2 after:bottom-1 after:h-[2px] after:w-4/6 after:origin-center after:translate-x-1/2 after:scale-x-0 after:transition hover:after:scale-x-100 ${
                   scrollPage === i ? "after:scale-x-100" : ""
                 }`}
                 href={href}
@@ -42,7 +42,7 @@ export default function Navbar() {
 
               {i === PAGES.length - 1 && (
                 <a
-                  className="interactive absolute -right-16 bottom-2 sm:relative sm:right-0 sm:-bottom-2"
+                  className="absolute -right-16 bottom-2 sm:relative sm:right-0 sm:-bottom-2"
                   href="/resume"
                   target="_blank"
                   aria-label="Resume"
@@ -57,7 +57,7 @@ export default function Navbar() {
       </nav>
 
       <button
-        className="interactive fixed top-0 right-2 z-10 p-3 sm:hidden"
+        className="fixed top-0 right-2 z-10 p-3 sm:hidden"
         aria-label={showMenu ? "Close menu" : "Open menu"}
         onClick={() => setShowMenu((state) => !state)}
       >

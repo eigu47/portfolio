@@ -18,17 +18,20 @@ describe("root app seam (WebGL stubbed)", () => {
     for (const name of ["hello", "about", "projects", "contact", "resume"]) {
       expect(getByRole("link", { name })).toBeInTheDocument();
     }
-    expect(document.querySelector("nav")).toHaveClass("chrome");
+    expect(document.querySelector("nav")).toHaveClass("glass");
+    expect(document.querySelector("nav ul")).toHaveClass("px-4", "sm:px-6");
   });
 
-  it("uses the design-system interaction hooks for chrome", () => {
+  it("does not apply box hover treatment to nav or rail links", () => {
     const { getByRole } = renderApp();
 
-    expect(getByRole("link", { name: "about" })).toHaveClass("interactive");
-    expect(getByRole("button", { name: "Open menu" })).toHaveClass(
+    expect(getByRole("link", { name: "about" })).not.toHaveClass("interactive");
+    expect(getByRole("button", { name: "Open menu" })).not.toHaveClass(
       "interactive",
     );
-    expect(getByRole("link", { name: "Github" })).toHaveClass("interactive");
+    expect(getByRole("link", { name: "Github" })).not.toHaveClass(
+      "interactive",
+    );
   });
 
   it("links to the resume pdf from the navbar", () => {

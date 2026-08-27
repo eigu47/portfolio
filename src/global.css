@@ -61,10 +61,14 @@
 html {
   @apply snap-y snap-mandatory scroll-smooth;
   overflow: overlay;
+  scroll-snap-type: y mandatory;
+  background: var(--color-bg-base);
+  scrollbar-width: thin;
 }
 
 body {
-  @apply bg-bg-base text-text-lo min-h-screen overflow-x-hidden;
+  @apply bg-bg-base text-text-lo min-h-screen;
+  overflow-x: clip;
   background-color: var(--color-bg-base);
   background-image:
     radial-gradient(
@@ -98,9 +102,8 @@ body::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-.chrome {
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--radius-surface);
+.glass {
+  border-bottom: 1px solid var(--color-hairline);
   background: var(--color-surface);
   box-shadow: var(--shadow-chrome);
   backdrop-filter: blur(12px);
@@ -134,20 +137,11 @@ body::before {
 }
 
 ::-webkit-scrollbar {
+  width: 8px;
   background: transparent;
 }
 
-::-webkit-scrollbar-thumb {
-  background-color: #94a3b8;
-  border: 6px solid rgba(15, 23, 42, 1);
-  border-radius: 8px;
-}
 
 .screen::-webkit-scrollbar {
   width: 8px;
-}
-.screen::-webkit-scrollbar-thumb {
-  background-color: white;
-  border: 1px solid rgba(15, 23, 42, 1);
-  border-radius: 0;
 }
