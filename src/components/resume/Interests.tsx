@@ -1,3 +1,5 @@
+import { Fragment } from "react";
+
 import { Path, Svg, Text, View } from "@react-pdf/renderer";
 
 import { Section } from "~/components/resume/Index";
@@ -8,7 +10,7 @@ export default function Interests() {
     <Section title="INTERESTS">
       <View style={{ flexDirection: "column", gap: 8 }}>
         {RESUME.interests.map((interest, index) => (
-          <>
+          <Fragment key={index}>
             <View style={{ flexDirection: "row", gap: 6 }}>
               <Svg
                 viewBox="0 0 24 24"
@@ -21,7 +23,7 @@ export default function Interests() {
                   <Path key={i} d={path} fill={COLORS.slate900} />
                 ))}
               </Svg>
-              <Text key={index} style={{ fontWeight: 500 }}>
+              <Text style={{ fontWeight: 500 }}>
                 {interest.title}
               </Text>
             </View>
@@ -35,7 +37,7 @@ export default function Interests() {
                 }}
               />
             )}
-          </>
+          </Fragment>
         ))}
       </View>
     </Section>

@@ -26,7 +26,7 @@ function TransformControlsInfo() {
   if (!transformActive || !selectedObject) return null;
   return (
     <div
-      className="fixed whitespace-nowrap rounded-md bg-[#151520] p-2 text-sm text-slate-100"
+      className="fixed rounded-md bg-[#151520] p-2 text-sm whitespace-nowrap text-slate-100"
       style={{ left: x, top: y + 24 }}
     >
       {transformMode === "translate" &&
@@ -76,7 +76,7 @@ function CameraPosition() {
         ⏭
       </a>
 
-      <p className="whitespace-nowrap bg-slate-100 px-1 text-center">
+      <p className="bg-slate-100 px-1 text-center whitespace-nowrap">
         {cameraPos
           .toArray()
           .map((pos) => pos.toFixed(2))

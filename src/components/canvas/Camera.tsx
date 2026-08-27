@@ -1,10 +1,9 @@
-import type * as THREE from "three";
-
 import { useRef } from "react";
 
 import { PerspectiveCamera } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useControls } from "leva";
+import type * as THREE from "three";
 import { Vector3 } from "three";
 
 import { usePage } from "~/components/canvas/Page";
@@ -32,13 +31,13 @@ export default function Camera() {
     groupRef.current.position.lerp(position, delta * 4);
 
     camera.lookAt(
-      lookAt.lerp(scrollDown ? position : groupRef.current.position, delta * 8)
+      lookAt.lerp(scrollDown ? position : groupRef.current.position, delta * 8),
     );
 
     rotation.lerpVectors(rotFrom, rotTo, scrollPos - scrollPage);
 
     groupRef.current.rotation.setFromVector3(
-      rotationLerp.lerp(rotation, delta * 8)
+      rotationLerp.lerp(rotation, delta * 8),
     );
   });
 

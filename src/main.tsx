@@ -1,6 +1,6 @@
 import React from "react";
 
-import posthog from "posthog-js";
+import posthogClient from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 import ReactDOM from "react-dom/client";
 import {
@@ -11,13 +11,13 @@ import {
 
 import "./global.css";
 
-posthog.init(import.meta.env.VITE_POSTHOG_KEY as string, {
+posthogClient.init(import.meta.env.VITE_POSTHOG_KEY as string, {
   api_host: import.meta.env.VITE_POSTHOG_HOST as string,
 });
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <PostHogProvider client={posthog}>
+    <PostHogProvider client={posthogClient}>
       <RouterProvider
         router={createBrowserRouter([
           {
@@ -41,5 +41,5 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         ])}
       />
     </PostHogProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

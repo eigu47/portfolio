@@ -29,7 +29,7 @@ export default function Navbar() {
           {PAGES.map(({ id, href }, i) => (
             <li key={i} className="relative flex gap-10 first:grow">
               <a
-                className={`relative p-3 capitalize after:absolute after:bottom-1 after:right-1/2 after:h-[2px] after:w-4/6 after:origin-center after:translate-x-1/2 after:scale-x-0 after:bg-emerald-400 after:transition hover:text-white hover:after:scale-x-100 ${
+                className={`relative p-3 capitalize after:absolute after:right-1/2 after:bottom-1 after:h-[2px] after:w-4/6 after:origin-center after:translate-x-1/2 after:scale-x-0 after:bg-emerald-400 after:transition hover:text-white hover:after:scale-x-100 ${
                   scrollPage === i ? "after:scale-x-100" : ""
                 }`}
                 href={href}
@@ -57,14 +57,14 @@ export default function Navbar() {
       </nav>
 
       <button
-        className="fixed right-2 top-0 z-10 p-3 sm:hidden"
+        className="fixed top-0 right-2 z-10 p-3 sm:hidden"
         aria-label={showMenu ? "Close menu" : "Open menu"}
         onClick={() => setShowMenu((state) => !state)}
       >
         <BiMenuAltRight
           className={`absolute h-8 w-8 duration-300 ${
             showMenu
-              ? "rotate-[360deg] scale-0 opacity-0"
+              ? "scale-0 rotate-[360deg] opacity-0"
               : "scale-100 opacity-100"
           }`}
         />
@@ -72,7 +72,7 @@ export default function Navbar() {
           className={`h-8 w-8 duration-300 ${
             showMenu
               ? "scale-100 opacity-100"
-              : "-rotate-[360deg] scale-0 opacity-0"
+              : "scale-0 -rotate-[360deg] opacity-0"
           }`}
         />
       </button>

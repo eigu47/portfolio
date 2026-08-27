@@ -42,17 +42,19 @@ export interface AppSeam extends RenderResult {
  * (this module) in an afterEach.
  */
 export function renderApp(
-  webgl: "stubbed" | "unavailable" = "stubbed"
+  webgl: "stubbed" | "unavailable" = "stubbed",
 ): AppSeam {
   installWebGL(webgl);
 
   let boundaryRef: ProbeBoundary | null = null;
   const { unmount, ...result } = render(
-    <ProbeBoundary ref={(instance) => {
-      boundaryRef = instance;
-    }}>
+    <ProbeBoundary
+      ref={(instance) => {
+        boundaryRef = instance;
+      }}
+    >
       <App />
-    </ProbeBoundary>
+    </ProbeBoundary>,
   );
 
   return {

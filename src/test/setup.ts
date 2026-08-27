@@ -45,8 +45,7 @@ globalThis.URL.revokeObjectURL ??= () => {};
 
 // --- deterministic GPU tier (detect-gpu would otherwise hit the network) ---
 vi.mock("@react-three/drei", async (importOriginal) => {
-  const actual =
-    await importOriginal<typeof import("@react-three/drei")>();
+  const actual = await importOriginal<typeof import("@react-three/drei")>();
   return {
     ...actual,
     useDetectGPU: () => ({ tier: 0, isMobile: false, type: "stub" }),

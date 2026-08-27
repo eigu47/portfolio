@@ -32,14 +32,14 @@ describe("root app seam (WebGL stubbed)", () => {
 
     expect(getByLabelText("Github")).toHaveAttribute(
       "href",
-      "https://github.com/eigu47"
+      "https://github.com/eigu47",
     );
     expect(getByLabelText("LinkedIn")).toHaveAttribute(
       "href",
-      "https://www.linkedin.com/in/eiguchipablo/"
+      "https://www.linkedin.com/in/eiguchipablo/",
     );
     expect(
-      getByRole("link", { name: "pablo.eiguchi@gmail.com" })
+      getByRole("link", { name: "pablo.eiguchi@gmail.com" }),
     ).toHaveAttribute("href", "mailto:pablo.eiguchi@gmail.com");
   });
 
@@ -90,5 +90,6 @@ describe("root app seam (WebGL unavailable)", () => {
     // reaches the DOM. ticket 06 flips this — the fallback page must keep
     // the site's content visible without WebGL.
     expect(container.textContent).not.toContain("Eiguchi Pablo");
+    consoleError.mockRestore();
   });
 });

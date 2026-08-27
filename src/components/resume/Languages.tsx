@@ -1,3 +1,5 @@
+import { Fragment } from "react";
+
 import { Text, View } from "@react-pdf/renderer";
 
 import { Section } from "~/components/resume/Index";
@@ -8,9 +10,8 @@ export default function Languages() {
     <Section title="LANGUAGES">
       <View style={{ flexDirection: "column", gap: 10 }}>
         {RESUME.languages.map((language, index) => (
-          <>
+          <Fragment key={index}>
             <View
-              key={index}
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
@@ -54,7 +55,7 @@ export default function Languages() {
                 }}
               />
             )}
-          </>
+          </Fragment>
         ))}
       </View>
     </Section>

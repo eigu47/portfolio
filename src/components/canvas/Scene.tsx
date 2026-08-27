@@ -1,11 +1,10 @@
-import type * as THREE from "three";
-
 import { Suspense, useRef } from "react";
 
 import { Preload, useDetectGPU } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { Leva } from "leva";
+import type * as THREE from "three";
 
 import About from "~/components/canvas/About";
 import Atom from "~/components/canvas/Atom";

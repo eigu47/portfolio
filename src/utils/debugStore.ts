@@ -1,5 +1,4 @@
 import type * as THREE from "three";
-
 import { create } from "zustand";
 
 import { type ValidIndex } from "~/utils/types";

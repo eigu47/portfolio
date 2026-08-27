@@ -1,7 +1,5 @@
 import { useState } from "react";
 
-import { type ThreeElements } from "@react-three/fiber";
-
 import {
   Center,
   Decal,
@@ -10,6 +8,7 @@ import {
   Icosahedron,
   useTexture,
 } from "@react-three/drei";
+import { type ThreeElements } from "@react-three/fiber";
 import { useControls } from "leva";
 
 import {

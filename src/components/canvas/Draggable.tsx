@@ -1,10 +1,9 @@
-import type * as THREE from "three";
-
 import { useMemo, useRef, useState } from "react";
 
 import { useCursor } from "@react-three/drei";
 import { useFrame, useThree, type ThreeElements } from "@react-three/fiber";
 import { useGesture } from "@use-gesture/react";
+import type * as THREE from "three";
 import { Quaternion, Vector3 } from "three";
 
 import usePreventScroll from "~/hooks/usePreventScroll";
@@ -24,7 +23,7 @@ export default function Draggable({
       | React.RefObject<THREE.MeshPhysicalMaterial | null>,
     colorFrom: THREE.Color,
     colorTo: THREE.Color,
-    speed?: number
+    speed?: number,
   ];
 } & ThreeElements["group"]) {
   const groupRef = useRef<THREE.Group>(null);
@@ -76,17 +75,13 @@ export default function Draggable({
 
       materialRef.current?.color.lerp(
         hover || drag ? colorTo : colorFrom,
-        delta * speed
+        delta * speed,
       );
     }
   });
 
   return (
-    <group
-      ref={groupRef}
-      {...props}
-      {...(bind() as ThreeElements["group"])}
-    >
+    <group ref={groupRef} {...props} {...(bind() as ThreeElements["group"])}>
       {children}
     </group>
   );

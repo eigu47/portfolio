@@ -15,7 +15,11 @@ import {
   useCursor,
   Html,
 } from "@react-three/drei";
-import { type ThreeEvent, useThree, type ThreeElements } from "@react-three/fiber";
+import {
+  type ThreeEvent,
+  useThree,
+  type ThreeElements,
+} from "@react-three/fiber";
 import { useControls } from "leva";
 import { Perf } from "r3f-perf";
 import { Vector3 } from "three";

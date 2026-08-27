@@ -81,7 +81,7 @@ export default function Header() {
                         </Svg>
                         <Text>{text}</Text>
                       </View>
-                    )
+                    ),
                 )}
               </View>
             </View>

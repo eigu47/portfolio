@@ -1,7 +1,5 @@
 import { useRef, useState } from "react";
 
-import type * as THREE from "three";
-
 import {
   Float,
   Icosahedron,
@@ -12,6 +10,7 @@ import {
 } from "@react-three/drei";
 import { useFrame, type ThreeElements } from "@react-three/fiber";
 import { useControls } from "leva";
+import type * as THREE from "three";
 import { Color, EllipseCurve } from "three";
 
 import Draggable from "~/components/canvas/Draggable";
@@ -123,7 +122,7 @@ function Electron({
     electronRef.current?.position.set(
       Math.sin(t) * radius,
       (Math.cos(t) * radius * Math.atan(t)) / Math.PI / 1.25,
-      0
+      0,
     );
     // fixes weird flicker at start
     !trailWidth && elapsed > 1 && setTrailWidth(5 * scale);
@@ -154,5 +153,5 @@ const points = new EllipseCurve(
   0,
   2 * Math.PI,
   false,
-  0
+  0,
 ).getPoints(100);

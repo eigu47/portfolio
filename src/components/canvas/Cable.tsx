@@ -1,10 +1,9 @@
-import type * as THREE from "three";
-
 import { useState } from "react";
 
 import { Icosahedron, Tube } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useControls } from "leva";
+import type * as THREE from "three";
 import { CatmullRomCurve3, Vector3 } from "three";
 
 import { usePage } from "~/components/canvas/Page";
@@ -49,7 +48,7 @@ export default function Cable({
           [[width * -0.2, height * -0.15, -0.5], page3],
           [[-1.45, -0.95, 0.5], page3],
           [[-1.35, -0.95, 0.5], page3],
-        ]
+        ],
   );
 
   return (
@@ -62,7 +61,11 @@ export default function Cable({
 
 const keyboardPos = new Vector3();
 
-function LooseCable({ cableRef }: { cableRef: React.RefObject<THREE.Mesh | null> }) {
+function LooseCable({
+  cableRef,
+}: {
+  cableRef: React.RefObject<THREE.Mesh | null>;
+}) {
   const { width, height, mobile } = useViewport();
   const [startPoint, setStartPoint] = useState<THREE.Vector3Tuple>([0, 0, 0]);
 
@@ -84,7 +87,7 @@ function LooseCable({ cableRef }: { cableRef: React.RefObject<THREE.Mesh | null>
           // over "pablo"
           [width * -0.35 + 2.8, height * 0.05 + 0.23, 0.05],
           [width * -0.35 + 2.7, height * 0.05 + 0.23, -0.05],
-        ]
+        ],
   );
 
   useFrame(() => {

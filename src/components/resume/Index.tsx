@@ -29,7 +29,10 @@ export default function Resume() {
   return (
     <div className="flex h-screen flex-col-reverse justify-center gap-40 p-10 sm:gap-0 lg:flex-row lg:p-0">
       <aside className="mx-auto flex basis-1/5 flex-col items-center justify-center gap-20">
-        <button id="download_resume" className="rounded bg-gray-300 px-4 py-6 text-xl font-bold text-gray-800 hover:bg-gray-400">
+        <button
+          id="download_resume"
+          className="rounded bg-gray-300 px-4 py-6 text-xl font-bold text-gray-800 hover:bg-gray-400"
+        >
           <PDFDownloadLink
             document={<MyDocument />}
             fileName="EiguchiPablo.pdf"

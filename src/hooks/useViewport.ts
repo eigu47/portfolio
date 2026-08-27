@@ -8,17 +8,17 @@ const cameraDis = new Vector3(0, 0, 5);
 
 export default function useViewport() {
   const getCurrentViewport = useThree(
-    (state) => state.viewport.getCurrentViewport
+    (state) => state.viewport.getCurrentViewport,
   );
   const camera = useThree((state) => state.camera);
   const { width: sizeWidth, height: sizeHeight } = useThree(
-    (state) => state.size
+    (state) => state.size,
   );
   // Native viewport width and height are not updated correctly if camera is moved
   const { width, height } = useMemo(() => {
     return getCurrentViewport(
       camera,
-      camera.getWorldPosition(cameraPos).add(cameraDis)
+      camera.getWorldPosition(cameraPos).add(cameraDis),
     );
   }, [camera, getCurrentViewport]);
   // Tailwind-like breakpoints

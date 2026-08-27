@@ -1,3 +1,5 @@
+import { Fragment } from "react";
+
 import { Path, Svg, Text, View } from "@react-pdf/renderer";
 
 import { Section } from "~/components/resume/Index";
@@ -8,9 +10,8 @@ export default function Certifications() {
     <Section title="CERTIFICATIONS">
       <View style={{ width: "100%", flexDirection: "column", gap: 10 }}>
         {RESUME.certifications.map(({ title, sub, date, score }, index) => (
-          <>
+          <Fragment key={index}>
             <View
-              key={index}
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
@@ -82,7 +83,7 @@ export default function Certifications() {
                 }}
               />
             )}
-          </>
+          </Fragment>
         ))}
       </View>
     </Section>

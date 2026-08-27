@@ -1,7 +1,5 @@
 import { useState } from "react";
 
-import { type ThreeElements } from "@react-three/fiber";
-
 import {
   Box,
   Image,
@@ -9,6 +7,7 @@ import {
   Text,
   useCursor,
 } from "@react-three/drei";
+import { type ThreeElements } from "@react-three/fiber";
 import { useGesture } from "@use-gesture/react";
 import { useControls } from "leva";
 import { DoubleSide, FrontSide } from "three";

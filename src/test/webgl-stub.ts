@@ -63,7 +63,11 @@ function createWebGLContext(canvas: HTMLCanvasElement): GL {
     getContextAttributes: () => ({}),
     isContextLost: () => false,
 
-    getShaderPrecisionFormat: () => ({ rangeMin: 127, rangeMax: 127, precision: 23 }),
+    getShaderPrecisionFormat: () => ({
+      rangeMin: 127,
+      rangeMax: 127,
+      precision: 23,
+    }),
 
     getParameter: (pname: number) => {
       if (pname === 0x0d3a) return new Int32Array([4096, 4096]); // MAX_VIEWPORT_DIMS
