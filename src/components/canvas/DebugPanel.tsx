@@ -10,42 +10,43 @@ export default function DebugPanel() {
   const setTransformMode = useDebugStore((state) => state.setTransformMode);
 
   useEffect(() => {
-    const { debugOn, orbitControls, selectedObject, transformMode } =
-      useDebugStore.getState();
     const gui = new GUI({ title: "Portfolio debug" });
-    const settings = { debugOn, orbitControls };
+    const settings = {
+      get debugOn() {
+        return useDebugStore.getState().debugOn;
+      },
+      set debugOn(active: boolean) {
+        setDebugOn(active);
+      },
+      get orbitControls() {
+        return useDebugStore.getState().orbitControls;
+      },
+      set orbitControls(active: boolean) {
+        setOrbitControls(active);
+        if (active) setDebugOn(true);
+      },
+    };
     const selected = {
-      object: selectedObject?.name || selectedObject?.uuid || "Click an object",
+      get object() {
+        const object = useDebugStore.getState().selectedObject;
+        return object?.name || object?.uuid || "Click an object";
+      },
+    };
+    const transform = {
+      get transformMode() {
+        return useDebugStore.getState().transformMode;
+      },
+      set transformMode(mode: (typeof TRANSFORM_MODES)[number]) {
+        setTransformMode(mode);
+      },
     };
 
-    gui.add(settings, "debugOn").onChange(setDebugOn);
-    gui.add(settings, "orbitControls").onChange((active: boolean) => {
-      setOrbitControls(active);
-      if (active) setDebugOn(true);
-    });
-    const selectedController = gui.add(selected, "object").name("selected");
-    selectedController.disable();
-    const transform = { transformMode };
-    const transformController = gui
-      .add(transform, "transformMode", [...TRANSFORM_MODES])
-      .onChange(setTransformMode);
+    gui.add(settings, "debugOn").listen();
+    gui.add(settings, "orbitControls").listen();
+    gui.add(selected, "object").name("selected").listen().disable();
+    gui.add(transform, "transformMode", [...TRANSFORM_MODES]).listen();
 
-    const unsubscribe = useDebugStore.subscribe((state) => {
-      settings.debugOn = state.debugOn;
-      settings.orbitControls = state.orbitControls;
-      selected.object =
-        state.selectedObject?.name ||
-        state.selectedObject?.uuid ||
-        "Click an object";
-      transform.transformMode = state.transformMode;
-      selectedController.updateDisplay();
-      transformController.updateDisplay();
-    });
-
-    return () => {
-      unsubscribe();
-      gui.destroy();
-    };
+    return () => gui.destroy();
   }, [setDebugOn, setOrbitControls, setTransformMode]);
 
   return null;

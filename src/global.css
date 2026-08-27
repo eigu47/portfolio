@@ -5,6 +5,12 @@ html {
   @apply scroll-smooth bg-slate-900 text-slate-300;
 }
 
+.lil-controller.lil-option select {
+  background-color: #1e293b;
+  color: #f1f5f9;
+  color-scheme: dark;
+}
+
 html {
   @apply snap-y snap-mandatory;
   overflow: overlay;
