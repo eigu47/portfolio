@@ -1,10 +1,10 @@
-import { useControls } from "leva";
 import { AiFillGithub, AiFillLinkedin } from "react-icons/ai";
 
 import DebugOverlay from "~/components/canvas/DebugOverlay";
+import { useDebugStore } from "~/utils/debugStore";
 
 export default function Layout() {
-  const { debugOn } = useControls({ debugOn: false });
+  const debugOn = useDebugStore((state) => state.debugOn);
 
   if (debugOn) return <DebugOverlay />;
   return (

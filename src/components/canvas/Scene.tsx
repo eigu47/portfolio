@@ -1,9 +1,8 @@
-import { Suspense, useRef } from "react";
+import { lazy, Suspense, useRef } from "react";
 
 import { Preload, useDetectGPU } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
-import { Leva } from "leva";
 import type * as THREE from "three";
 
 import About from "~/components/canvas/About";
@@ -20,6 +19,7 @@ import TechLogos from "~/components/canvas/TechLogos";
 
 const isDebug =
   new URLSearchParams(window.location.search).get("debug") != null;
+const DebugPanel = lazy(() => import("~/components/canvas/DebugPanel"));
 
 export default function Scene() {
   const cableRef = useRef<THREE.Mesh>(null);
@@ -62,7 +62,11 @@ export default function Scene() {
 
         {isDebug && <Debug />}
       </Canvas>
-      {!isDebug && <Leva hidden={!isDebug} />}
+      {isDebug && (
+        <Suspense fallback={null}>
+          <DebugPanel />
+        </Suspense>
+      )}
     </>
   );
 }

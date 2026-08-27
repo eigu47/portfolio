@@ -20,7 +20,6 @@ import {
   useThree,
   type ThreeElements,
 } from "@react-three/fiber";
-import { useControls } from "leva";
 import { Perf } from "r3f-perf";
 import { Vector3 } from "three";
 
@@ -32,15 +31,14 @@ const cameraDir = new Vector3();
 
 export default function Debug() {
   const camera = useThree((state) => state.camera);
-  const { selectedObject, transformMode, setTransformActive, setCamera } =
-    useDebugStore();
-  const [{ debugOn, orbitControls }] = useControls(() => ({
-    debugOn: false,
-    orbitControls: {
-      value: false,
-      render: (get) => get("debugOn") as boolean,
-    },
-  }));
+  const {
+    debugOn,
+    orbitControls,
+    selectedObject,
+    transformMode,
+    setTransformActive,
+    setCamera,
+  } = useDebugStore();
   // Adds 5 units in the direction the camera is facing
   camera
     .getWorldPosition(cameraPos)
@@ -124,7 +122,7 @@ export function useDebug() {
     setSelectedObject,
     cycleTransformMode,
   } = useDebugStore();
-  const { debugOn } = useControls({ debugOn: false });
+  const { debugOn } = useDebugStore();
   const [hovered, setHovered] = useState(false);
   useCursor((debugOn && hovered) || transformActive);
 

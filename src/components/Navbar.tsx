@@ -1,15 +1,15 @@
 import { useState } from "react";
 
-import { useControls } from "leva";
 import { BiMenuAltRight } from "react-icons/bi";
 import { IoClose } from "react-icons/io5";
 import { PiFilePdfDuotone } from "react-icons/pi";
 
 import useScrollPos from "~/hooks/useScrollPos";
 import { PAGES } from "~/utils/config";
+import { useDebugStore } from "~/utils/debugStore";
 
 export default function Navbar() {
-  const { debugOn } = useControls({ debugOn: false });
+  const debugOn = useDebugStore((state) => state.debugOn);
   const [showMenu, setShowMenu] = useState(false);
   const { scrollPage } = useScrollPos();
 

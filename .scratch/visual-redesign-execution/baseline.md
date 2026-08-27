@@ -81,3 +81,10 @@ gzip. Font weight (17.2 MB of NotoSansJP TTFs) is untouched — ticket 12's
 target. A Lighthouse after-run was skipped: absolute numbers on this machine
 are dominated by the font payload and software-WebGL TBT, which this ticket
 did not change; ticket 12 will run the real before/after comparison.
+
+## Post-debug note — ticket 03 (Leva removal)
+
+Leva was removed from the dependency graph and the debug panel moved to a
+dynamic `lil-gui` chunk. The production app chunk is now 1,473.81 kB raw /
+418.84 kB gzip, compared with ticket 02's 1,636.7 kB / 480.8 kB. The debug
+chunk is 31.25 kB raw / 8.24 kB gzip and is only requested for `?debug` visits.

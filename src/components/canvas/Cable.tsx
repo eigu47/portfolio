@@ -2,12 +2,12 @@ import { useState } from "react";
 
 import { Icosahedron, Tube } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useControls } from "leva";
 import type * as THREE from "three";
 import { CatmullRomCurve3, Vector3 } from "three";
 
 import { usePage } from "~/components/canvas/Page";
 import useViewport from "~/hooks/useViewport";
+import { useDebugStore } from "~/utils/debugStore";
 
 export default function Cable({
   cableRef,
@@ -107,7 +107,7 @@ function CableSection({
   segments?: number;
 }) {
   const { mobile } = useViewport();
-  const { debugOn } = useControls({ debugOn: false });
+  const debugOn = useDebugStore((state) => state.debugOn);
 
   return (
     <>

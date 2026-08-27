@@ -9,12 +9,12 @@ import {
   useDetectGPU,
 } from "@react-three/drei";
 import { useFrame, type ThreeElements } from "@react-three/fiber";
-import { useControls } from "leva";
 import type * as THREE from "three";
 import { Color, EllipseCurve } from "three";
 
 import Draggable from "~/components/canvas/Draggable";
 import useViewport from "~/hooks/useViewport";
+import { useDebugStore } from "~/utils/debugStore";
 
 const bloomCyan = new Color(0.1, 1.2, 1.2);
 const normalCyan = new Color("cyan");
@@ -27,7 +27,7 @@ export default function Atom({
 }: { scale?: number } & ThreeElements["group"]) {
   const basicRef = useRef<THREE.MeshBasicMaterial>(null);
   const physicalRef = useRef<THREE.MeshPhysicalMaterial>(null);
-  const { debugOn } = useControls({ debugOn: false });
+  const debugOn = useDebugStore((state) => state.debugOn);
   const { width, height, mobile } = useViewport();
   const { tier } = useDetectGPU();
 

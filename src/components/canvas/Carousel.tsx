@@ -9,7 +9,6 @@ import {
 } from "@react-three/drei";
 import { type ThreeElements } from "@react-three/fiber";
 import { useGesture } from "@use-gesture/react";
-import { useControls } from "leva";
 import { DoubleSide, FrontSide } from "three";
 
 import { calibre400 } from "~/assets/fonts";
@@ -23,6 +22,7 @@ import { useDebug } from "~/components/canvas/Debug";
 import usePreventScroll from "~/hooks/usePreventScroll";
 import useViewport from "~/hooks/useViewport";
 import { COLORS } from "~/utils/config";
+import { useDebugStore } from "~/utils/debugStore";
 
 export default function Carousel(props: ThreeElements["group"]) {
   const { width, height, mobile } = useViewport();
@@ -96,7 +96,7 @@ function Project({
 } & ThreeElements["group"]) {
   const { height, mobile } = useViewport();
   const [hover, setHover] = useState(false);
-  const { debugOn } = useControls({ debugOn: false });
+  const debugOn = useDebugStore((state) => state.debugOn);
 
   return (
     <group {...props}>

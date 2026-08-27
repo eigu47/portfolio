@@ -9,7 +9,6 @@ import {
   useTexture,
 } from "@react-three/drei";
 import { type ThreeElements } from "@react-three/fiber";
-import { useControls } from "leva";
 
 import {
   html,
@@ -23,6 +22,7 @@ import {
 import { useDebug } from "~/components/canvas/Debug";
 import useViewport from "~/hooks/useViewport";
 import { COLORS } from "~/utils/config";
+import { useDebugStore } from "~/utils/debugStore";
 
 export default function TechLogos() {
   const { mobile, width, height } = useViewport();
@@ -56,7 +56,7 @@ function Ball({
   ball: (typeof LOGOS)[number];
   last: boolean;
 } & ThreeElements["group"]) {
-  const { debugOn } = useControls({ debugOn: false });
+  const debugOn = useDebugStore((state) => state.debugOn);
   const texture = useTexture(src);
   const debug = useDebug();
   const [showModal, setModal] = useState(false);
