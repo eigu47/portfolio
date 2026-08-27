@@ -1,20 +1,20 @@
 import { View, Text, Svg, Path, Image } from "@react-pdf/renderer";
 
-import { RESUME } from "~/utils/config";
+import { COLORS, RESUME } from "~/utils/config";
 
 export default function Header() {
   return (
     <View
       style={{
         padding: 30,
-        backgroundColor: "#232E5C",
+        backgroundColor: COLORS.bgBase,
         width: "100%",
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
         fontWeight: 500,
         gap: 30,
-        color: "white",
+        color: COLORS.slate100,
       }}
     >
       <View
@@ -77,7 +77,7 @@ export default function Header() {
                           style={{ top: -2 }}
                           {...svgProps}
                         >
-                          <Path d={svgPath} fill="white" />
+                          <Path d={svgPath} fill={COLORS.slate100} />
                         </Svg>
                         <Text>{text}</Text>
                       </View>

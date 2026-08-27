@@ -86,7 +86,7 @@ function Ball({
 
       {showModal && (
         <Html position={mobile && last ? [-0.5, -0.5, 0] : [0.5, -0.5, 0]}>
-          <div className="rounded border border-cyan-800 bg-cyan-950 p-2 text-center">
+          <div className="rounded-surface border-hairline bg-surface border p-2 text-center">
             <p>{name}</p>
           </div>
         </Html>

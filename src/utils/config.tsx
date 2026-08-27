@@ -1,6 +1,7 @@
 import { type Svg, Text } from "@react-pdf/renderer";
 
 export const COLORS = {
+  bgBase: "#09090b",
   slate100: "#f1f5f9",
   slate300: "#cbd5e1",
   slate400: "#a1a1aa",

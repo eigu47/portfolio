@@ -7,6 +7,7 @@ import { CatmullRomCurve3, Vector3 } from "three";
 
 import { usePage } from "~/components/canvas/Page";
 import useViewport from "~/hooks/useViewport";
+import { COLORS } from "~/utils/config";
 import { useDebugStore } from "~/utils/debugStore";
 
 export default function Cable({
@@ -113,7 +114,7 @@ function CableSection({
     <>
       <Tube
         args={[new CatmullRomCurve3(points), segments, mobile ? 0.013 : 0.02]}
-        material-color="#020617"
+        material-color={COLORS.bgBase}
       />
       {debugOn &&
         points.map((p, i) => (

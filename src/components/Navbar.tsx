@@ -17,7 +17,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 z-10 w-full bg-slate-900/80 shadow-lg backdrop-blur duration-200 sm:translate-y-0 sm:transition-none ${
+        className={`chrome fixed top-0 z-10 w-full duration-200 sm:translate-y-0 sm:transition-none ${
           showMenu ? "" : "-translate-y-[calc(100%-56px)]"
         }`}
       >
@@ -29,7 +29,7 @@ export default function Navbar() {
           {PAGES.map(({ id, href }, i) => (
             <li key={i} className="relative flex gap-10 first:grow">
               <a
-                className={`relative p-3 capitalize after:absolute after:right-1/2 after:bottom-1 after:h-[2px] after:w-4/6 after:origin-center after:translate-x-1/2 after:scale-x-0 after:bg-emerald-400 after:transition hover:text-white hover:after:scale-x-100 ${
+                className={`interactive after:bg-accent hover:text-text-hi relative p-3 capitalize after:absolute after:right-1/2 after:bottom-1 after:h-[2px] after:w-4/6 after:origin-center after:translate-x-1/2 after:scale-x-0 after:transition hover:after:scale-x-100 ${
                   scrollPage === i ? "after:scale-x-100" : ""
                 }`}
                 href={href}
@@ -42,13 +42,13 @@ export default function Navbar() {
 
               {i === PAGES.length - 1 && (
                 <a
-                  className="absolute -right-16 bottom-2 sm:relative sm:right-0 sm:-bottom-2"
+                  className="interactive absolute -right-16 bottom-2 sm:relative sm:right-0 sm:-bottom-2"
                   href="/resume"
                   target="_blank"
                   aria-label="Resume"
                   id="pdf"
                 >
-                  <PiFilePdfDuotone className="h-8 w-8 duration-200 hover:fill-emerald-400" />
+                  <PiFilePdfDuotone className="hover:fill-accent h-8 w-8 duration-200" />
                 </a>
               )}
             </li>
@@ -57,7 +57,7 @@ export default function Navbar() {
       </nav>
 
       <button
-        className="fixed top-0 right-2 z-10 p-3 sm:hidden"
+        className="interactive fixed top-0 right-2 z-10 p-3 sm:hidden"
         aria-label={showMenu ? "Close menu" : "Open menu"}
         onClick={() => setShowMenu((state) => !state)}
       >

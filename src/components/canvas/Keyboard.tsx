@@ -13,6 +13,7 @@ import type { GLTF } from "three-stdlib";
 import { useDebug } from "~/components/canvas/Debug";
 import useMousePos from "~/hooks/useMousePos";
 import useViewport from "~/hooks/useViewport";
+import { COLORS } from "~/utils/config";
 
 const lookTo = new Vector3();
 const lerpTo = new Vector3();
@@ -69,7 +70,7 @@ export default function Keyboard({
         <mesh
           geometry={nodes.Keycaps.geometry}
           material={materials["Keycap material"]}
-          material-color="#cbd5e1"
+          material-color={COLORS.slate300}
         />
       </group>
     </Float>

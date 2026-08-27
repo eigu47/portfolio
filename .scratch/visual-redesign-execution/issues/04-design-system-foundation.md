@@ -4,10 +4,19 @@
 
 **Blocked by:** 02 — Dependency upgrade, single transaction.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Token table lives in Tailwind config; ad-hoc hex literals in components migrated to tokens
-- [ ] Background treatment applied site-wide per the design-system prototype (`.scratch/visual-redesign/prototype-design-system.html`)
-- [ ] `text-faint` exists, used only for decorative/disabled/large text — never body copy
-- [ ] Focus ring + halo visible on all interactive elements; hover lift/warm-border states work
-- [ ] Navbar + rails demonstrate the Chrome treatment; visual inspection passes vs prototype
+- [x] Token table lives in Tailwind config; ad-hoc hex literals in components migrated to tokens
+- [x] Background treatment applied site-wide per the design-system prototype (`.scratch/visual-redesign/prototype-design-system.html`)
+- [x] `text-faint` exists, used only for decorative/disabled/large text — never body copy
+- [x] Focus ring + halo visible on all interactive elements; hover lift/warm-border states work
+- [x] Navbar + rails demonstrate the Chrome treatment; visual inspection passes vs prototype
+
+## Notes
+
+- Tailwind v4 tokens live in `src/global.css` via `@theme`, since this project has no separate Tailwind config.
+- The root-app seam covers the canonical `chrome` and `interactive` hooks; `npm run build`, typechecking, lint, and focused tests pass.
+
+## Answer
+
+The foundation is implemented in the global Tailwind v4 theme and shared CSS. DOM chrome now uses the shared surface, hairline, shadow, radius, focus, and hover treatments; the site background includes the approved gradient, counter-glow, and fixed grain overlay.

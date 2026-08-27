@@ -31,7 +31,7 @@ export default function Resume() {
       <aside className="mx-auto flex basis-1/5 flex-col items-center justify-center gap-20">
         <button
           id="download_resume"
-          className="rounded bg-gray-300 px-4 py-6 text-xl font-bold text-gray-800 hover:bg-gray-400"
+          className="interactive rounded-surface border-hairline bg-surface text-text-hi border px-4 py-6 text-xl font-bold"
         >
           <PDFDownloadLink
             document={<MyDocument />}
@@ -42,7 +42,7 @@ export default function Resume() {
             <span>Download</span>
           </PDFDownloadLink>
         </button>
-        <button className="rounded bg-gray-300 px-4 py-6 text-xl font-bold text-gray-800 hover:bg-gray-400">
+        <button className="interactive rounded-surface border-hairline bg-surface text-text-hi border px-4 py-6 text-xl font-bold">
           <a
             href="/栄口パブロ.xls"
             target="_blank"
@@ -64,7 +64,7 @@ export default function Resume() {
       </PDFViewer>
 
       <aside className="mx-auto flex items-center justify-center lg:basis-1/5">
-        <button className="rounded bg-gray-300 px-4 py-6 text-xl font-bold text-gray-800 hover:bg-gray-400">
+        <button className="interactive rounded-surface border-hairline bg-surface text-text-hi border px-4 py-6 text-xl font-bold">
           <Link to="/">Back to my portfolio</Link>
         </button>
       </aside>

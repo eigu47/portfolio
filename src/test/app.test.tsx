@@ -18,7 +18,17 @@ describe("root app seam (WebGL stubbed)", () => {
     for (const name of ["hello", "about", "projects", "contact", "resume"]) {
       expect(getByRole("link", { name })).toBeInTheDocument();
     }
-    expect(document.querySelector("nav")).toBeInTheDocument();
+    expect(document.querySelector("nav")).toHaveClass("chrome");
+  });
+
+  it("uses the design-system interaction hooks for chrome", () => {
+    const { getByRole } = renderApp();
+
+    expect(getByRole("link", { name: "about" })).toHaveClass("interactive");
+    expect(getByRole("button", { name: "Open menu" })).toHaveClass(
+      "interactive",
+    );
+    expect(getByRole("link", { name: "Github" })).toHaveClass("interactive");
   });
 
   it("links to the resume pdf from the navbar", () => {

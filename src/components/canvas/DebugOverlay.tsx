@@ -26,7 +26,7 @@ function TransformControlsInfo() {
   if (!transformActive || !selectedObject) return null;
   return (
     <div
-      className="fixed rounded-md bg-[#151520] p-2 text-sm whitespace-nowrap text-slate-100"
+      className="rounded-surface bg-bg-grad-top text-text-hi fixed p-2 text-sm whitespace-nowrap"
       style={{ left: x, top: y + 24 }}
     >
       {transformMode === "translate" &&
@@ -68,7 +68,7 @@ function CameraPosition() {
     <div className="fixed bottom-0 left-0 text-black">
       <a
         href={`#${PAGES[href].id}`}
-        className="bg-slate-100 text-2xl"
+        className="interactive bg-text-hi text-2xl"
         onClick={() =>
           setHref(((href + 1) % PAGES.length) as ValidIndex<typeof PAGES>)
         }
@@ -76,7 +76,7 @@ function CameraPosition() {
         ⏭
       </a>
 
-      <p className="bg-slate-100 px-1 text-center whitespace-nowrap">
+      <p className="bg-text-hi px-1 text-center whitespace-nowrap">
         {cameraPos
           .toArray()
           .map((pos) => pos.toFixed(2))
