@@ -13,5 +13,5 @@
 
 ## Notes
 
-- `lil-gui` is isolated in the `DebugPanel` dynamic chunk (`31.25 kB` raw / `8.24 kB` gzip); normal visitors do not request it.
-- The production app chunk is now `1,473.81 kB` raw / `418.84 kB` gzip, down from ticket 02's `480.8 kB` gzip app chunk.
+- `lil-gui` is isolated in the `DebugPanel` dynamic chunk (`31.49 kB` raw / `8.32 kB` gzip); normal visitors do not request it.
+- The production app chunk is now `1,363.34 kB` raw / `380.56 kB` gzip, down from ticket 02's `480.8 kB` gzip app chunk. `r3f-perf` is isolated in a separate `110.49 kB` raw / `38.25 kB` gzip debug chunk.

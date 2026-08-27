@@ -3,6 +3,8 @@ import {
   useState,
   type ComponentRef,
   useEffect,
+  lazy,
+  Suspense,
 } from "react";
 
 import {
@@ -20,7 +22,6 @@ import {
   useThree,
   type ThreeElements,
 } from "@react-three/fiber";
-import { Perf } from "r3f-perf";
 import { Vector3 } from "three";
 
 import useViewport from "~/hooks/useViewport";
@@ -28,6 +29,9 @@ import { useDebugStore } from "~/utils/debugStore";
 
 const cameraPos = new Vector3();
 const cameraDir = new Vector3();
+const Perf = lazy(() =>
+  import("r3f-perf").then(({ Perf: DebugPerf }) => ({ default: DebugPerf })),
+);
 
 export default function Debug() {
   const camera = useThree((state) => state.camera);
@@ -55,12 +59,18 @@ export default function Debug() {
   if (!debugOn) {
     camera.position.set(0, 0, 5);
 
-    return <Perf position="top-left" className="top-20" minimal />;
+    return (
+      <Suspense fallback={null}>
+        <Perf position="top-left" className="top-20" minimal />
+      </Suspense>
+    );
   }
 
   return (
     <>
-      <Perf position="top-left" className="m-3" />
+      <Suspense fallback={null}>
+        <Perf position="top-left" className="m-3" />
+      </Suspense>
       <OrbitControls
         makeDefault={orbitControls}
         enableZoom={orbitControls}

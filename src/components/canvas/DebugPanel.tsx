@@ -14,19 +14,38 @@ export default function DebugPanel() {
       useDebugStore.getState();
     const gui = new GUI({ title: "Portfolio debug" });
     const settings = { debugOn, orbitControls };
-    const selected = { object: selectedObject?.name || "Click an object" };
+    const selected = {
+      object: selectedObject?.name || selectedObject?.uuid || "Click an object",
+    };
 
     gui.add(settings, "debugOn").onChange(setDebugOn);
     gui.add(settings, "orbitControls").onChange((active: boolean) => {
       setOrbitControls(active);
       if (active) setDebugOn(true);
     });
-    gui.add(selected, "object").name("selected").disable();
-    gui
-      .add({ transformMode }, "transformMode", [...TRANSFORM_MODES])
+    const selectedController = gui.add(selected, "object").name("selected");
+    selectedController.disable();
+    const transform = { transformMode };
+    const transformController = gui
+      .add(transform, "transformMode", [...TRANSFORM_MODES])
       .onChange(setTransformMode);
 
-    return () => gui.destroy();
+    const unsubscribe = useDebugStore.subscribe((state) => {
+      settings.debugOn = state.debugOn;
+      settings.orbitControls = state.orbitControls;
+      selected.object =
+        state.selectedObject?.name ||
+        state.selectedObject?.uuid ||
+        "Click an object";
+      transform.transformMode = state.transformMode;
+      selectedController.updateDisplay();
+      transformController.updateDisplay();
+    });
+
+    return () => {
+      unsubscribe();
+      gui.destroy();
+    };
   }, [setDebugOn, setOrbitControls, setTransformMode]);
 
   return null;

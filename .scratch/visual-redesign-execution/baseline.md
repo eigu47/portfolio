@@ -85,6 +85,7 @@ did not change; ticket 12 will run the real before/after comparison.
 ## Post-debug note — ticket 03 (Leva removal)
 
 Leva was removed from the dependency graph and the debug panel moved to a
-dynamic `lil-gui` chunk. The production app chunk is now 1,473.81 kB raw /
-418.84 kB gzip, compared with ticket 02's 1,636.7 kB / 480.8 kB. The debug
-chunk is 31.25 kB raw / 8.24 kB gzip and is only requested for `?debug` visits.
+dynamic `lil-gui` chunk. The production app chunk is now 1,363.34 kB raw /
+380.56 kB gzip, compared with ticket 02's 1,636.7 kB / 480.8 kB. The
+`lil-gui` chunk is 31.49 kB raw / 8.32 kB gzip and the `r3f-perf` chunk is
+110.49 kB raw / 38.25 kB gzip; both are only requested for `?debug` visits.
