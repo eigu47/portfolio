@@ -7,12 +7,23 @@ export default function Summary() {
   return (
     <Section title="Summary">
       <Text style={{ textAlign: "justify", paddingHorizontal: 3 }}>
-        {resumeContent.summary.beforeJapaneseIdentity}
-        <Text style={{ fontFamily: "notosans", fontSize: 9 }}>
-          {resumeContent.summary.japaneseIdentity}
-        </Text>
-        {resumeContent.summary.afterJapaneseIdentity}
+        {renderLocalizedText(resumeContent.summary)}
       </Text>
     </Section>
+  );
+}
+
+const japaneseRun =
+  /([\u2e80-\u2fff\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]+)/g;
+
+function renderLocalizedText(text: string) {
+  return text.split(japaneseRun).map((run, index) =>
+    index % 2 === 1 ? (
+      <Text key={index} style={{ fontFamily: "notosans", fontSize: 9 }}>
+        {run}
+      </Text>
+    ) : (
+      run
+    ),
   );
 }
