@@ -1,4 +1,5 @@
-import { cleanup, within } from "@testing-library/react";
+import * as drei from "@react-three/drei";
+import { act, cleanup, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -10,6 +11,7 @@ afterEach(() => {
   cleanup();
   restoreWebGL();
   vi.restoreAllMocks();
+  vi.useRealTimers();
 });
 
 describe("root app seam (WebGL stubbed)", () => {
@@ -125,6 +127,31 @@ describe("root app seam (WebGL stubbed)", () => {
 
     expect(document.querySelector("canvas")).toBeInTheDocument();
     expect(getError()).toBeNull();
+  });
+
+  it("shows the branded loader, then yields to the scene", () => {
+    vi.useFakeTimers();
+    vi.spyOn(drei, "useProgress").mockReturnValue({
+      active: false,
+      errors: [],
+      item: "",
+      loaded: 1,
+      progress: 100,
+      total: 1,
+    });
+    const { getByRole } = renderApp();
+
+    expect(
+      getByRole("status", { name: "Loading portfolio" }),
+    ).toBeInTheDocument();
+    expect(
+      getByRole("progressbar", { name: "Loading assets" }),
+    ).toHaveAttribute("aria-valuemax", "100");
+
+    void act(() => {
+      vi.advanceTimersByTime(1_800);
+    });
+    expect(document.querySelector('[role="status"]')).not.toBeInTheDocument();
   });
 });
 

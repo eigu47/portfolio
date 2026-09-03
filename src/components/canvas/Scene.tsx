@@ -27,7 +27,7 @@ export default function Scene() {
 
   return (
     <>
-      <Canvas aria-hidden="true" className="!fixed top-0 !h-screen">
+      <Canvas aria-hidden="true" className="scene-shell !fixed top-0 !h-screen">
         <Camera />
 
         <Suspense fallback={<Hero />}>

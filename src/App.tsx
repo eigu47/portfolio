@@ -1,6 +1,7 @@
 import Scene from "~/components/canvas/Scene";
 import { LOGOS } from "~/components/canvas/TechLogos";
 import Layout from "~/components/Layout";
+import LoadingScreen from "~/components/LoadingScreen";
 import Navbar from "~/components/Navbar";
 import StaticPage from "~/components/StaticPage";
 import { siteContent } from "~/content";
@@ -18,6 +19,7 @@ export default function App() {
       </header>
       <main>
         <Scene />
+        <LoadingScreen />
         <div className="sr-only" aria-label="Portfolio content">
           <h1 className="tracking-[-0.02em]">{siteContent.hero.name}</h1>
           <p>{siteContent.hero.greeting}</p>

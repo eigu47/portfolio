@@ -4,10 +4,15 @@
 
 **Blocked by:** 04 — Design-system foundation; 05 — Content extraction prefactor.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Loader overlay renders outside the Canvas and tracks real asset progress
-- [ ] Minimum 0.8s display; fast connections see no jarring flicker
-- [ ] Reveal matches prototype (`.scratch/visual-redesign/prototype-loading-experience.html`): hold → fade+blur out, scene scales in from 1.04
-- [ ] Stalled load shows quiet honest progress indefinitely
-- [ ] Seam test observes loader-appears-then-yields-to-content
+- [x] Loader overlay renders outside the Canvas and tracks real asset progress
+- [x] Minimum 0.8s display; fast connections see no jarring flicker
+- [x] Reveal matches prototype (`.scratch/visual-redesign/prototype-loading-experience.html`): hold → fade+blur out, scene scales in from 1.04
+- [x] Stalled load shows quiet honest progress indefinitely
+- [x] Seam test observes loader-appears-then-yields-to-content
+
+## Notes
+
+- `LoadingScreen` uses drei's `useProgress` store, stays mounted for at least 800ms, holds completed progress for 250ms, then exits with a 700ms opacity/blur transition.
+- A zero-progress or stalled asset load does not show retry or timeout messaging; the honest progress display remains in place.
