@@ -110,10 +110,18 @@ describe("root app seam (WebGL unavailable)", () => {
     expect(getError()).toBeNull();
     expect(container.querySelector("canvas")).not.toBeInTheDocument();
     expect(container.querySelector("main")).toBeInTheDocument();
-    expect(container.textContent).toContain("Personal projects");
+    expect(container.textContent).toContain("Selected work");
     expect(
       within(container).getByRole("link", { name: "Playpool" }),
     ).toHaveAttribute("href", "https://playpool.vercel.app/");
+    expect(
+      within(container).getByRole("link", {
+        name: "pablo.eiguchi@gmail.com",
+      }),
+    ).toHaveAttribute("href", "mailto:pablo.eiguchi@gmail.com");
+    expect(
+      within(container).getByRole("link", { name: "Github" }),
+    ).toHaveAttribute("href", "https://github.com/eigu47");
     consoleError.mockRestore();
   });
 
