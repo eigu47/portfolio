@@ -1,4 +1,4 @@
-import { cleanup } from "@testing-library/react";
+import { cleanup, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -64,6 +64,18 @@ describe("root app seam (WebGL stubbed)", () => {
     }
   });
 
+  it("mirrors the scene content in accessible landmarks", () => {
+    const { getByRole, getByText } = renderApp();
+
+    expect(getByRole("main")).toBeInTheDocument();
+    expect(getByRole("contentinfo")).toBeInTheDocument();
+    expect(getByText("Eiguchi Pablo", { selector: "h1" })).toBeInTheDocument();
+    expect(getByRole("link", { name: "Playpool" })).toHaveAttribute(
+      "href",
+      "https://playpool.vercel.app/",
+    );
+  });
+
   it("toggles the mobile menu button state on click", async () => {
     const user = userEvent.setup();
     const screen = renderApp();
@@ -85,24 +97,55 @@ describe("root app seam (WebGL stubbed)", () => {
 });
 
 describe("root app seam (WebGL unavailable)", () => {
-  it("does not crash, but leaves an empty canvas with all content invisible (ticket 06 target)", async () => {
+  it("renders the readable static page when WebGL is unavailable", async () => {
     const consoleError = vi
       .spyOn(console, "error")
       .mockImplementation(() => {});
     const { getError, container } = renderApp("unavailable");
 
-    // give React a tick to surface any deferred failure
     await vi.waitFor(() => {
-      expect(container.querySelector("canvas")).toBeInTheDocument();
+      expect(container.textContent).toContain("Eiguchi Pablo");
     });
 
-    // the app survives — react-three-fiber swallows the context failure...
     expect(getError()).toBeNull();
-
-    // ...but today there is no DOM fallback: none of the canvas-only copy
-    // reaches the DOM. ticket 06 flips this — the fallback page must keep
-    // the site's content visible without WebGL.
-    expect(container.textContent).not.toContain("Eiguchi Pablo");
+    expect(container.querySelector("canvas")).not.toBeInTheDocument();
+    expect(container.querySelector("main")).toBeInTheDocument();
+    expect(container.textContent).toContain("Personal projects");
+    expect(
+      within(container).getByRole("link", { name: "Playpool" }),
+    ).toHaveAttribute("href", "https://playpool.vercel.app/");
     consoleError.mockRestore();
+  });
+
+  it("uses the static page when reduced motion is preferred", () => {
+    vi.spyOn(window, "matchMedia").mockReturnValue({
+      matches: true,
+      media: "(prefers-reduced-motion: reduce)",
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    });
+
+    const { container } = renderApp();
+
+    expect(container.querySelector("canvas")).not.toBeInTheDocument();
+    expect(container.textContent).toContain(
+      "I'm a self-taught frontend developer",
+    );
+  });
+
+  it("recovers into the static page after the WebGL context is lost", async () => {
+    const { container } = renderApp();
+    const canvas = container.querySelector("canvas");
+
+    canvas?.dispatchEvent(new Event("webglcontextlost"));
+
+    await vi.waitFor(() => {
+      expect(container.querySelector("canvas")).not.toBeInTheDocument();
+    });
+    expect(container.textContent).toContain("Personal projects");
   });
 });

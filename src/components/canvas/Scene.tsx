@@ -1,4 +1,4 @@
-import { lazy, Suspense, useRef } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 
 import { Preload, useDetectGPU } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
@@ -21,13 +21,20 @@ const isDebug =
   new URLSearchParams(window.location.search).get("debug") != null;
 const DebugPanel = lazy(() => import("~/components/canvas/DebugPanel"));
 
-export default function Scene() {
+export default function Scene({ onFailure }: { onFailure?: () => void }) {
   const cableRef = useRef<THREE.Mesh>(null);
   const { tier } = useDetectGPU();
 
+  useEffect(() => {
+    const canvas = document.querySelector("canvas");
+    if (!canvas || !onFailure) return;
+    canvas.addEventListener("webglcontextlost", onFailure);
+    return () => canvas.removeEventListener("webglcontextlost", onFailure);
+  }, [onFailure]);
+
   return (
     <>
-      <Canvas className="!fixed top-0 !h-screen">
+      <Canvas aria-hidden="true" className="!fixed top-0 !h-screen">
         <Camera />
 
         <Suspense fallback={<Hero />}>

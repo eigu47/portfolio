@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Box,
@@ -24,12 +24,27 @@ export default function Carousel(props: ThreeElements["group"]) {
   const [hover, setHover] = useState(false);
   const [textHover, setTextHover] = useState(false);
   const [drag, setDrag] = useState(false);
+  const [rotation, setRotation] = useState(0);
   const prevent = usePreventScroll();
   const debug = useDebug();
 
   useCursor(textHover);
   useCursor(hover, "grab");
   useCursor(drag, "grabbing", hover ? "grab" : "auto");
+
+  useEffect(() => {
+    function rotate(event: KeyboardEvent) {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      event.preventDefault();
+      setRotation(
+        (current) =>
+          current + (event.key === "ArrowLeft" ? -1 : 1) * (Math.PI / 4),
+      );
+    }
+
+    window.addEventListener("keydown", rotate);
+    return () => window.removeEventListener("keydown", rotate);
+  }, []);
 
   const bind = useGesture({
     onPointerEnter: ({ event }) =>
@@ -64,7 +79,11 @@ export default function Carousel(props: ThreeElements["group"]) {
         polar={[0, 0]}
         speed={mobile ? 1.5 : 2}
       >
-        <group {...(bind() as ThreeElements["group"])} {...debug}>
+        <group
+          rotation={[0, rotation, 0]}
+          {...(bind() as ThreeElements["group"])}
+          {...debug}
+        >
           {siteContent.projects.map((project, i) => (
             <Project
               key={i}

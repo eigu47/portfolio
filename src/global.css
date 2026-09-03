@@ -66,6 +66,16 @@ html {
   scrollbar-width: thin;
 }
 
+html.static-mode {
+  scroll-behavior: auto;
+  scroll-snap-type: none;
+}
+
+html.static-mode * {
+  animation: none !important;
+  transition: none !important;
+}
+
 body {
   @apply bg-bg-base text-text-lo min-h-screen;
   overflow-x: clip;
@@ -109,6 +119,32 @@ body::before {
   backdrop-filter: blur(12px);
 }
 
+.noscript-page {
+  min-height: 100vh;
+  padding: 6rem 1.5rem;
+  color: var(--color-text-lo);
+  background: var(--color-bg-base);
+  font-family: Calibre, "Noto Sans JP", sans-serif;
+  font-size: 1.25rem;
+  text-align: center;
+}
+
+.noscript-page h1 {
+  margin: 1rem 0;
+  color: var(--color-text-hi);
+  font-size: 3rem;
+}
+
+.noscript-page a {
+  margin: 1rem;
+  color: var(--color-accent);
+}
+
+.noscript-mark {
+  color: var(--color-accent);
+  font-family: monospace;
+}
+
 .interactive {
   transition:
     transform 150ms ease,
@@ -140,7 +176,6 @@ body::before {
   width: 8px;
   background: transparent;
 }
-
 
 .screen::-webkit-scrollbar {
   width: 8px;

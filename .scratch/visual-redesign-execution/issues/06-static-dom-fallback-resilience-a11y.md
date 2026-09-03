@@ -4,11 +4,17 @@
 
 **Blocked by:** 04 — Design-system foundation; 05 — Content extraction prefactor.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Seam test: WebGL unavailable → static DOM fallback renders with name/about/projects/contact
-- [ ] Seam test: reduced-motion → same static branch (no 3D animation, snap-scrolling, or reveals)
-- [ ] Mid-session GPU-context loss recovers into the fallback without a blank page
-- [ ] Route-level ErrorBoundary shows retry; retry works
-- [ ] Landmarks + sr-only headings + sr-only canvas-text mirror present; carousel operable via ←/→
-- [ ] `<noscript>` page shows monogram, name, intro, contact links
+- [x] Seam test: WebGL unavailable → static DOM fallback renders with name/about/projects/contact
+- [x] Seam test: reduced-motion → same static branch (no 3D animation, snap-scrolling, or reveals)
+- [x] Mid-session GPU-context loss recovers into the fallback without a blank page
+- [x] Route-level ErrorBoundary shows retry; retry works
+- [x] Landmarks + sr-only headings + sr-only canvas-text mirror present; carousel operable via ←/→
+- [x] `<noscript>` page shows monogram, name, intro, contact links
+
+## Notes
+
+- The root app now branches to a semantic static page when WebGL is unavailable or reduced motion is preferred.
+- Renderer errors, WebGL context loss, and route-level failures recover through visible retry actions.
+- The normal scene has a visually hidden DOM mirror with landmarks and project links; the entry HTML includes a styled noscript page.
