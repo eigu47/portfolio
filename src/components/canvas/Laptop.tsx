@@ -70,7 +70,7 @@ export default function Model(props: ThreeElements["group"]) {
             className="screen h-[310px] w-[480px] overflow-y-scroll"
           >
             <a
-              className="interactive"
+              className="hover:border-accent-glow-strong transition-[transform,color,border-color,background-color,box-shadow] duration-150 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_4px_20px_var(--color-accent-glow)]"
               href="/EiguchiPablo.pdf"
               target="_blank"
               rel="noreferrer"

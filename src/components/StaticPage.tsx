@@ -1,18 +1,7 @@
 import { useEffect } from "react";
 
-import { AiFillGithub, AiFillLinkedin } from "react-icons/ai";
-
 import Navbar from "~/components/Navbar";
 import { siteContent } from "~/content";
-
-const socials = [
-  { name: "Github", href: "https://github.com/eigu47", icon: AiFillGithub },
-  {
-    name: "LinkedIn",
-    href: "https://www.linkedin.com/in/eiguchipablo/",
-    icon: AiFillLinkedin,
-  },
-];
 
 export default function StaticPage({ onRetry }: { onRetry?: () => void }) {
   useEffect(() => {
@@ -105,23 +94,20 @@ export default function StaticPage({ onRetry }: { onRetry?: () => void }) {
         id="contact"
       >
         <div className="flex gap-4">
-          {socials.map(({ name, href, icon: Icon }) => (
+          {siteContent.contacts.map(({ label, href, icon: Icon }) => (
             <a
-              key={name}
+              key={label}
               href={href}
               target="_blank"
               rel="noreferrer"
-              aria-label={name}
+              aria-label={label}
             >
               <Icon className="text-text-lo text-xl" aria-hidden="true" />
             </a>
           ))}
         </div>
-        <a
-          className="text-accent no-underline"
-          href="mailto:pablo.eiguchi@gmail.com"
-        >
-          pablo.eiguchi@gmail.com
+        <a className="text-accent no-underline" href={siteContent.mail.href}>
+          {siteContent.mail.label}
         </a>
       </footer>
     </div>

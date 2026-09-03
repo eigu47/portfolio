@@ -19,17 +19,17 @@ export default function App() {
       <main>
         <Scene />
         <div className="sr-only" aria-label="Portfolio content">
-          <h1>{siteContent.hero.name}</h1>
+          <h1 className="tracking-[-0.02em]">{siteContent.hero.name}</h1>
           <p>{siteContent.hero.greeting}</p>
           <p>{siteContent.hero.role}</p>
           <p>{siteContent.about}</p>
-          <h2>About</h2>
+          <h2 className="tracking-[-0.02em]">About</h2>
           <ul>
             {LOGOS.map((logo) => (
               <li key={logo.name}>{logo.name}</li>
             ))}
           </ul>
-          <h2>Personal projects</h2>
+          <h2 className="tracking-[-0.02em]">Personal projects</h2>
           <ul>
             {siteContent.projects.map((project) => (
               <li key={project.name}>
@@ -37,7 +37,7 @@ export default function App() {
               </li>
             ))}
           </ul>
-          <h2>Contact</h2>
+          <h2 className="tracking-[-0.02em]">Contact</h2>
         </div>
         {PAGES.map(({ id }) => (
           <section

@@ -17,7 +17,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`glass fixed top-0 z-10 w-full duration-200 sm:translate-y-0 sm:transition-none ${
+        className={`border-hairline bg-surface shadow-chrome fixed top-0 z-10 w-full border-b backdrop-blur-md duration-200 sm:translate-y-0 sm:transition-none ${
           showMenu ? "" : "-translate-y-[calc(100%-56px)]"
         }`}
       >

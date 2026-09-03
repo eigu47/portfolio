@@ -2,6 +2,7 @@ import { cleanup, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+import { siteContent } from "~/content";
 import { renderApp } from "~/test/render-app";
 import { restoreWebGL } from "~/test/webgl-stub";
 
@@ -12,25 +13,52 @@ afterEach(() => {
 });
 
 describe("root app seam (WebGL stubbed)", () => {
+  it("defines the ordered contact collection", () => {
+    expect(
+      siteContent.contacts.map(({ label, href }) => ({ label, href })),
+    ).toEqual([
+      {
+        label: "Github",
+        href: "https://github.com/eigu47",
+      },
+      {
+        label: "LinkedIn",
+        href: "https://www.linkedin.com/in/eiguchipablo/",
+      },
+    ]);
+    expect(
+      siteContent.contacts.every(({ icon }) => typeof icon === "function"),
+    ).toBe(true);
+    expect(siteContent.mail).toEqual({
+      label: "pablo.eiguchi@gmail.com",
+      href: "mailto:pablo.eiguchi@gmail.com",
+    });
+  });
+
   it("renders the navbar chrome", () => {
     const { getByRole } = renderApp();
 
     for (const name of ["hello", "about", "projects", "contact", "resume"]) {
       expect(getByRole("link", { name })).toBeInTheDocument();
     }
-    expect(document.querySelector("nav")).toHaveClass("glass");
+    expect(document.querySelector("nav")).toHaveClass(
+      "backdrop-blur-md",
+      "shadow-chrome",
+    );
     expect(document.querySelector("nav ul")).toHaveClass("px-4", "sm:px-6");
   });
 
   it("does not apply box hover treatment to nav or rail links", () => {
     const { getByRole } = renderApp();
 
-    expect(getByRole("link", { name: "about" })).not.toHaveClass("interactive");
+    expect(getByRole("link", { name: "about" })).not.toHaveClass(
+      "hover:shadow-[0_4px_20px_var(--color-accent-glow)]",
+    );
     expect(getByRole("button", { name: "Open menu" })).not.toHaveClass(
-      "interactive",
+      "hover:shadow-[0_4px_20px_var(--color-accent-glow)]",
     );
     expect(getByRole("link", { name: "Github" })).not.toHaveClass(
-      "interactive",
+      "hover:shadow-[0_4px_20px_var(--color-accent-glow)]",
     );
   });
 
@@ -47,6 +75,7 @@ describe("root app seam (WebGL stubbed)", () => {
       "href",
       "https://github.com/eigu47",
     );
+    expect(getByLabelText("Github")).toHaveAttribute("target", "_blank");
     expect(getByLabelText("LinkedIn")).toHaveAttribute(
       "href",
       "https://www.linkedin.com/in/eiguchipablo/",
@@ -54,6 +83,9 @@ describe("root app seam (WebGL stubbed)", () => {
     expect(
       getByRole("link", { name: "pablo.eiguchi@gmail.com" }),
     ).toHaveAttribute("href", "mailto:pablo.eiguchi@gmail.com");
+    expect(
+      getByRole("link", { name: "pablo.eiguchi@gmail.com" }),
+    ).not.toHaveAttribute("target");
   });
 
   it("renders one full-height section per page", () => {
@@ -122,6 +154,9 @@ describe("root app seam (WebGL unavailable)", () => {
     expect(
       within(container).getByRole("link", { name: "Github" }),
     ).toHaveAttribute("href", "https://github.com/eigu47");
+    expect(
+      within(container).getByRole("link", { name: "LinkedIn" }),
+    ).toHaveAttribute("href", "https://www.linkedin.com/in/eiguchipablo/");
     consoleError.mockRestore();
   });
 

@@ -68,7 +68,7 @@ function CameraPosition() {
     <div className="fixed bottom-0 left-0 text-black">
       <a
         href={`#${PAGES[href].id}`}
-        className="interactive bg-text-hi text-2xl"
+        className="bg-text-hi hover:border-accent-glow-strong text-2xl transition-[transform,color,border-color,background-color,box-shadow] duration-150 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_4px_20px_var(--color-accent-glow)]"
         onClick={() =>
           setHref(((href + 1) % PAGES.length) as ValidIndex<typeof PAGES>)
         }
