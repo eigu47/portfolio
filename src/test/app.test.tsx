@@ -136,16 +136,4 @@ describe("root app seam (WebGL unavailable)", () => {
       "I'm a self-taught frontend developer",
     );
   });
-
-  it("recovers into the static page after the WebGL context is lost", async () => {
-    const { container } = renderApp();
-    const canvas = container.querySelector("canvas");
-
-    canvas?.dispatchEvent(new Event("webglcontextlost"));
-
-    await vi.waitFor(() => {
-      expect(container.querySelector("canvas")).not.toBeInTheDocument();
-    });
-    expect(container.textContent).toContain("Personal projects");
-  });
 });

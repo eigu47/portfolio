@@ -1,15 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import {
-  Box,
-  Image,
-  PresentationControls,
-  Text,
-  useCursor,
-} from "@react-three/drei";
-import { type ThreeElements } from "@react-three/fiber";
+import { Box, Image, Text, useCursor } from "@react-three/drei";
+import { type ThreeElements, useFrame } from "@react-three/fiber";
 import { useGesture } from "@use-gesture/react";
-import { DoubleSide, FrontSide } from "three";
+import { DoubleSide, FrontSide, MathUtils } from "three";
+import type * as THREE from "three";
 
 import { calibre400 } from "~/assets/fonts";
 import { useDebug } from "~/components/canvas/Debug";
@@ -20,13 +15,25 @@ import { COLORS } from "~/utils/config";
 import { useDebugStore } from "~/utils/debugStore";
 
 export default function Carousel(props: ThreeElements["group"]) {
-  const { width, height, mobile } = useViewport();
+  const { width, height, mobile, size: viewportSize } = useViewport();
   const [hover, setHover] = useState(false);
   const [textHover, setTextHover] = useState(false);
   const [drag, setDrag] = useState(false);
-  const [rotation, setRotation] = useState(0);
+  const carouselRef = useRef<THREE.Group>(null);
+  const targetRotation = useRef(0);
   const prevent = usePreventScroll();
   const debug = useDebug();
+  const step = (Math.PI * 2) / siteContent.projects.length;
+
+  useFrame((_, delta) => {
+    if (!carouselRef.current) return;
+    carouselRef.current.rotation.y = MathUtils.damp(
+      carouselRef.current.rotation.y,
+      targetRotation.current,
+      7,
+      delta,
+    );
+  });
 
   useCursor(textHover);
   useCursor(hover, "grab");
@@ -36,15 +43,12 @@ export default function Carousel(props: ThreeElements["group"]) {
     function rotate(event: KeyboardEvent) {
       if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
       event.preventDefault();
-      setRotation(
-        (current) =>
-          current + (event.key === "ArrowLeft" ? -1 : 1) * (Math.PI / 4),
-      );
+      targetRotation.current += (event.key === "ArrowLeft" ? -1 : 1) * step;
     }
 
     window.addEventListener("keydown", rotate);
     return () => window.removeEventListener("keydown", rotate);
-  }, []);
+  }, [step]);
 
   const bind = useGesture({
     onPointerEnter: ({ event }) =>
@@ -55,9 +59,17 @@ export default function Carousel(props: ThreeElements["group"]) {
       setHover(false);
       setTextHover(false);
     },
-    onDrag: ({ down }) => {
+    onDrag: ({ down, delta: [deltaX] }) => {
       prevent.current = down;
       setDrag(down);
+      const speed = mobile ? 2 : 3;
+      if (down) {
+        targetRotation.current +=
+          (deltaX / viewportSize.width) * Math.PI * speed;
+      } else {
+        targetRotation.current =
+          Math.round(targetRotation.current / step) * step;
+      }
     },
   });
 
@@ -74,30 +86,20 @@ export default function Carousel(props: ThreeElements["group"]) {
         Personal projects
       </Text>
 
-      <PresentationControls
-        cursor={false}
-        polar={[0, 0]}
-        speed={mobile ? 1.5 : 2}
+      <group
+        ref={carouselRef}
+        {...(bind() as ThreeElements["group"])}
+        {...debug}
       >
-        <group
-          rotation={[0, rotation, 0]}
-          {...(bind() as ThreeElements["group"])}
-          {...debug}
-        >
-          {siteContent.projects.map((project, i) => (
-            <Project
-              key={i}
-              project={project}
-              rotation={[
-                0,
-                ((Math.PI * 2) / siteContent.projects.length) * i,
-                0,
-              ]}
-              size={size}
-            />
-          ))}
-        </group>
-      </PresentationControls>
+        {siteContent.projects.map((project, i) => (
+          <Project
+            key={i}
+            project={project}
+            rotation={[0, step * i, 0]}
+            size={size}
+          />
+        ))}
+      </group>
     </group>
   );
 }

@@ -1,6 +1,3 @@
-import { useState } from "react";
-
-import AppErrorBoundary from "~/components/AppErrorBoundary";
 import Scene from "~/components/canvas/Scene";
 import { LOGOS } from "~/components/canvas/TechLogos";
 import Layout from "~/components/Layout";
@@ -10,7 +7,7 @@ import { siteContent } from "~/content";
 import { PAGES } from "~/utils/config";
 
 export default function App() {
-  const [staticMode, setStaticMode] = useState(shouldUseStaticPage);
+  const staticMode = shouldUseStaticPage();
 
   if (staticMode) return <StaticPage />;
 
@@ -20,9 +17,7 @@ export default function App() {
         <Navbar />
       </header>
       <main>
-        <AppErrorBoundary onFailure={() => setStaticMode(true)}>
-          <Scene onFailure={() => setStaticMode(true)} />
-        </AppErrorBoundary>
+        <Scene />
         <div className="sr-only" aria-label="Portfolio content">
           <h1>{siteContent.hero.name}</h1>
           <p>{siteContent.hero.greeting}</p>
