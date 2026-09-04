@@ -21,7 +21,6 @@ import {
 } from "~/assets/logos";
 import { useDebug } from "~/components/canvas/Debug";
 import useViewport from "~/hooks/useViewport";
-import { COLORS } from "~/utils/config";
 import { useDebugStore } from "~/utils/debugStore";
 
 export default function TechLogos() {
@@ -64,7 +63,7 @@ function Ball({
 
   return (
     <group {...props} {...debug}>
-      <Float speed={4}>
+      <Float speed={2.8} rotationIntensity={0.35} floatIntensity={0.35}>
         <Icosahedron
           args={[1, 1]}
           onPointerEnter={() => !mobile && setModal(true)}
@@ -72,7 +71,7 @@ function Ball({
           onPointerDown={() => setModal(true)}
           onPointerMissed={() => setModal(false)}
         >
-          <meshStandardMaterial color={COLORS.slate100} flatShading />
+          <meshStandardMaterial color="#94a3b8" flatShading />
           <Decal
             map={texture}
             position={[0, 0, 1]}

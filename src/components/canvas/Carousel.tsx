@@ -30,7 +30,7 @@ export default function Carousel(props: ThreeElements["group"]) {
     carouselRef.current.rotation.y = MathUtils.damp(
       carouselRef.current.rotation.y,
       targetRotation.current,
-      7,
+      5,
       delta,
     );
   });

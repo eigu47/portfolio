@@ -7,6 +7,7 @@ export const COLORS = {
   slate900: "#0f172a",
   emerald400: "#34d399",
   emerald500: "#10b981",
+  emeraldDeep: "#0a7a58",
 } as const;
 
 export const PAGES = [

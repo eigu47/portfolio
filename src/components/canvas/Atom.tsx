@@ -18,8 +18,8 @@ import { useDebugStore } from "~/utils/debugStore";
 
 const bloomCyan = new Color(0.1, 1.2, 1.2);
 const normalCyan = new Color("cyan");
-const bloonNucleous = new Color(6, 0.2, 2);
-const normalNucleous = new Color(2, 2, 2);
+const bloomNucleus = new Color(6, 0.2, 2);
+const normalNucleus = new Color(2, 2, 2);
 
 export default function Atom({
   scale = 0.1,
@@ -43,11 +43,11 @@ export default function Atom({
       <Draggable
         hoverColor={
           tier > 2
-            ? [basicRef, normalNucleous, bloonNucleous]
-            : [physicalRef, normalCyan, bloonNucleous]
+            ? [basicRef, normalNucleus, bloomNucleus]
+            : [physicalRef, normalCyan, bloomNucleus]
         }
       >
-        <Float rotationIntensity={50} scale={scale}>
+        <Float rotationIntensity={35} scale={scale}>
           <Line
             worldUnits
             points={points}
@@ -71,9 +71,13 @@ export default function Atom({
             rotation={[0, 0, -1]}
             toneMapped={tier < 2}
           />
-          <Electron speed={3} scale={scale} />
-          <Electron rotation={[0, 0, Math.PI / 3]} speed={4} scale={scale} />
-          <Electron rotation={[0, 0, -Math.PI / 3]} speed={3.5} scale={scale} />
+          <Electron speed={2.1} scale={scale} />
+          <Electron rotation={[0, 0, Math.PI / 3]} speed={2.8} scale={scale} />
+          <Electron
+            rotation={[0, 0, -Math.PI / 3]}
+            speed={2.45}
+            scale={scale}
+          />
           <Sphere args={[0.55]}>
             {tier > 2 ? (
               <meshBasicMaterial

@@ -6,6 +6,7 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import type * as THREE from "three";
 
 import About from "~/components/canvas/About";
+import Atmosphere from "~/components/canvas/Atmosphere";
 import Atom from "~/components/canvas/Atom";
 import Cable from "~/components/canvas/Cable";
 import Camera from "~/components/canvas/Camera";
@@ -33,6 +34,7 @@ export default function Scene() {
         data-scene-shell
       >
         <Camera />
+        <Atmosphere />
 
         <Suspense fallback={<Hero />}>
           <Page page={0}>
@@ -60,12 +62,18 @@ export default function Scene() {
 
         {tier > 2 && (
           <EffectComposer>
-            <Bloom mipmapBlur intensity={0.3} radius={0.2} />
+            <Bloom
+              mipmapBlur
+              intensity={0.2}
+              radius={0.24}
+              luminanceThreshold={0.82}
+            />
           </EffectComposer>
         )}
 
         {isDebug && <Debug />}
       </Canvas>
+      <div aria-hidden="true" className="scene-vignette" data-scene-vignette />
       {isDebug && (
         <Suspense fallback={null}>
           <DebugPanel />

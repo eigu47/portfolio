@@ -32,7 +32,7 @@ export default function Model(props: ThreeElements["group"]) {
 
   useFrame((_, delta) => {
     monitorRef.current?.rotation.setFromVector3(
-      rotation.lerp(isOpen ? openRot : closedRot, delta * 4),
+      rotation.lerp(isOpen ? openRot : closedRot, delta * 2.8),
     );
   });
 
@@ -52,6 +52,7 @@ export default function Model(props: ThreeElements["group"]) {
       <mesh
         geometry={nodes["Laptop_01_Cube025-Mesh_1"].geometry}
         material={materials["455A64"]}
+        material-color="#2c2c31"
       />
       <group
         position={[0, 0.19, -4.85]}

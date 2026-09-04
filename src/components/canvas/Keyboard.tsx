@@ -13,7 +13,6 @@ import type { GLTF } from "three-stdlib";
 import { useDebug } from "~/components/canvas/Debug";
 import useMousePos from "~/hooks/useMousePos";
 import useViewport from "~/hooks/useViewport";
-import { COLORS } from "~/utils/config";
 
 const lookTo = new Vector3();
 const lerpTo = new Vector3();
@@ -38,12 +37,12 @@ export default function Keyboard({
     if (mobile) return null;
 
     keyboardRef.current?.lookAt(
-      lookTo.lerp(lerpTo.set(x, -y - 2.5, 3.5), delta * 4),
+      lookTo.lerp(lerpTo.set(x, -y - 2.5, 3.5), delta * 2.8),
     );
   });
 
   return (
-    <Float speed={3} rotationIntensity={0.5} floatIntensity={0.5}>
+    <Float speed={2.1} rotationIntensity={0.35} floatIntensity={0.35}>
       <group
         ref={keyboardRef}
         dispose={null}
@@ -70,7 +69,7 @@ export default function Keyboard({
         <mesh
           geometry={nodes.Keycaps.geometry}
           material={materials["Keycap material"]}
-          material-color={COLORS.slate300}
+          material-color="#aab2bf"
         />
       </group>
     </Float>

@@ -114,7 +114,7 @@ function CableSection({
     <>
       <Tube
         args={[new CatmullRomCurve3(points), segments, mobile ? 0.013 : 0.02]}
-        material-color={COLORS.bgBase}
+        material-color={COLORS.emeraldDeep}
       />
       {debugOn &&
         points.map((p, i) => (
