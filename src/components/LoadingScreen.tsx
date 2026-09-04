@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 
 import { useProgress } from "@react-three/drei";
 
-const MINIMUM_DISPLAY_MS = 800;
+const MINIMUM_DISPLAY_MS = 500;
 const COMPLETION_HOLD_MS = 250;
-const EXIT_DURATION_MS = 700;
+const EXIT_DURATION_MS = 500;
 
 export default function LoadingScreen() {
   const { active, progress } = useProgress();
@@ -38,26 +38,38 @@ export default function LoadingScreen() {
 
   return (
     <div
-      className={`loading-screen loading-screen--${phase}`}
+      className={`bg-bg-base fixed inset-0 z-40 grid place-items-center [background-image:var(--page-background)] opacity-100 transition-[opacity,filter] duration-700 ease-in ${
+        phase === "exiting" ? "pointer-events-none opacity-0 blur-[10px]" : ""
+      }`}
+      data-loading-overlay
+      data-loading-phase={phase}
       role="status"
       aria-label="Loading portfolio"
       aria-live="polite"
     >
-      <div className="loading-screen__content">
-        <p className="loading-screen__mark" aria-hidden="true">
-          e<span>/</span>p
+      <div className="flex w-[min(220px,calc(100vw-3rem))] flex-col items-center">
+        <p
+          className="text-text-hi mb-8 flex items-center font-mono text-6xl leading-none font-medium tracking-[-0.02em]"
+          aria-hidden="true"
+        >
+          e<span className="text-accent">/</span>p
         </p>
         <div
-          className="loading-screen__progress"
+          className="bg-hairline h-0.5 w-full overflow-hidden rounded-full"
           role="progressbar"
           aria-label="Loading assets"
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={percentage}
         >
-          <span style={{ width: `${percentage}%` }} />
+          <span
+            className="to-accent block h-full rounded-full bg-gradient-to-r from-[rgba(52,211,153,0.5)] shadow-[0_0_12px_var(--color-accent-glow)] transition-[width] duration-[350ms] ease-out"
+            style={{ width: `${percentage}%` }}
+          />
         </div>
-        <p className="loading-screen__percentage">loading {percentage}%</p>
+        <p className="text-text-lo mt-4 self-end font-mono text-[13px] tracking-[0.15em] [font-variant-numeric:tabular-nums]">
+          loading {percentage}%
+        </p>
       </div>
     </div>
   );
