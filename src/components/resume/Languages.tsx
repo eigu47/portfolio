@@ -3,14 +3,14 @@ import { Fragment } from "react";
 import { Text, View } from "@react-pdf/renderer";
 
 import { Section } from "~/components/resume/Index";
-import { resumeContent } from "~/content";
+import type { ResumeContent } from "~/content";
 import { COLORS } from "~/utils/config";
 
-export default function Languages() {
+export default function Languages({ content }: { content: ResumeContent }) {
   return (
-    <Section title="LANGUAGES">
+    <Section title={content.labels.languages}>
       <View style={{ flexDirection: "column", gap: 10 }}>
-        {resumeContent.languages.map((language, index) => (
+        {content.languages.map((language, index) => (
           <Fragment key={index}>
             <View
               style={{
@@ -46,7 +46,7 @@ export default function Languages() {
               </View>
             </View>
 
-            {index !== resumeContent.languages.length - 1 && (
+            {index !== content.languages.length - 1 && (
               <View
                 style={{
                   height: "0.5px",

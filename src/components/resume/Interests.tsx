@@ -3,14 +3,14 @@ import { Fragment } from "react";
 import { Path, Svg, Text, View } from "@react-pdf/renderer";
 
 import { Section } from "~/components/resume/Index";
-import { resumeContent } from "~/content";
+import type { ResumeContent } from "~/content";
 import { COLORS } from "~/utils/config";
 
-export default function Interests() {
+export default function Interests({ content }: { content: ResumeContent }) {
   return (
-    <Section title="INTERESTS">
+    <Section title={content.labels.interests}>
       <View style={{ flexDirection: "column", gap: 8 }}>
-        {resumeContent.interests.map((interest, index) => (
+        {content.interests.map((interest, index) => (
           <Fragment key={index}>
             <View style={{ flexDirection: "row", gap: 6 }}>
               <Svg
@@ -26,7 +26,7 @@ export default function Interests() {
               </Svg>
               <Text style={{ fontWeight: 500 }}>{interest.title}</Text>
             </View>
-            {index !== resumeContent.interests.length - 1 && (
+            {index !== content.interests.length - 1 && (
               <View
                 style={{
                   height: "0.5px",

@@ -40,7 +40,7 @@ type PdfProps = {
 afterEach(cleanup);
 
 describe("resume route seam", () => {
-  it("exposes a single download action and a tertiary Japanese spreadsheet link", () => {
+  it("exposes the English download and locale toggle", () => {
     const { getByRole } = render(
       <MemoryRouter>
         <Resume />
@@ -54,14 +54,32 @@ describe("resume route seam", () => {
       "download",
       "EiguchiPablo.pdf",
     );
-    expect(getByRole("link", { name: "Japanese .xls" })).toHaveAttribute(
-      "href",
-      "/栄口パブロ.xls",
+    expect(getByRole("button", { name: "日本語 PDF" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
     );
     expect(getByRole("link", { name: "Back to portfolio" })).toHaveAttribute(
       "href",
       "/",
     );
-    expect(document.querySelector("button")).not.toBeInTheDocument();
+  });
+
+  it("starts in Japanese from the query and switches the download locale", () => {
+    window.history.pushState({}, "", "/resume?lang=ja");
+    const { getByRole } = render(
+      <MemoryRouter>
+        <Resume />
+      </MemoryRouter>,
+    );
+
+    expect(getByRole("button", { name: "English PDF" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    expect(getByRole("link", { name: /PDFをダウンロード/ })).toHaveAttribute(
+      "download",
+      "EiguchiPablo-ja.pdf",
+    );
+    window.history.pushState({}, "", "/resume");
   });
 });

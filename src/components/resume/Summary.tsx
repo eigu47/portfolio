@@ -1,13 +1,13 @@
 import { Text } from "@react-pdf/renderer";
 
 import { Section } from "~/components/resume/Index";
-import { resumeContent } from "~/content";
+import type { ResumeContent } from "~/content";
 
-export default function Summary() {
+export default function Summary({ content }: { content: ResumeContent }) {
   return (
-    <Section title="SUMMARY">
+    <Section title={content.labels.summary}>
       <Text style={{ textAlign: "justify", paddingHorizontal: 3 }}>
-        {renderLocalizedText(resumeContent.summary)}
+        {renderLocalizedText(content.summary)}
       </Text>
     </Section>
   );

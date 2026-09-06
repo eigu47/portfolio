@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import {
   Page,
   Document,
@@ -11,12 +13,7 @@ import { HiOutlineDownload } from "react-icons/hi";
 import { HiArrowLeft } from "react-icons/hi2";
 import { Link } from "react-router-dom";
 
-import {
-  calibre300,
-  calibre400,
-  calibre500,
-  notosans400,
-} from "~/assets/fonts";
+import { calibre300, calibre400, calibre500 } from "~/assets/fonts";
 import Certifications from "~/components/resume/Certifications";
 import Header from "~/components/resume/Header";
 import Interests from "~/components/resume/Interests";
@@ -24,9 +21,31 @@ import Languages from "~/components/resume/Languages";
 import QRCode from "~/components/resume/QRCode";
 import Skills from "~/components/resume/Skills";
 import Summary from "~/components/resume/Summary";
+import { resumeContentByLocale } from "~/content";
+import type { Locale, ResumeContent } from "~/content";
 import { COLORS } from "~/utils/config";
 
 export default function Resume() {
+  const [locale, setLocale] = useState<Locale>(getInitialLocale);
+  const [japaneseFontReady, setJapaneseFontReady] = useState(false);
+
+  useEffect(() => {
+    if (locale !== "ja" || japaneseFontReady) return;
+
+    void import("~/assets/fonts/NotoSansJP-Regular.ttf").then(
+      ({ default: src }) => {
+        Font.register({
+          family: "notosans",
+          fonts: [{ fontWeight: 400, src }],
+        });
+        setJapaneseFontReady(true);
+      },
+    );
+  }, [japaneseFontReady, locale]);
+
+  const documentLocale = locale;
+  const documentContent = resumeContentByLocale[documentLocale];
+
   return (
     <div className="bg-bg-base text-text-lo min-h-screen pt-16">
       <header className="border-hairline shadow-chrome fixed top-0 z-10 w-full border-b bg-[rgba(9,9,11,0.7)] backdrop-blur-[12px] backdrop-blur-md">
@@ -44,29 +63,36 @@ export default function Resume() {
           <div className="flex items-center gap-3">
             <PDFDownloadLink
               id="download_resume"
-              document={<MyDocument />}
-              fileName="EiguchiPablo.pdf"
+              document={
+                <MyDocument content={documentContent} locale={documentLocale} />
+              }
+              fileName={
+                documentLocale === "ja"
+                  ? "EiguchiPablo-ja.pdf"
+                  : "EiguchiPablo.pdf"
+              }
               className="bg-accent text-bg-base hover:bg-text-hi inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-medium transition-colors"
             >
               <HiOutlineDownload aria-hidden="true" />
-              <span className="pt-1">Download PDF</span>
+              <span className="pt-1">
+                {documentLocale === "ja" ? "PDFをダウンロード" : "Download PDF"}
+              </span>
             </PDFDownloadLink>
-            <a
-              href="/栄口パブロ.xls"
-              target="_blank"
-              rel="noreferrer"
-              id="download_jp_resume"
+            <button
+              type="button"
+              aria-pressed={locale === "ja"}
+              onClick={() => setLocale(locale === "ja" ? "en" : "ja")}
               className="text-text-lo hover:text-accent text-xs transition-colors sm:text-sm"
             >
-              Japanese .xls
-            </a>
+              {locale === "ja" ? "English PDF" : "日本語 PDF"}
+            </button>
           </div>
         </nav>
       </header>
 
       <main className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-7xl justify-center px-2 py-4 sm:px-6 sm:py-8 lg:px-8">
         <PDFViewer className="min-h-0 w-full" showToolbar>
-          <MyDocument />
+          <MyDocument content={documentContent} locale={documentLocale} />
         </PDFViewer>
       </main>
     </div>
@@ -82,14 +108,15 @@ Font.register({
   ],
 });
 
-Font.register({
-  family: "notosans",
-  fonts: [{ fontWeight: 400, src: notosans400 }],
-});
-
 Font.registerHyphenationCallback((word) => [word]);
 
-export function MyDocument() {
+export function MyDocument({
+  content,
+  locale,
+}: {
+  content: ResumeContent;
+  locale: Locale;
+}) {
   return (
     <Document title="Eiguchi Pablo Martin.pdf" author="Eiguchi Pablo Martin">
       <Page
@@ -99,13 +126,13 @@ export function MyDocument() {
           backgroundColor: "#ffffff",
           width: "100%",
           height: "100%",
-          fontFamily: "calibre",
+          fontFamily: locale === "ja" ? "notosans" : "calibre",
           fontWeight: 400,
           color: COLORS.slate800,
           fontSize: 12,
         }}
       >
-        <Header />
+        <Header content={content} />
         <View
           style={{
             maxWidth: "100%",
@@ -119,24 +146,30 @@ export function MyDocument() {
           }}
         >
           <View style={{ flex: 0.6, flexDirection: "column", gap: 24 }}>
-            <Summary />
+            <Summary content={content} />
 
-            <Certifications />
+            <Certifications content={content} />
 
             <QRCode />
           </View>
 
           <View style={{ flex: 0.4, flexDirection: "column", gap: 24 }}>
-            <Skills />
+            <Skills content={content} />
 
-            <Languages />
+            <Languages content={content} />
 
-            <Interests />
+            <Interests content={content} />
           </View>
         </View>
       </Page>
     </Document>
   );
+}
+
+function getInitialLocale(): Locale {
+  return new URLSearchParams(window.location.search).get("lang") === "ja"
+    ? "ja"
+    : "en";
 }
 
 export function Section({

@@ -1,12 +1,12 @@
 import { Text, View } from "@react-pdf/renderer";
 
 import { Section } from "~/components/resume/Index";
-import { resumeContent } from "~/content";
+import type { ResumeContent } from "~/content";
 import { COLORS } from "~/utils/config";
 
-export default function Skills() {
+export default function Skills({ content }: { content: ResumeContent }) {
   return (
-    <Section title="SKILLS">
+    <Section title={content.labels.skills}>
       <View
         style={{
           flexDirection: "row",
@@ -14,7 +14,7 @@ export default function Skills() {
           gap: 8,
         }}
       >
-        {resumeContent.skills.map((skill, i) => (
+        {content.skills.map((skill, i) => (
           <View
             key={i}
             style={{
@@ -24,7 +24,9 @@ export default function Skills() {
               paddingHorizontal: 8,
             }}
           >
-            <Text style={{ color: COLORS.slate900, paddingTop: 5 }}>{skill}</Text>
+            <Text style={{ color: COLORS.slate900, paddingTop: 5 }}>
+              {skill}
+            </Text>
           </View>
         ))}
       </View>
