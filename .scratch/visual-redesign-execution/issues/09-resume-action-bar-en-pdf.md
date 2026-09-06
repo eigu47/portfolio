@@ -4,10 +4,14 @@
 
 **Blocked by:** 04 — Design-system foundation; 05 — Content extraction prefactor.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Action bar visually indistinguishable from navbar Chrome treatment
-- [ ] Valid markup: anchors styled as buttons, no nested interactive elements
-- [ ] Single Download button serves the redesigned light+emerald EN PDF
-- [ ] `.xls` reachable as tertiary text link at its existing URL
-- [ ] PDF renders correctly at every breakpoint; visual inspection passes vs prototype
+- [x] Action bar visually indistinguishable from navbar Chrome treatment
+- [x] Valid markup: anchors styled as buttons, no nested interactive elements
+- [x] Single Download button serves the redesigned light+emerald EN PDF
+- [x] `.xls` reachable as tertiary text link at its existing URL
+- [x] PDF renders correctly at every breakpoint; visual inspection passes vs prototype
+
+## Answer
+
+Implemented the resume route's shared glass Chrome action bar, valid anchor-based actions, responsive PDF viewer, and light/emerald English document styling. The download action remains the single primary action; the legacy Japanese spreadsheet is retained as a tertiary link.

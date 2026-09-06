@@ -5,7 +5,7 @@ import { resumeContent } from "~/content";
 
 export default function Summary() {
   return (
-    <Section title="Summary">
+    <Section title="SUMMARY">
       <Text style={{ textAlign: "justify", paddingHorizontal: 3 }}>
         {renderLocalizedText(resumeContent.summary)}
       </Text>

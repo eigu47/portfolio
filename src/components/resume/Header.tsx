@@ -7,15 +7,17 @@ export default function Header() {
   return (
     <View
       style={{
-        padding: 30,
-        backgroundColor: COLORS.bgBase,
+        paddingHorizontal: 30,
+        paddingVertical: 20,
+        backgroundColor: COLORS.slate100,
+        borderBottom: `2px solid ${COLORS.emerald400}`,
         width: "100%",
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
         fontWeight: 500,
         gap: 30,
-        color: COLORS.slate100,
+        color: COLORS.slate900,
       }}
     >
       <View
@@ -28,13 +30,16 @@ export default function Header() {
         <Text
           style={{
             fontSize: 30,
+            paddingBottom: 10,
+            color: COLORS.slate900,
           }}
         >
           Eiguchi Pablo Martín
         </Text>
         <Text
           style={{
-            fontSize: 20,
+            fontSize: 16,
+            color: COLORS.emeraldDeep,
           }}
         >
           Web Developer
@@ -78,7 +83,7 @@ export default function Header() {
                           style={{ top: -2 }}
                           {...svgProps}
                         >
-                          <Path d={svgPath} fill={COLORS.slate100} />
+                          <Path d={svgPath} fill={COLORS.emerald500} />
                         </Svg>
                         <Text>{text}</Text>
                       </View>
@@ -96,6 +101,7 @@ export default function Header() {
           width: 100,
           height: 100,
           borderRadius: 50,
+          border: `3px solid ${COLORS.emerald400}`,
         }}
       />
     </View>

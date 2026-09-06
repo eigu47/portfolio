@@ -38,8 +38,8 @@ export default function Languages() {
                           language.level.toLowerCase() as keyof typeof LANGUAGE_LEVELS
                         ] >=
                         LANGUAGE_LEVELS[level as keyof typeof LANGUAGE_LEVELS]
-                          ? COLORS.slate800
-                          : COLORS.slate400,
+                          ? COLORS.emerald500
+                          : COLORS.slate300,
                     }}
                   />
                 ))}

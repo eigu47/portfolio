@@ -21,7 +21,7 @@ export default function Interests() {
                 {...interest.svgProps}
               >
                 {interest.svgPath.map((path, i) => (
-                  <Path key={i} d={path} fill={COLORS.slate900} />
+                  <Path key={i} d={path} fill={COLORS.emerald500} />
                 ))}
               </Svg>
               <Text style={{ fontWeight: 500 }}>{interest.title}</Text>

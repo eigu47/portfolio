@@ -8,6 +8,7 @@ import {
   Text,
 } from "@react-pdf/renderer";
 import { HiOutlineDownload } from "react-icons/hi";
+import { HiArrowLeft } from "react-icons/hi2";
 import { Link } from "react-router-dom";
 
 import {
@@ -27,47 +28,47 @@ import { COLORS } from "~/utils/config";
 
 export default function Resume() {
   return (
-    <div className="flex h-screen flex-col-reverse justify-center gap-40 p-10 sm:gap-0 lg:flex-row lg:p-0">
-      <aside className="mx-auto flex basis-1/5 flex-col items-center justify-center gap-20">
-        <button
-          id="download_resume"
-          className="rounded-surface border-hairline bg-surface text-text-hi hover:border-accent-glow-strong border px-4 py-6 text-xl font-bold transition-[transform,color,border-color,background-color,box-shadow] duration-150 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_4px_20px_var(--color-accent-glow)]"
+    <div className="bg-bg-base text-text-lo min-h-screen pt-16">
+      <header className="border-hairline shadow-chrome fixed top-0 z-10 w-full border-b bg-[rgba(9,9,11,0.7)] backdrop-blur-[12px] backdrop-blur-md">
+        <nav
+          aria-label="Resume actions"
+          className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8"
         >
-          <PDFDownloadLink
-            document={<MyDocument />}
-            fileName="EiguchiPablo.pdf"
-            className="flex items-center gap-4"
+          <Link
+            to="/"
+            className="text-text-lo hover:text-text-hi inline-flex items-center gap-2 px-2 py-3 text-lg transition-colors"
           >
-            <HiOutlineDownload className="shrink-0 text-4xl" />
-            <span>Download</span>
-          </PDFDownloadLink>
-        </button>
-        <button className="rounded-surface border-hairline bg-surface text-text-hi hover:border-accent-glow-strong border px-4 py-6 text-xl font-bold transition-[transform,color,border-color,background-color,box-shadow] duration-150 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_4px_20px_var(--color-accent-glow)]">
-          <a
-            href="/栄口パブロ.xls"
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center gap-4"
-            id="download_jp_resume"
-          >
-            <HiOutlineDownload className="shrink-0 text-4xl" />
-            <span>Download .xls japanese format</span>
-          </a>
-        </button>
-      </aside>
+            <HiArrowLeft aria-hidden="true" />
+            <span>Back to portfolio</span>
+          </Link>
+          <div className="flex items-center gap-3">
+            <PDFDownloadLink
+              id="download_resume"
+              document={<MyDocument />}
+              fileName="EiguchiPablo.pdf"
+              className="bg-accent text-bg-base hover:bg-text-hi inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-medium transition-colors"
+            >
+              <HiOutlineDownload aria-hidden="true" />
+              <span className="pt-1">Download PDF</span>
+            </PDFDownloadLink>
+            <a
+              href="/栄口パブロ.xls"
+              target="_blank"
+              rel="noreferrer"
+              id="download_jp_resume"
+              className="text-text-lo hover:text-accent text-xs transition-colors sm:text-sm"
+            >
+              Japanese .xls
+            </a>
+          </div>
+        </nav>
+      </header>
 
-      <PDFViewer
-        className="mx-auto hidden h-screen w-full py-10 sm:block 2xl:basis-2/5"
-        showToolbar={true}
-      >
-        <MyDocument />
-      </PDFViewer>
-
-      <aside className="mx-auto flex items-center justify-center lg:basis-1/5">
-        <button className="rounded-surface border-hairline bg-surface text-text-hi hover:border-accent-glow-strong border px-4 py-6 text-xl font-bold transition-[transform,color,border-color,background-color,box-shadow] duration-150 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_4px_20px_var(--color-accent-glow)]">
-          <Link to="/">Back to my portfolio</Link>
-        </button>
-      </aside>
+      <main className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-7xl justify-center px-2 py-4 sm:px-6 sm:py-8 lg:px-8">
+        <PDFViewer className="min-h-0 w-full" showToolbar>
+          <MyDocument />
+        </PDFViewer>
+      </main>
     </div>
   );
 }
@@ -95,12 +96,12 @@ export function MyDocument() {
         size="A4"
         style={{
           flexDirection: "column",
-          backgroundColor: COLORS.slate100,
+          backgroundColor: "#ffffff",
           width: "100%",
           height: "100%",
           fontFamily: "calibre",
           fontWeight: 400,
-          color: "black",
+          color: COLORS.slate800,
           fontSize: 12,
         }}
       >
@@ -117,7 +118,7 @@ export function MyDocument() {
             marginLeft: 30,
           }}
         >
-          <View style={{ flex: 0.6, flexDirection: "column", gap: 30 }}>
+          <View style={{ flex: 0.6, flexDirection: "column", gap: 24 }}>
             <Summary />
 
             <Certifications />
@@ -125,7 +126,7 @@ export function MyDocument() {
             <QRCode />
           </View>
 
-          <View style={{ flex: 0.4, flexDirection: "column", gap: 30 }}>
+          <View style={{ flex: 0.4, flexDirection: "column", gap: 24 }}>
             <Skills />
 
             <Languages />
@@ -147,15 +148,23 @@ export function Section({
 }) {
   return (
     <View style={{ flexDirection: "column" }}>
-      <Text style={{ fontWeight: 500, fontSize: 20, color: COLORS.slate900 }}>
+      <Text
+        style={{
+          fontWeight: 500,
+          fontSize: 13,
+          letterSpacing: 1.5,
+          color: COLORS.slate400,
+        }}
+      >
         {title}
       </Text>
       <View
         style={{
-          height: "2px",
-          backgroundColor: COLORS.slate900,
+          height: "1px",
+          backgroundColor: COLORS.emerald400,
           borderRadius: 1,
-          marginBottom: 12,
+          marginTop: 5,
+          marginBottom: 10,
         }}
       />
       {children}
