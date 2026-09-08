@@ -6,12 +6,18 @@ import { Section } from "~/components/resume/Index";
 import type { ResumeContent } from "~/content";
 import { COLORS } from "~/utils/config";
 
-export default function Interests({ content }: { content: ResumeContent }) {
+export default function Interests({
+  content,
+  fontScale,
+}: {
+  content: ResumeContent;
+  fontScale: number;
+}) {
   return (
-    <Section title={content.labels.interests}>
+    <Section title={content.labels.interests} fontScale={fontScale}>
       <View style={{ flexDirection: "column", gap: 8 }}>
-        {content.interests.map((interest, index) => (
-          <Fragment key={index}>
+        {Object.entries(content.interests).map(([id, interest], index) => (
+          <Fragment key={id}>
             <View style={{ flexDirection: "row", gap: 6 }}>
               <Svg
                 viewBox="0 0 24 24"
@@ -26,7 +32,7 @@ export default function Interests({ content }: { content: ResumeContent }) {
               </Svg>
               <Text style={{ fontWeight: 500 }}>{interest.title}</Text>
             </View>
-            {index !== content.interests.length - 1 && (
+            {index !== Object.keys(content.interests).length - 1 && (
               <View
                 style={{
                   height: "0.5px",

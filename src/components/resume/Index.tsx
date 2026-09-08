@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 
 import {
-  Page,
   Document,
-  PDFViewer,
   Font,
+  Page,
   PDFDownloadLink,
-  View,
+  PDFViewer,
   Text,
+  View,
 } from "@react-pdf/renderer";
 import { HiOutlineDownload } from "react-icons/hi";
 import { HiArrowLeft } from "react-icons/hi2";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { calibre300, calibre400, calibre500 } from "~/assets/fonts";
 import Certifications from "~/components/resume/Certifications";
@@ -21,12 +21,20 @@ import Languages from "~/components/resume/Languages";
 import QRCode from "~/components/resume/QRCode";
 import Skills from "~/components/resume/Skills";
 import Summary from "~/components/resume/Summary";
-import { resumeContentByLocale } from "~/content";
 import type { Locale, ResumeContent } from "~/content";
+import { resumeContent } from "~/content";
 import { COLORS } from "~/utils/config";
 
 export default function Resume() {
-  const [locale, setLocale] = useState<Locale>(getInitialLocale);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [locale, setLocale] = useState<Locale>(() =>
+    new URLSearchParams(location.search || window.location.search).get(
+      "lang",
+    ) === "ja"
+      ? "ja"
+      : "en",
+  );
   const [japaneseFontReady, setJapaneseFontReady] = useState(false);
 
   useEffect(() => {
@@ -43,8 +51,19 @@ export default function Resume() {
     );
   }, [japaneseFontReady, locale]);
 
-  const documentLocale = locale;
-  const documentContent = resumeContentByLocale[documentLocale];
+  const documentLocale = locale === "ja" && japaneseFontReady ? "ja" : "en";
+  const documentContent = resumeContent[documentLocale];
+  const switchLocale = () => {
+    const nextLocale = locale === "ja" ? "en" : "ja";
+    setLocale(nextLocale);
+    void navigate(
+      {
+        pathname: location.pathname,
+        search: `?lang=${nextLocale}`,
+      },
+      { replace: true },
+    );
+  };
 
   return (
     <div className="bg-bg-base text-text-lo min-h-screen pt-16">
@@ -61,6 +80,34 @@ export default function Resume() {
             <span>Back to portfolio</span>
           </Link>
           <div className="flex items-center gap-3">
+            <button
+              type="button"
+              aria-pressed={locale === "ja"}
+              aria-label={locale === "ja" ? "English PDF" : "日本語 PDF"}
+              onClick={switchLocale}
+              className="border-hairline bg-surface text-text-faint hover:border-accent space-between relative flex h-8 w-[4.5rem] items-center overflow-hidden rounded-full border p-1 text-[0.65rem] font-medium tracking-wide transition-colors"
+            >
+              <span
+                className={`relative top-0.5 z-10 flex h-6 w-full items-center justify-center text-center ${
+                  locale === "en" ? "text-bg-base" : ""
+                }`}
+              >
+                EN
+              </span>
+              <span
+                className={`relative top-0.5 z-10 flex h-6 w-full items-center justify-center text-center ${
+                  locale === "ja" ? "text-bg-base" : ""
+                }`}
+              >
+                JA
+              </span>
+              <span
+                aria-hidden="true"
+                className={`bg-accent absolute top-1 left-1 h-6 w-8 rounded-full transition-transform ${
+                  locale === "ja" ? "translate-x-8" : "translate-x-0"
+                }`}
+              />
+            </button>
             <PDFDownloadLink
               id="download_resume"
               document={
@@ -71,21 +118,24 @@ export default function Resume() {
                   ? "EiguchiPablo-ja.pdf"
                   : "EiguchiPablo.pdf"
               }
-              className="bg-accent text-bg-base hover:bg-text-hi inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-medium transition-colors"
+              className="bg-accent text-bg-base hover:bg-text-hi inline-flex h-10 w-48 shrink-0 items-center justify-center gap-2 rounded-full font-medium whitespace-nowrap transition-colors"
             >
               <HiOutlineDownload aria-hidden="true" />
-              <span className="pt-1">
+              <span
+                className={`pt-1 ${documentLocale === "ja" ? "text-sm" : ""}`}
+              >
                 {documentLocale === "ja" ? "PDFをダウンロード" : "Download PDF"}
               </span>
             </PDFDownloadLink>
-            <button
-              type="button"
-              aria-pressed={locale === "ja"}
-              onClick={() => setLocale(locale === "ja" ? "en" : "ja")}
+            <a
+              href="/栄口パブロ.xls"
+              target="_blank"
+              rel="noreferrer"
+              id="download_jp_resume"
               className="text-text-lo hover:text-accent text-xs transition-colors sm:text-sm"
             >
-              {locale === "ja" ? "English PDF" : "日本語 PDF"}
-            </button>
+              Japanese .xls
+            </a>
           </div>
         </nav>
       </header>
@@ -108,8 +158,6 @@ Font.register({
   ],
 });
 
-Font.registerHyphenationCallback((word) => [word]);
-
 export function MyDocument({
   content,
   locale,
@@ -117,6 +165,8 @@ export function MyDocument({
   content: ResumeContent;
   locale: Locale;
 }) {
+  const fontScale = locale == "ja" ? 5 / 6 : 1;
+
   return (
     <Document title="Eiguchi Pablo Martin.pdf" author="Eiguchi Pablo Martin">
       <Page
@@ -129,10 +179,10 @@ export function MyDocument({
           fontFamily: locale === "ja" ? "notosans" : "calibre",
           fontWeight: 400,
           color: COLORS.slate800,
-          fontSize: 12,
+          fontSize: 12 * fontScale,
         }}
       >
-        <Header content={content} />
+        <Header content={content} locale={locale} fontScale={fontScale} />
         <View
           style={{
             maxWidth: "100%",
@@ -145,20 +195,32 @@ export function MyDocument({
             marginLeft: 30,
           }}
         >
-          <View style={{ flex: 0.6, flexDirection: "column", gap: 24 }}>
-            <Summary content={content} />
+          <View
+            style={{
+              flex: 0.6,
+              flexDirection: "column",
+              gap: 24,
+            }}
+          >
+            <Summary content={content} fontScale={fontScale} />
 
-            <Certifications content={content} />
+            <Certifications content={content} fontScale={fontScale} />
 
-            <QRCode />
+            <QRCode fontScale={fontScale} />
           </View>
 
-          <View style={{ flex: 0.4, flexDirection: "column", gap: 24 }}>
-            <Skills content={content} />
+          <View
+            style={{
+              flex: 0.4,
+              flexDirection: "column",
+              gap: 24,
+            }}
+          >
+            <Skills content={content} fontScale={fontScale} />
 
-            <Languages content={content} />
+            <Languages content={content} fontScale={fontScale} />
 
-            <Interests content={content} />
+            <Interests content={content} fontScale={fontScale} />
           </View>
         </View>
       </Page>
@@ -166,25 +228,21 @@ export function MyDocument({
   );
 }
 
-function getInitialLocale(): Locale {
-  return new URLSearchParams(window.location.search).get("lang") === "ja"
-    ? "ja"
-    : "en";
-}
-
 export function Section({
   title,
   children,
+  fontScale,
 }: {
   title: string;
   children: React.ReactNode;
+  fontScale: number;
 }) {
   return (
     <View style={{ flexDirection: "column" }}>
       <Text
         style={{
           fontWeight: 500,
-          fontSize: 13,
+          fontSize: 13 * fontScale,
           letterSpacing: 1.5,
           color: COLORS.slate400,
         }}

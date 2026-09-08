@@ -1,6 +1,7 @@
 import React from "react";
 
-import { cleanup, render } from "@testing-library/react";
+import { cleanup, render, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -28,6 +29,7 @@ vi.mock("@react-pdf/renderer", async (importOriginal) => {
 });
 
 import Resume from "~/components/resume/Index";
+import { resumeContent } from "~/content";
 
 type PdfProps = {
   children?: React.ReactNode;
@@ -40,6 +42,32 @@ type PdfProps = {
 afterEach(cleanup);
 
 describe("resume route seam", () => {
+  it("keeps natural Japanese summary line breaks in the locale content", () => {
+    expect(resumeContent.ja.summary).toContain("ウェブ開発者です。\n");
+    expect(resumeContent.ja.summary).not.toContain("-\n");
+  });
+
+  it("keeps resume collections keyed and language levels numeric", () => {
+    const content = resumeContent.ja;
+
+    expect(Object.keys(content.contact)).toEqual([
+      "phone",
+      "email",
+      "website",
+      "location",
+    ]);
+    expect(content.contact.location.text).toBe("横浜、日本");
+    expect(content.languages.japanese).toMatchObject({
+      level: 3,
+      levelLabel: "上級",
+    });
+    expect(
+      Object.values(content.languages).every(({ level }) =>
+        Number.isInteger(level),
+      ),
+    ).toBe(true);
+  });
+
   it("exposes the English download and locale toggle", () => {
     const { getByRole } = render(
       <MemoryRouter>
@@ -58,27 +86,39 @@ describe("resume route seam", () => {
       "aria-pressed",
       "false",
     );
+    expect(getByRole("link", { name: "Japanese .xls" })).toHaveAttribute(
+      "href",
+      "/栄口パブロ.xls",
+    );
     expect(getByRole("link", { name: "Back to portfolio" })).toHaveAttribute(
       "href",
       "/",
     );
   });
 
-  it("starts in Japanese from the query and switches the download locale", () => {
+  it("starts in Japanese from the query and switches the download locale", async () => {
     window.history.pushState({}, "", "/resume?lang=ja");
+    const user = userEvent.setup();
     const { getByRole } = render(
       <MemoryRouter>
         <Resume />
       </MemoryRouter>,
     );
 
-    expect(getByRole("button", { name: "English PDF" })).toHaveAttribute(
-      "aria-pressed",
-      "true",
-    );
-    expect(getByRole("link", { name: /PDFをダウンロード/ })).toHaveAttribute(
+    await waitFor(() => {
+      expect(getByRole("button", { name: "English PDF" })).toHaveAttribute(
+        "aria-pressed",
+        "true",
+      );
+      expect(getByRole("link", { name: /PDFをダウンロード/ })).toHaveAttribute(
+        "download",
+        "EiguchiPablo-ja.pdf",
+      );
+    });
+    await user.click(getByRole("button", { name: "English PDF" }));
+    expect(getByRole("link", { name: /Download PDF/ })).toHaveAttribute(
       "download",
-      "EiguchiPablo-ja.pdf",
+      "EiguchiPablo.pdf",
     );
     window.history.pushState({}, "", "/resume");
   });

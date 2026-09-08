@@ -6,12 +6,18 @@ import { Section } from "~/components/resume/Index";
 import type { ResumeContent } from "~/content";
 import { COLORS } from "~/utils/config";
 
-export default function Languages({ content }: { content: ResumeContent }) {
+export default function Languages({
+  content,
+  fontScale,
+}: {
+  content: ResumeContent;
+  fontScale: number;
+}) {
   return (
-    <Section title={content.labels.languages}>
+    <Section title={content.labels.languages} fontScale={fontScale}>
       <View style={{ flexDirection: "column", gap: 10 }}>
-        {content.languages.map((language, index) => (
-          <Fragment key={index}>
+        {Object.entries(content.languages).map(([id, language], index) => (
+          <Fragment key={id}>
             <View
               style={{
                 flexDirection: "row",
@@ -19,25 +25,22 @@ export default function Languages({ content }: { content: ResumeContent }) {
               }}
             >
               <View style={{ flexDirection: "column" }}>
-                <Text style={{ fontWeight: 500, fontSize: 15 }}>
+                <Text style={{ fontWeight: 500, fontSize: 15 * fontScale }}>
                   {language.title}
                 </Text>
-                <Text style={{ left: 6 }}>{language.level}</Text>
+                <Text style={{ left: 6 }}>{language.levelLabel}</Text>
               </View>
 
               <View style={{ flexDirection: "row", gap: 2, top: 5 }}>
-                {Object.keys(LANGUAGE_LEVELS).map((level, i) => (
+                {LANGUAGE_LEVELS.map((level) => (
                   <View
-                    key={i}
+                    key={level}
                     style={{
                       width: 13,
                       height: 13,
                       borderRadius: 6.5,
                       backgroundColor:
-                        LANGUAGE_LEVELS[
-                          language.level.toLowerCase() as keyof typeof LANGUAGE_LEVELS
-                        ] >=
-                        LANGUAGE_LEVELS[level as keyof typeof LANGUAGE_LEVELS]
+                        language.level >= level
                           ? COLORS.emerald500
                           : COLORS.slate300,
                     }}
@@ -46,7 +49,7 @@ export default function Languages({ content }: { content: ResumeContent }) {
               </View>
             </View>
 
-            {index !== content.languages.length - 1 && (
+            {index !== Object.keys(content.languages).length - 1 && (
               <View
                 style={{
                   height: "0.5px",
@@ -63,10 +66,4 @@ export default function Languages({ content }: { content: ResumeContent }) {
   );
 }
 
-const LANGUAGE_LEVELS = {
-  beginner: 1,
-  intermediate: 2,
-  advanced: 3,
-  fluent: 4,
-  native: 5,
-};
+const LANGUAGE_LEVELS = [1, 2, 3, 4, 5] as const;

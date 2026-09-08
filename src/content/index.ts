@@ -1,4 +1,3 @@
-export { resumeContent, resumeContentByLocale } from "~/content/resume";
-export { siteContent } from "~/content/site";
+export { resumeContent } from "~/content/resume";
 export type { Locale, ResumeContent } from "~/content/resume";
-export type { Contact, Project } from "~/content/site";
+export { siteContent } from "~/content/site";

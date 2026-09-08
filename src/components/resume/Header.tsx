@@ -1,9 +1,17 @@
-import { View, Text, Svg, Path, Image } from "@react-pdf/renderer";
+import { Image, Path, Svg, Text, View } from "@react-pdf/renderer";
 
-import type { ResumeContent } from "~/content";
+import type { Locale, ResumeContent } from "~/content";
 import { COLORS } from "~/utils/config";
 
-export default function Header({ content }: { content: ResumeContent }) {
+export default function Header({
+  content,
+  locale,
+  fontScale,
+}: {
+  content: ResumeContent;
+  locale: Locale;
+  fontScale: number;
+}) {
   return (
     <View
       style={{
@@ -29,7 +37,7 @@ export default function Header({ content }: { content: ResumeContent }) {
       >
         <Text
           style={{
-            fontSize: 30,
+            fontSize: 30 * fontScale,
             paddingBottom: 10,
             color: COLORS.slate900,
           }}
@@ -38,7 +46,7 @@ export default function Header({ content }: { content: ResumeContent }) {
         </Text>
         <Text
           style={{
-            fontSize: 16,
+            fontSize: 16 * fontScale,
             color: COLORS.emeraldDeep,
           }}
         >
@@ -66,21 +74,21 @@ export default function Header({ content }: { content: ResumeContent }) {
                   gap: 3,
                 }}
               >
-                {content.contact.map(
+                {Object.values(content.contact).map(
                   ({ text, svgPath, svgProps }, index) =>
                     index % 2 === colum && (
                       <View
                         key={text}
                         style={{
                           flexDirection: "row",
-                          gap: 2,
+                          gap: 4,
                         }}
                       >
-                        <Svg
-                          viewBox="0 0 24 24"
-                          height={12}
-                          width={12}
-                          style={{ top: -2 }}
+                          <Svg
+                            viewBox="0 0 24 24"
+                            height={12}
+                            width={12}
+                            style={{ top: locale === "ja" ? 2 : -2 }}
                           {...svgProps}
                         >
                           <Path d={svgPath} fill={COLORS.emerald500} />

@@ -2,7 +2,7 @@ import { G, Path, Svg, Text, View } from "@react-pdf/renderer";
 
 import { COLORS } from "~/utils/config";
 
-export default function QRCode() {
+export default function QRCode({ fontScale }: { fontScale: number }) {
   return (
     <View
       style={{
@@ -14,7 +14,7 @@ export default function QRCode() {
       }}
     >
       <QRSvg />
-      <Text style={{ fontSize: 18, letterSpacing: 1 }}>
+      <Text style={{ fontSize: 18 * fontScale, letterSpacing: 1 }}>
         www.eiguchipablo.dev
       </Text>
     </View>
