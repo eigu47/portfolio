@@ -4,10 +4,14 @@
 
 **Blocked by:** 09 — Resume action bar + EN PDF redesign.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Toggle switches displayed document language AND download filename/content together
-- [ ] Japanese PDF built from ticket 05's locale-aware data; JP font chunk loads only for it
-- [ ] `/resume?lang=ja` sets initial locale for that visit; no persistence; canvas text stays EN permanently
-- [ ] Seam test covers toggle behaviour and query-param initial locale
-- [ ] Static public PDF rebuilt to match the new EN design
+- [x] Toggle switches displayed document language AND download filename/content together
+- [x] Japanese PDF built from ticket 05's locale-aware data; JP font chunk loads only for it
+- [x] `/resume?lang=ja` sets initial locale for that visit; no persistence; canvas text stays EN permanently
+- [x] Seam test covers toggle behaviour and query-param initial locale
+- [x] Static public PDF rebuilt to match the new EN design
+
+## Answer
+
+Completed the resume locale seam. The route reads the active locale from its query parameters, lazy-loads the Japanese PDF font only when Japanese is selected, and keeps the displayed document, download filename, and download content aligned. The checked-in English PDF was regenerated from the redesigned document.
