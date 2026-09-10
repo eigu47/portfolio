@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import {
   Document,
   Font,
+  BlobProvider,
   Page,
   PDFDownloadLink,
   PDFViewer,
@@ -140,10 +141,25 @@ export default function Resume() {
         </nav>
       </header>
 
-      <main className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-7xl justify-center px-2 py-4 sm:px-6 sm:py-8 lg:px-8">
-        <PDFViewer className="min-h-0 w-full" showToolbar>
-          <MyDocument content={documentContent} locale={documentLocale} />
-        </PDFViewer>
+      <main className="mx-auto flex min-h-[calc(100dvh-4rem)] w-full max-w-7xl justify-center px-2 py-4 sm:px-6 sm:py-8 lg:px-8">
+        <BlobProvider
+          document={
+            <MyDocument content={documentContent} locale={documentLocale} />
+          }
+        >
+          {({ url }) => (
+            <>
+              <iframe
+                className="h-[calc(100dvh-6rem)] w-full sm:hidden"
+                title="Resume PDF"
+                src={url ?? undefined}
+              />
+              <PDFViewer className="hidden min-h-0 w-full sm:block" showToolbar>
+                <MyDocument content={documentContent} locale={documentLocale} />
+              </PDFViewer>
+            </>
+          )}
+        </BlobProvider>
       </main>
     </div>
   );

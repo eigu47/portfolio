@@ -122,6 +122,26 @@ describe("root app seam (WebGL stubbed)", () => {
     expect(button).toHaveAccessibleName("Open menu");
   });
 
+  it("reveals contact links in the mobile menu and removes them when closed", async () => {
+    const user = userEvent.setup();
+    const screen = renderApp();
+    const button = screen.getByRole("button", { name: "Open menu" });
+
+    expect(
+      screen.queryByRole("link", { name: "Email" }),
+    ).not.toBeInTheDocument();
+    await user.click(button);
+    expect(screen.getAllByRole("link", { name: "Github" })).toHaveLength(2);
+    expect(screen.getByRole("link", { name: "Email" })).toHaveAttribute(
+      "href",
+      "mailto:pablo.eiguchi@gmail.com",
+    );
+    await user.click(screen.getByRole("button", { name: "Close menu" }));
+    expect(
+      screen.queryByRole("link", { name: "Email" }),
+    ).not.toBeInTheDocument();
+  });
+
   it("mounts the WebGL canvas", () => {
     const { getError } = renderApp();
 

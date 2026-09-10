@@ -4,6 +4,7 @@ import { BiMenuAltRight } from "react-icons/bi";
 import { IoClose } from "react-icons/io5";
 import { PiFilePdfDuotone } from "react-icons/pi";
 
+import { siteContent } from "~/content";
 import useScrollPos from "~/hooks/useScrollPos";
 import { PAGES } from "~/utils/config";
 import { useDebugStore } from "~/utils/debugStore";
@@ -55,6 +56,36 @@ export default function Navbar() {
           ))}
         </ul>
       </nav>
+
+      {showMenu && (
+        <div className="border-hairline bg-bg-base/95 fixed inset-x-0 top-16 z-[9] flex flex-col gap-4 border-b px-6 py-5 backdrop-blur-md sm:hidden">
+          <span className="text-text-faint font-mono text-xs tracking-[0.14em] uppercase">
+            Find me
+          </span>
+          <div className="flex items-center gap-5">
+            {siteContent.contacts.map(({ label, href, icon: Icon }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noreferrer"
+                className="text-text-lo hover:text-accent inline-flex items-center gap-2 transition-colors"
+                onClick={() => setShowMenu(false)}
+              >
+                <Icon aria-hidden="true" className="h-5 w-5" />
+                {label}
+              </a>
+            ))}
+            <a
+              href={siteContent.mail.href}
+              className="text-text-lo hover:text-accent transition-colors"
+              onClick={() => setShowMenu(false)}
+            >
+              Email
+            </a>
+          </div>
+        </div>
+      )}
 
       <button
         className="fixed top-0 right-2 z-10 p-3 sm:hidden"

@@ -77,9 +77,9 @@
 }
 
 html {
-  @apply snap-y snap-mandatory scroll-smooth;
+  @apply snap-y snap-proximity scroll-smooth;
   overflow: overlay;
-  scroll-snap-type: y mandatory;
+  scroll-snap-type: y proximity;
   background: var(--color-bg-base);
   scrollbar-width: thin;
 }

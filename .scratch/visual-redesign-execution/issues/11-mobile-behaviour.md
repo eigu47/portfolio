@@ -4,11 +4,11 @@
 
 **Blocked by:** 08 — Scene restyle; 10 — JP PDF + locale toggle.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Vertical swipes always scroll regardless of touch target; horizontal scene gestures unaffected
-- [ ] Adaptive quality ladder works; post-processing droppable under load
-- [ ] dvh + live viewport tracking: no layout jump/clip when browser chrome shows/hides; snap-proximity on small screens
-- [ ] Mobile menu contains social/email links and is fully removed from the page when closed
-- [ ] Phones render the resume PDF inline in a native iframe
-- [ ] Tilt chip opt-in enables gyro parallax; dismissible and non-invasive
+- [x] Vertical swipes always scroll regardless of touch target; horizontal scene gestures unaffected
+- [x] Adaptive quality ladder works; post-processing droppable under load
+- [x] dvh + live viewport tracking: no layout jump/clip when browser chrome shows/hides; snap-proximity on small screens
+- [x] Mobile menu contains social/email links and is fully removed from the page when closed
+- [x] Phones render the resume PDF inline in a native iframe
+- [x] Tilt chip opt-in enables gyro parallax; dismissible and non-invasive

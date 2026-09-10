@@ -46,8 +46,14 @@ export default function Draggable({
   const bind = useGesture({
     onPointerEnter: () => setHover(true),
     onPointerLeave: () => setHover(false),
-    onDrag: ({ xy: [x, y], down, offset: [offX, offY] }) => {
-      preventScroll.current = down;
+    onDrag: ({
+      xy: [x, y],
+      down,
+      offset: [offX, offY],
+      movement: [moveX, moveY],
+    }) => {
+      // Let vertical touch movement remain page scrolling; only horizontal drags own the gesture.
+      preventScroll.current = down && Math.abs(moveX) > Math.abs(moveY);
       setDrag(down);
 
       camera.getWorldPosition(cameraPos);

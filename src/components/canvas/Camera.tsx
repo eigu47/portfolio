@@ -14,7 +14,11 @@ const rotation = new Vector3();
 const rotationLerp = new Vector3();
 const lookAt = new Vector3();
 
-export default function Camera() {
+export default function Camera({
+  tilt = { x: 0, y: 0 },
+}: {
+  tilt?: { x: number; y: number };
+}) {
   const { debugOn, orbitControls } = useDebugStore();
   const { scrollPos, scrollPage, scrollDown } = useScrollPos();
   const { position: posFrom, rotation: rotFrom } = usePage(scrollPage);
@@ -27,9 +31,10 @@ export default function Camera() {
     position.lerpVectors(posFrom, posTo, scrollPos - scrollPage);
     groupRef.current.position.lerp(position, delta * 2.8);
 
+    const target = scrollDown ? position : groupRef.current.position;
     camera.lookAt(
       lookAt.lerp(
-        scrollDown ? position : groupRef.current.position,
+        target.clone().add({ x: tilt.x * 0.2, y: tilt.y * 0.2, z: 0 }),
         delta * 5.6,
       ),
     );
