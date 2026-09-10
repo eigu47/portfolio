@@ -1,32 +1,44 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-export default function useMousePos() {
-  const [mousePos, setMousePos] = useState({
-    clientX: 0,
-    clientY: 0,
-    pageX: 0,
-    pageY: 0,
-  });
+type MousePosition = {
+  clientX: number;
+  clientY: number;
+  pageX: number;
+  pageY: number;
+};
 
-  function mouseMove({ clientX, clientY, pageX, pageY }: MouseEvent) {
-    setMousePos({ clientX, clientY, pageX, pageY });
-  }
+const initialPosition: MousePosition = {
+  clientX: 0,
+  clientY: 0,
+  pageX: 0,
+  pageY: 0,
+};
+
+export default function useMousePos({ reactive = true } = {}) {
+  const mousePos = useRef(initialPosition);
+  const [, rerender] = useState(0);
 
   useEffect(() => {
+    function mouseMove({ clientX, clientY, pageX, pageY }: MouseEvent) {
+      mousePos.current = { clientX, clientY, pageX, pageY };
+      if (reactive) rerender((value) => value + 1);
+    }
+
     window.addEventListener("mousemove", mouseMove);
     return () => window.removeEventListener("mousemove", mouseMove);
-  }, []);
+  }, [reactive]);
 
   return {
-    client: { x: mousePos.clientX, y: mousePos.clientY },
-    page: { x: mousePos.pageX, y: mousePos.pageY },
+    position: mousePos,
+    client: { x: mousePos.current.clientX, y: mousePos.current.clientY },
+    page: { x: mousePos.current.pageX, y: mousePos.current.pageY },
     relative: {
-      x: mousePos.pageX / window.innerWidth,
-      y: mousePos.pageY / window.innerHeight,
+      x: mousePos.current.pageX / window.innerWidth,
+      y: mousePos.current.pageY / window.innerHeight,
     },
     coords: {
-      x: (mousePos.clientX / window.innerWidth) * 2 - 1,
-      y: -(mousePos.clientY / window.innerHeight) * 2 + 1,
+      x: (mousePos.current.clientX / window.innerWidth) * 2 - 1,
+      y: -(mousePos.current.clientY / window.innerHeight) * 2 + 1,
     },
   };
 }

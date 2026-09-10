@@ -14,7 +14,7 @@ import { type GLTF } from "three-stdlib";
 import { useDebug } from "~/components/canvas/Debug";
 import useScrollPos from "~/hooks/useScrollPos";
 import useViewport from "~/hooks/useViewport";
-import { PAGES } from "~/utils/config";
+import { COLORS, PAGES } from "~/utils/config";
 
 const CONTACT_PAGE = PAGES.findIndex(({ id }) => id === "contact");
 const rotation = new Vector3();
@@ -65,7 +65,7 @@ export default function Model(props: ThreeElements["group"]) {
       >
         <group position={[0, 4.92, -1.08]} rotation={[-0.18, 0, 0]}>
           <Plane scale={[12.56, 8.41, 1]}>
-            <meshBasicMaterial color={[0.2, 2, 1.1]} toneMapped={false} />
+            <meshBasicMaterial color={COLORS.slate900} toneMapped={false} />
           </Plane>
 
           <Html
@@ -106,16 +106,10 @@ type GLTFResult = GLTF & {
     ["Laptop_01_Cube025-Mesh"]: THREE.Mesh;
     ["Laptop_01_Cube025-Mesh_1"]: THREE.Mesh;
     ["Laptop_01_Cube025-Mesh001"]: THREE.Mesh;
-    ["Laptop_01_Cube025-Mesh001_1"]: THREE.Mesh;
-    ["Laptop_01_Cube025-Mesh001_2"]: THREE.Mesh;
-    ["Laptop_01_Cube025-Mesh001_3"]: THREE.Mesh;
   };
   materials: {
     ["1A1A1A"]: THREE.MeshStandardMaterial;
     ["455A64"]: THREE.MeshStandardMaterial;
-    ["039BE5"]: THREE.MeshStandardMaterial;
-    F44336: THREE.MeshStandardMaterial;
-    FF9800: THREE.MeshStandardMaterial;
   };
 };
 

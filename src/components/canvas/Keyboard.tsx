@@ -28,13 +28,14 @@ export default function Keyboard({
   ) as unknown as GLTFResult;
   const keyboardRef = useRef<THREE.Group>(null);
   const { width, height, mobile } = useViewport();
-  const {
-    relative: { x, y },
-  } = useMousePos();
+  const { position } = useMousePos({ reactive: false });
   const debug = useDebug();
 
   useFrame((_, delta) => {
     if (mobile) return null;
+
+    const x = position.current.pageX / window.innerWidth;
+    const y = position.current.pageY / window.innerHeight;
 
     keyboardRef.current?.lookAt(
       lookTo.lerp(lerpTo.set(x, -y - 2.5, 3.5), delta * 2.8),

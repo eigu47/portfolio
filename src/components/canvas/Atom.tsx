@@ -17,10 +17,10 @@ import useViewport from "~/hooks/useViewport";
 import { COLORS } from "~/utils/config";
 import { useDebugStore } from "~/utils/debugStore";
 
-const bloomEmerald = new Color(COLORS.emeraldDeep).multiplyScalar(1.2);
-const normalEmerald = new Color(COLORS.emeraldDeep);
-const bloomNucleus = new Color(COLORS.emeraldDeep).multiplyScalar(1.5);
-const normalNucleus = new Color(COLORS.emeraldDeep);
+const bloomEmerald = new Color(COLORS.emerald400).multiplyScalar(1.15);
+const normalEmerald = new Color(COLORS.emerald400);
+const bloomNucleus = new Color(COLORS.emerald400).multiplyScalar(1.4);
+const normalNucleus = new Color(COLORS.emerald400);
 
 export default function Atom({
   scale = 0.1,
@@ -48,7 +48,12 @@ export default function Atom({
             : [physicalRef, normalEmerald, bloomNucleus]
         }
       >
-        <Float rotationIntensity={24.5} scale={scale}>
+        <Float
+          floatIntensity={0.7}
+          rotationIntensity={24.5}
+          scale={scale}
+          speed={0.7}
+        >
           <Line
             worldUnits
             points={points}

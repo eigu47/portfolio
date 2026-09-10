@@ -1,4 +1,4 @@
-import { Stars } from "@react-three/drei";
+import { Environment, Lightformer, Stars } from "@react-three/drei";
 
 import { COLORS } from "~/utils/config";
 
@@ -15,20 +15,23 @@ export default function Atmosphere() {
         saturation={0}
         speed={0.08}
       />
-      <mesh
-        position={[0, -1.7, 0]}
-        rotation={[-Math.PI / 2, 0, 0]}
-        receiveShadow
-      >
-        <circleGeometry args={[9, 64]} />
-        <meshStandardMaterial
-          color="#101013"
-          emissive={COLORS.emeraldDeep}
-          emissiveIntensity={0.08}
-          metalness={0.9}
-          roughness={0.22}
+      <Environment resolution={64}>
+        <Lightformer
+          color={COLORS.emerald400}
+          form="rect"
+          intensity={2}
+          position={[0, 3, -4]}
+          scale={[4, 2, 1]}
         />
-      </mesh>
+        <Lightformer
+          color="#596a99"
+          form="rect"
+          intensity={1.4}
+          position={[-4, 2, 0]}
+          rotation={[0, Math.PI / 2, 0]}
+          scale={[3, 1.5, 1]}
+        />
+      </Environment>
     </>
   );
 }
