@@ -32,6 +32,7 @@ export default function Scene() {
         aria-hidden="true"
         className="!fixed top-0 !h-screen scale-[1.04] opacity-0 [transition:opacity_900ms_ease,transform_1200ms_cubic-bezier(0.22,1,0.36,1)]"
         data-scene-shell
+        shadows="soft"
       >
         <Camera />
         <Atmosphere />

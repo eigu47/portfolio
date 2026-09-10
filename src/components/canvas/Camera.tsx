@@ -66,7 +66,7 @@ export default function Camera() {
         position={[-6, 3, 6]}
       />
       <spotLight
-        color="#78ddb4"
+        color="#8ce5bd"
         intensity={0.55}
         penumbra={0.7}
         angle={0.65}
@@ -74,7 +74,7 @@ export default function Camera() {
         target-position={[0, -0.3, 0]}
       />
       <pointLight
-        color="#78ddb4"
+        color="#8ce5bd"
         intensity={0.15}
         distance={12}
         position={[0, -2.2, 2]}

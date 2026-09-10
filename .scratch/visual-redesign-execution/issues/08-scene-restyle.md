@@ -4,9 +4,13 @@
 
 **Blocked by:** 03 — Drop leva; ?debug on lil-gui; 05 — Content extraction prefactor.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Prop colours muted per variant H; laptop identity still recognisable
-- [ ] Lighting rig + emerald rim spotlight in place; fog + starfield + reflective glow floor combined
-- [ ] Bloom + vignette tuned; post-processing still GPU-tier-gated as today
-- [ ] Motion reduced ~30% vs current; visual inspection passes vs prototype
+- [x] Prop colours muted per variant H; laptop identity still recognisable
+- [x] Lighting rig + emerald rim spotlight in place; fog + starfield + reflective glow floor combined
+- [x] Bloom + vignette tuned; post-processing still GPU-tier-gated as today
+- [x] Motion reduced ~30% vs current; visual inspection passes vs prototype
+
+## Answer
+
+Variant H is implemented across the scene. The atmosphere now includes a dark reflective glow floor, the existing three-point rig uses the approved emerald rim, and cast/receive shadows are enabled for the major props. Emerald replaces the baseline cyan/magenta atom treatment and laptop screen glow, while the existing laptop and keyboard palette remains muted and identity-preserving. Float and electron motion is tuned to 70% of the previous speed/intensity; bloom remains GPU-tier-gated and the vignette remains a CSS overlay.

@@ -48,11 +48,15 @@ export default function Model(props: ThreeElements["group"]) {
       <mesh
         geometry={nodes["Laptop_01_Cube025-Mesh"].geometry}
         material={materials["1A1A1A"]}
+        castShadow
+        receiveShadow
       />
       <mesh
         geometry={nodes["Laptop_01_Cube025-Mesh_1"].geometry}
         material={materials["455A64"]}
         material-color="#2c2c31"
+        castShadow
+        receiveShadow
       />
       <group
         position={[0, 0.19, -4.85]}
@@ -61,7 +65,7 @@ export default function Model(props: ThreeElements["group"]) {
       >
         <group position={[0, 4.92, -1.08]} rotation={[-0.18, 0, 0]}>
           <Plane scale={[12.56, 8.41, 1]}>
-            <meshBasicMaterial color={[0.6, 0.6, 6]} toneMapped={false} />
+            <meshBasicMaterial color={[0.2, 2, 1.1]} toneMapped={false} />
           </Plane>
 
           <Html
@@ -89,6 +93,8 @@ export default function Model(props: ThreeElements["group"]) {
         <mesh
           geometry={nodes["Laptop_01_Cube025-Mesh001"].geometry}
           material={materials["1A1A1A"]}
+          castShadow
+          receiveShadow
         />
       </group>
     </group>

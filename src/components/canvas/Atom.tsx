@@ -14,12 +14,13 @@ import { Color, EllipseCurve } from "three";
 
 import Draggable from "~/components/canvas/Draggable";
 import useViewport from "~/hooks/useViewport";
+import { COLORS } from "~/utils/config";
 import { useDebugStore } from "~/utils/debugStore";
 
-const bloomCyan = new Color(0.1, 1.2, 1.2);
-const normalCyan = new Color("cyan");
-const bloomNucleus = new Color(6, 0.2, 2);
-const normalNucleus = new Color(2, 2, 2);
+const bloomEmerald = new Color(COLORS.emeraldDeep).multiplyScalar(1.2);
+const normalEmerald = new Color(COLORS.emeraldDeep);
+const bloomNucleus = new Color(COLORS.emeraldDeep).multiplyScalar(1.5);
+const normalNucleus = new Color(COLORS.emeraldDeep);
 
 export default function Atom({
   scale = 0.1,
@@ -31,7 +32,7 @@ export default function Atom({
   const { width, height, mobile } = useViewport();
   const { tier } = useDetectGPU();
 
-  const cyan = tier > 2 ? bloomCyan : normalCyan;
+  const emerald = tier > 2 ? bloomEmerald : normalEmerald;
 
   return (
     <group
@@ -44,21 +45,21 @@ export default function Atom({
         hoverColor={
           tier > 2
             ? [basicRef, normalNucleus, bloomNucleus]
-            : [physicalRef, normalCyan, bloomNucleus]
+            : [physicalRef, normalEmerald, bloomNucleus]
         }
       >
-        <Float rotationIntensity={35} scale={scale}>
+        <Float rotationIntensity={24.5} scale={scale}>
           <Line
             worldUnits
             points={points}
-            color={cyan}
+            color={emerald}
             lineWidth={0.3 * scale}
             toneMapped={tier < 2}
           />
           <Line
             worldUnits
             points={points}
-            color={cyan}
+            color={emerald}
             lineWidth={0.3 * scale}
             rotation={[0, 0, 1]}
             toneMapped={tier < 2}
@@ -66,29 +67,29 @@ export default function Atom({
           <Line
             worldUnits
             points={points}
-            color={cyan}
+            color={emerald}
             lineWidth={0.3 * scale}
             rotation={[0, 0, -1]}
             toneMapped={tier < 2}
           />
-          <Electron speed={2.1} scale={scale} />
-          <Electron rotation={[0, 0, Math.PI / 3]} speed={2.8} scale={scale} />
+          <Electron speed={1.47} scale={scale} />
+          <Electron rotation={[0, 0, Math.PI / 3]} speed={1.96} scale={scale} />
           <Electron
             rotation={[0, 0, -Math.PI / 3]}
-            speed={2.45}
+            speed={1.715}
             scale={scale}
           />
           <Sphere args={[0.55]}>
             {tier > 2 ? (
               <meshBasicMaterial
                 ref={basicRef}
-                color={[3, 0.5, 1]}
+                color={bloomNucleus}
                 toneMapped={false}
               />
             ) : (
               <meshPhysicalMaterial
                 ref={physicalRef}
-                color={normalCyan}
+                color={normalEmerald}
                 roughness={0.5}
                 metalness={0.5}
               />
@@ -137,12 +138,12 @@ function Electron({
       <Trail
         width={trailWidth}
         length={8 * scale}
-        color={new Color(2, 1, 10)}
+        color={bloomNucleus}
         attenuation={(t) => t * t}
       >
-        <mesh ref={electronRef}>
-          <sphereGeometry args={[0.25]} />
-          <meshBasicMaterial color={[10, 1, 10]} toneMapped={false} />
+          <mesh ref={electronRef}>
+            <sphereGeometry args={[0.25]} />
+            <meshBasicMaterial color={bloomNucleus} toneMapped={false} />
         </mesh>
       </Trail>
     </group>

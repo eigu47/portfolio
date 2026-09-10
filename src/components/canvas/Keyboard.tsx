@@ -42,7 +42,7 @@ export default function Keyboard({
   });
 
   return (
-    <Float speed={2.1} rotationIntensity={0.35} floatIntensity={0.35}>
+      <Float speed={1.47} rotationIntensity={0.245} floatIntensity={0.245}>
       <group
         ref={keyboardRef}
         dispose={null}
@@ -59,6 +59,8 @@ export default function Keyboard({
         <mesh
           geometry={nodes.Case.geometry}
           material={materials["Black rubber"]}
+          castShadow
+          receiveShadow
         />
         <mesh
           position={[0.7, 0.25, 0.55]}
@@ -70,6 +72,8 @@ export default function Keyboard({
           geometry={nodes.Keycaps.geometry}
           material={materials["Keycap material"]}
           material-color="#aab2bf"
+          castShadow
+          receiveShadow
         />
       </group>
     </Float>

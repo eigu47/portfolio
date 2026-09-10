@@ -63,9 +63,10 @@ function Ball({
 
   return (
     <group {...props} {...debug}>
-      <Float speed={2.8} rotationIntensity={0.35} floatIntensity={0.35}>
+      <Float speed={1.96} rotationIntensity={0.245} floatIntensity={0.245}>
         <Icosahedron
           args={[1, 1]}
+          castShadow
           onPointerEnter={() => !mobile && setModal(true)}
           onPointerLeave={() => !mobile && setModal(false)}
           onPointerDown={() => setModal(true)}
