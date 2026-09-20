@@ -6,15 +6,17 @@ import type * as THREE from "three";
 import { Quaternion, Vector3 } from "three";
 
 import { getCameraParallax } from "~/components/canvas/cameraParallax";
+import type { TiltResponse } from "~/components/canvas/cameraParallax";
 import { usePage } from "~/components/canvas/Page";
 import useScrollPos from "~/hooks/useScrollPos";
 import { useDebugStore } from "~/utils/debugStore";
 
+const CAMERA_POSITION = [0, 0, 5] as const;
 const position = new Vector3();
 const rotation = new Vector3();
 const rotationLerp = new Vector3();
 const lookAt = new Vector3();
-const cameraBasePosition = new Vector3(0, 0, 5);
+const cameraBasePosition = new Vector3(...CAMERA_POSITION);
 const cameraWorldPosition = new Vector3();
 const cameraParallax = new Vector3();
 const cameraRight = new Vector3();
@@ -24,7 +26,7 @@ const cameraQuaternion = new Quaternion();
 export default function Camera({
   tilt = { x: 0, y: 0 },
 }: {
-  tilt?: { x: number; y: number };
+  tilt?: TiltResponse;
 }) {
   const { debugOn, orbitControls } = useDebugStore();
   const { scrollPos, scrollPage, scrollDown } = useScrollPos();
@@ -37,6 +39,11 @@ export default function Camera({
 
     position.lerpVectors(posFrom, posTo, scrollPos - scrollPage);
     groupRef.current.position.lerp(position, delta * 2.8);
+
+    rotation.lerpVectors(rotFrom, rotTo, scrollPos - scrollPage);
+    groupRef.current.rotation.setFromVector3(
+      rotationLerp.lerp(rotation, delta * 5.6),
+    );
 
     const target = scrollDown ? position : groupRef.current.position;
     camera.lookAt(
@@ -57,18 +64,12 @@ export default function Camera({
       .addScaledVector(cameraUp, cameraParallax.y);
     groupRef.current.worldToLocal(cameraWorldPosition);
     camera.position.lerp(cameraWorldPosition, delta * 5.6);
-
-    rotation.lerpVectors(rotFrom, rotTo, scrollPos - scrollPage);
-
-    groupRef.current.rotation.setFromVector3(
-      rotationLerp.lerp(rotation, delta * 5.6),
-    );
   });
 
   return (
     <>
       <group ref={groupRef}>
-        <PerspectiveCamera makeDefault fov={60} position={[0, 0, 5]} />
+        <PerspectiveCamera makeDefault fov={60} position={CAMERA_POSITION} />
       </group>
       <ambientLight color="#bcc4d4" intensity={0.14} />
       <directionalLight
