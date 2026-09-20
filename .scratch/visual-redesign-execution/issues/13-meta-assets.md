@@ -4,8 +4,8 @@
 
 **Blocked by:** None — can start immediately.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Full favicon set exported and wired into the entry HTML (replaces broken set)
-- [ ] OG image exported; OG/Twitter meta tags reference it correctly
-- [ ] Visual inspection passes vs prototype at small sizes (tab, bookmark)
+- [x] Full favicon set exported and wired into the entry HTML (replaces broken set)
+- [x] OG image exported; OG/Twitter meta tags reference it correctly
+- [x] Visual inspection passes vs prototype at small sizes (tab, bookmark)

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-labelledby="title">
+  <title>Eiguchi Pablo</title>
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#16161b" />
+      <stop offset="1" stop-color="#0a0a0c" />
+    </linearGradient>
+  </defs>
+  <rect width="180" height="180" rx="39.6" fill="url(#tile)" stroke="#ffffff" stroke-opacity="0.16" stroke-width="3.6" />
+  <text x="50%" y="50%" dy="-0.11em" dominant-baseline="central" text-anchor="middle" font-family="Calibre, system-ui, sans-serif" font-size="93.6" font-weight="500" letter-spacing="-3.744" fill="#f1f5f9">e<tspan fill="#34d399">/</tspan>p</text>
+</svg>
