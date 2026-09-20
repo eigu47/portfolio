@@ -21,6 +21,13 @@
   src: url("./assets/fonts/Calibre-Medium.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: "Noto Sans JP";
+  font-style: normal;
+  font-weight: 400;
+  src: url("./assets/fonts/NotoSansJP-Regular.woff2") format("woff2");
+}
+
 @theme {
   --color-bg-base: #09090b;
   --color-bg-grad-top: #0d0d11;

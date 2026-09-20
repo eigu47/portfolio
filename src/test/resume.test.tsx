@@ -139,7 +139,7 @@ describe("resume route seam", () => {
 
     await waitFor(() => {
       expect(Font.getRegisteredFonts().notosans?.sources[0]?.src).toMatch(
-        /NotoSansJP-Regular\.woff2/,
+        /NotoSansJP-Regular\.ttf/,
       );
     });
 

@@ -11,7 +11,6 @@ export default tseslint.config(
       "dist/**",
       "node_modules/**",
       "src/.env.d.ts",
-      "scripts/**",
       "eslint.config.js",
       "**/*.{config,conf}.*",
     ],
@@ -78,6 +77,14 @@ export default tseslint.config(
       "react-hooks/refs": "off",
       "react-hooks/set-state-in-effect": "off",
       "no-console": "warn",
+    },
+  },
+  {
+    files: ["scripts/**/*.{js,jsx,cjs,mjs}"],
+    languageOptions: {
+      parserOptions: {
+        projectService: false,
+      },
     },
   },
 );

@@ -64,21 +64,21 @@ npx lighthouse http://localhost:4174/ --quiet \
 
 Captured 2026-09-20 with the same Vite build and Lighthouse flags as the
 before-baseline, using Lighthouse 13.4.1. The JP font payload is now one
-59.99 kB subsetted WOFF2,
-loaded only by the Japanese resume route. The three 5.5 MB JP TTF weights are
-no longer emitted.
+59.99 kB subsetted WOFF2 for the web and one 146.91 kB subsetted TTF for the
+Japanese PDF. The three 5.5 MB JP TTF weights are no longer emitted.
 
 | Asset                               | Raw        | gzip     |
 | ----------------------------------- | ---------- | -------- |
 | `assets/App-*.js`                   | 1,393.8 kB | 387.0 kB |
 | `assets/index-*.js` (entry/vendor)  | 395.8 kB   | 124.4 kB |
 | `assets/Index-*.js` (resume route)  | 1,433.0 kB | 506.4 kB |
-| `assets/index-*.css`                | 34.3 kB    | 7.2 kB   |
+| `assets/index-*.css`                | 34.4 kB    | 7.2 kB   |
+| `assets/NotoSansJP-Regular-*.ttf`   | 146.9 kB   | 81.6 kB  |
 | `assets/NotoSansJP-Regular-*.woff2` | 60.0 kB    | 60.1 kB  |
-| `dist/` total                       | ~5.3 MB    | —        |
+| `dist/` total                       | ~5.4 MB    | —        |
 
 Compared with the before-baseline, the JP font payload drops from ~17.2 MB to
-~60 kB, and the total dist output drops from ~22.8 MB to ~5.3 MB. Lighthouse
+~207 kB, and the total dist output drops from ~22.8 MB to ~5.4 MB. Lighthouse
 transfer weight drops from 2,205 KiB to 1,591 KiB. The software-WebGL run is
 still environment-sensitive: performance score moved from 0.28 to 0.34,
 while Speed Index moved from 8.7 s to 14.3 s; no hard budget is claimed.
