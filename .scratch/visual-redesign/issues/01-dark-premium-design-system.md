@@ -57,4 +57,3 @@ Pairing stays (licensing already held, JP coverage required). Polish only: tight
 - Emerald is used sparingly: one accent per view region; never two competing accent moments.
 - Scene restyle (ticket 04) should echo these tokens: emerald as emissive/accent material, slate-dark materials, no new hues beyond the faint blue counter-glow.
 - Loader (03), resume chrome (05), and mobile surfaces (06) inherit surface/hairline/shadow/radius rules verbatim.
-

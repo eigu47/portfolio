@@ -43,7 +43,7 @@ export default function Keyboard({
   });
 
   return (
-      <Float speed={1.47} rotationIntensity={0.245} floatIntensity={0.245}>
+    <Float speed={1.47} rotationIntensity={0.245} floatIntensity={0.245}>
       <group
         ref={keyboardRef}
         dispose={null}

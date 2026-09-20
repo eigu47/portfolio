@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 
+import ContactLinks from "~/components/ContactLinks";
 import Navbar from "~/components/Navbar";
 import { siteContent } from "~/content";
 
-export default function StaticPage({ onRetry }: { onRetry?: () => void }) {
+export default function StaticPage() {
   useEffect(() => {
     document.documentElement.classList.add("static-mode");
     return () => document.documentElement.classList.remove("static-mode");
@@ -85,28 +86,17 @@ export default function StaticPage({ onRetry }: { onRetry?: () => void }) {
           </section>
         </section>
       </main>
-      {onRetry && (
-        <button className="text-accent mx-auto mb-8 block" onClick={onRetry}>
-          retry
-        </button>
-      )}
       <footer
         className="border-hairline text-text-faint fixed right-0 bottom-0 left-0 z-10 gap-4 border-t bg-[rgba(9,9,11,0.86)] p-4 font-mono text-xs tracking-widest uppercase backdrop-blur-md"
         id="contact"
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-6">
           <div className="flex gap-4">
-            {siteContent.contacts.map(({ label, href, icon: Icon }) => (
-              <a
-                key={label}
-                href={href}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={label}
-              >
-                <Icon className="text-text-lo text-xl" aria-hidden="true" />
-              </a>
-            ))}
+            <ContactLinks
+              iconClassName="text-text-lo text-xl"
+              includeIds={false}
+              iconAriaHidden
+            />
           </div>
           <a className="text-accent no-underline" href={siteContent.mail.href}>
             {siteContent.mail.label}

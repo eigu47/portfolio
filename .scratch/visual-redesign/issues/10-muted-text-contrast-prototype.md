@@ -30,4 +30,3 @@ Decided via prototype (`prototype-muted-contrast.html` in this directory — six
 
 - Grain/glass lift effective background luminance ~7%; all future contrast checks in this effort use the worst-case composite, not flat `#09090b`.
 - `text-faint` is banned from body copy, links, and any reading-critical text (per ticket 09's keyboard/sr-only rules, canvas-mirrored DOM copy uses `text-lo` or higher).
-

@@ -146,9 +146,9 @@ function Electron({
         color={bloomNucleus}
         attenuation={(t) => t * t}
       >
-          <mesh ref={electronRef}>
-            <sphereGeometry args={[0.25]} />
-            <meshBasicMaterial color={bloomNucleus} toneMapped={false} />
+        <mesh ref={electronRef}>
+          <sphereGeometry args={[0.25]} />
+          <meshBasicMaterial color={bloomNucleus} toneMapped={false} />
         </mesh>
       </Trail>
     </group>

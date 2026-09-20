@@ -84,11 +84,11 @@ export default function Header({
                           gap: 4,
                         }}
                       >
-                          <Svg
-                            viewBox="0 0 24 24"
-                            height={12}
-                            width={12}
-                            style={{ top: locale === "ja" ? 2 : -2 }}
+                        <Svg
+                          viewBox="0 0 24 24"
+                          height={12}
+                          width={12}
+                          style={{ top: locale === "ja" ? 2 : -2 }}
                           {...svgProps}
                         >
                           <Path d={svgPath} fill={COLORS.emerald500} />

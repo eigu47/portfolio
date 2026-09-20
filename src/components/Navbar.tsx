@@ -4,6 +4,7 @@ import { BiMenuAltRight } from "react-icons/bi";
 import { IoClose } from "react-icons/io5";
 import { PiFilePdfDuotone } from "react-icons/pi";
 
+import ContactLinks from "~/components/ContactLinks";
 import { siteContent } from "~/content";
 import useScrollPos from "~/hooks/useScrollPos";
 import { PAGES } from "~/utils/config";
@@ -57,18 +58,7 @@ export default function Navbar() {
           {showMenu && (
             <li className="flex w-full justify-between px-3 sm:hidden">
               <div className="flex gap-6">
-                {siteContent.contacts.map(({ label, href, icon: Icon }) => (
-                  <a
-                    key={label}
-                    id={label}
-                    href={href}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={label}
-                  >
-                    <Icon className="stroke-text-lo hover:fill-accent focus:fill-accent h-6 w-6 transition hover:-translate-y-0.5 focus:-translate-y-0.5" />
-                  </a>
-                ))}
+                <ContactLinks iconClassName="stroke-text-lo hover:fill-accent focus:fill-accent h-6 w-6 transition hover:-translate-y-0.5 focus:-translate-y-0.5" />
               </div>
               <a
                 className="hover:text-accent focus:text-accent font-mono text-xs tracking-wider transition hover:-translate-y-0.5 focus:-translate-y-0.5"
