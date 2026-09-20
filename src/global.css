@@ -21,27 +21,6 @@
   src: url("./assets/fonts/Calibre-Medium.ttf") format("truetype");
 }
 
-@font-face {
-  font-family: "Noto Sans JP";
-  font-style: normal;
-  font-weight: 400;
-  src: url("./assets/fonts/NotoSansJP-Regular.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "Noto Sans JP";
-  font-style: normal;
-  font-weight: 300;
-  src: url("./assets/fonts/NotoSansJP-Light.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "Noto Sans JP";
-  font-style: normal;
-  font-weight: 500;
-  src: url("./assets/fonts/NotoSansJP-Medium.ttf") format("truetype");
-}
-
 @theme {
   --color-bg-base: #09090b;
   --color-bg-grad-top: #0d0d11;

@@ -9,14 +9,14 @@ are demonstrably real. Per ticket 01.
 
 ## Build output (raw / gzip)
 
-| Asset | Raw | gzip |
-| --- | --- | --- |
+| Asset                                | Raw        | gzip     |
+| ------------------------------------ | ---------- | -------- |
 | `assets/App-*.js` (main scene chunk) | 1,855.0 kB | 592.7 kB |
 | `assets/iconBase-*.js` (react-icons) | 1,469.4 kB | 467.4 kB |
-| `assets/index-*.js` (entry/vendor) | 312.4 kB | 100.8 kB |
-| `assets/Index-*.js` (resume route) | 16.1 kB | 4.0 kB |
-| `assets/index-*.css` | 16.5 kB | 3.5 kB |
-| `dist/` total | ~22.8 MB | — |
+| `assets/index-*.js` (entry/vendor)   | 312.4 kB   | 100.8 kB |
+| `assets/Index-*.js` (resume route)   | 16.1 kB    | 4.0 kB   |
+| `assets/index-*.css`                 | 16.5 kB    | 3.5 kB   |
+| `dist/` total                        | ~22.8 MB   | —        |
 
 Heavy non-JS assets (not in the table above): three NotoSansJP TTFs at
 ~5,730 kB **each** (~17.2 MB total), Calibre TTFs ~62 kB each, `keyboard.gltf`
@@ -29,16 +29,16 @@ headless Chrome (`--headless=new --no-sandbox --disable-gpu`) — i.e. software
 WebGL. Absolute numbers are environment-specific and pessimistic; the value is
 the **before/after delta under identical flags**.
 
-| Metric | Value |
-| --- | --- |
-| Performance score | **0.28** |
-| First Contentful Paint | 4.4 s |
-| Largest Contentful Paint | 14.0 s |
-| Speed Index | 8.7 s |
-| Total Blocking Time | 159,090 ms |
-| Cumulative Layout Shift | 0 |
-| Time to Interactive | 176.7 s |
-| Total transfer weight | 2,205 kB |
+| Metric                   | Value      |
+| ------------------------ | ---------- |
+| Performance score        | **0.28**   |
+| First Contentful Paint   | 4.4 s      |
+| Largest Contentful Paint | 14.0 s     |
+| Speed Index              | 8.7 s      |
+| Total Blocking Time      | 159,090 ms |
+| Cumulative Layout Shift  | 0          |
+| Time to Interactive      | 176.7 s    |
+| Total transfer weight    | 2,205 kB   |
 
 Raw report: [`lighthouse-before.json`](./lighthouse-before.json)
 
@@ -60,20 +60,56 @@ npx lighthouse http://localhost:4174/ --quiet \
 - `leva` (0.9.34) ships in the prod bundle though dormant (perf spec: remove).
 - Main scene chunk 1.9 MB raw / 593 kB gzip (three + fiber + drei + postprocessing).
 
+## Post-performance note — ticket 12
+
+Captured 2026-09-20 with the same Vite build and Lighthouse flags as the
+before-baseline, using Lighthouse 13.4.1. The JP font payload is now one
+59.99 kB subsetted WOFF2,
+loaded only by the Japanese resume route. The three 5.5 MB JP TTF weights are
+no longer emitted.
+
+| Asset                               | Raw        | gzip     |
+| ----------------------------------- | ---------- | -------- |
+| `assets/App-*.js`                   | 1,393.8 kB | 387.0 kB |
+| `assets/index-*.js` (entry/vendor)  | 395.8 kB   | 124.4 kB |
+| `assets/Index-*.js` (resume route)  | 1,433.0 kB | 506.4 kB |
+| `assets/index-*.css`                | 34.3 kB    | 7.2 kB   |
+| `assets/NotoSansJP-Regular-*.woff2` | 60.0 kB    | 60.1 kB  |
+| `dist/` total                       | ~5.3 MB    | —        |
+
+Compared with the before-baseline, the JP font payload drops from ~17.2 MB to
+~60 kB, and the total dist output drops from ~22.8 MB to ~5.3 MB. Lighthouse
+transfer weight drops from 2,205 KiB to 1,591 KiB. The software-WebGL run is
+still environment-sensitive: performance score moved from 0.28 to 0.34,
+while Speed Index moved from 8.7 s to 14.3 s; no hard budget is claimed.
+
+| Metric                   | After      |
+| ------------------------ | ---------- |
+| Performance score        | **0.34**   |
+| First Contentful Paint   | 2.0 s      |
+| Largest Contentful Paint | 7.9 s      |
+| Speed Index              | 14.3 s     |
+| Total Blocking Time      | 140,630 ms |
+| Cumulative Layout Shift  | 0          |
+| Time to Interactive      | 150.1 s    |
+| Total transfer weight    | 1,591 KiB  |
+
+Raw report: [`lighthouse-after.json`](./lighthouse-after.json)
+
 ## Post-upgrade note — ticket 02 (dependency upgrade)
 
 Captured after the single-transaction bump (React 19, fiber v9, drei v10,
 three 0.185, @react-pdf/renderer 4, react-router 7). Bundle **shape** is
 unchanged (same chunk roles); sizes moved marginally:
 
-| Asset | Before (raw / gzip) | After (raw / gzip) |
-| --- | --- | --- |
-| `App-*.js` | 1,855.0 kB / 592.7 kB | 1,636.7 kB / 480.8 kB |
-| `iconBase-*.js` | 1,469.4 kB / 467.4 kB | 1,485.3 kB / 528.3 kB |
-| `index-*.js` (entry/vendor) | 312.4 kB / 100.8 kB | 406.0 kB / 129.3 kB |
-| `Index-*.js` (resume route) | 16.1 kB / 4.0 kB | 16.2 kB / 4.0 kB |
-| `index-*.css` | 16.5 kB / 3.5 kB | 16.4 kB / 3.5 kB |
-| `dist/` total | ~22.8 MB | ~22 MB |
+| Asset                       | Before (raw / gzip)   | After (raw / gzip)    |
+| --------------------------- | --------------------- | --------------------- |
+| `App-*.js`                  | 1,855.0 kB / 592.7 kB | 1,636.7 kB / 480.8 kB |
+| `iconBase-*.js`             | 1,469.4 kB / 467.4 kB | 1,485.3 kB / 528.3 kB |
+| `index-*.js` (entry/vendor) | 312.4 kB / 100.8 kB   | 406.0 kB / 129.3 kB   |
+| `Index-*.js` (resume route) | 16.1 kB / 4.0 kB      | 16.2 kB / 4.0 kB      |
+| `index-*.css`               | 16.5 kB / 3.5 kB      | 16.4 kB / 3.5 kB      |
+| `dist/` total               | ~22.8 MB              | ~22 MB                |
 
 No unexpected shape change, so no action item: the entry chunk grew ~29 kB
 gzip (fiber v9 + router v7 vendor code), the main scene chunk shrank ~112 kB

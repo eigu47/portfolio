@@ -1,5 +1,6 @@
 import React from "react";
 
+import { Font } from "@react-pdf/renderer";
 import { cleanup, render, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
@@ -124,6 +125,24 @@ describe("resume route seam", () => {
       "download",
       "EiguchiPablo.pdf",
     );
+    window.history.pushState({}, "", "/resume");
+  });
+
+  it("registers the subsetted font for the Japanese PDF", async () => {
+    window.history.pushState({}, "", "/resume?lang=ja");
+
+    render(
+      <MemoryRouter>
+        <Resume />
+      </MemoryRouter>,
+    );
+
+    await waitFor(() => {
+      expect(Font.getRegisteredFonts().notosans?.sources[0]?.src).toMatch(
+        /NotoSansJP-Regular\.woff2/,
+      );
+    });
+
     window.history.pushState({}, "", "/resume");
   });
 });

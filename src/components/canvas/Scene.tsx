@@ -37,6 +37,7 @@ export default function Scene() {
         data-scene-shell
         dpr={[1, 2]}
         frameloop="always"
+        performance={{ min: 0.5 }}
         shadows={quality > 0 ? "soft" : false}
       >
         <PerformanceMonitor

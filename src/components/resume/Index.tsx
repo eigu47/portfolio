@@ -40,7 +40,7 @@ export default function Resume() {
   useEffect(() => {
     if (locale !== "ja" || japaneseFontReady) return;
 
-    void import("~/assets/fonts/NotoSansJP-Regular.ttf").then(
+    void import("~/assets/fonts/NotoSansJP-Regular.woff2").then(
       ({ default: src }) => {
         Font.register({
           family: "notosans",

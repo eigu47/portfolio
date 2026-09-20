@@ -11,6 +11,7 @@ export default tseslint.config(
       "dist/**",
       "node_modules/**",
       "src/.env.d.ts",
+      "scripts/**",
       "eslint.config.js",
       "**/*.{config,conf}.*",
     ],
