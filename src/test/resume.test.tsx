@@ -58,6 +58,9 @@ describe("resume route seam", () => {
       "location",
     ]);
     expect(content.contact.location.text).toBe("横浜、日本");
+    expect(resumeContent.en.contact.location.text).toBe("Yokohama, Japan");
+    expect(resumeContent.en.summary).toContain("based in Yokohama");
+    expect(resumeContent.ja.summary).toContain("横浜を拠点");
     expect(content.languages.japanese).toMatchObject({
       level: 3,
       levelLabel: "上級",
@@ -67,6 +70,16 @@ describe("resume route seam", () => {
         Number.isInteger(level),
       ),
     ).toBe(true);
+  });
+
+  it("keeps backend skills current in both locales", () => {
+    for (const content of [resumeContent.en, resumeContent.ja]) {
+      expect(content.skills).toMatchObject({
+        node: "Node.js",
+        express: "Express",
+        golang: "Golang",
+      });
+    }
   });
 
   it("exposes the English download and locale toggle", () => {

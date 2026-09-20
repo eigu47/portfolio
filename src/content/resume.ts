@@ -60,7 +60,7 @@ const en = {
   name: "Eiguchi Pablo Martín",
   role: "Web Developer",
   summary:
-    "I am a Japanese-Argentinian web developer based in Kawasaki with a strong passion for coding and continuous learning. I started my programming journey in early 2022 and have since completed several Udemy courses covering HTML/CSS/Javascript, React.js, TypeScript, Next.js, React Native, and Three.js. Additionally, I completed the Harvard University online course CS50 Introduction to Computer Science. My language skills include JLPT 2 proficiency in Japanese, an English TOEIC score of 840, and native Spanish fluency. I love learning new technologies to improve my skills and staying current with industry trends.",
+    "I am a Japanese-Argentinian web developer based in Yokohama with a strong passion for coding and continuous learning. I started my programming journey in early 2022 and have since completed several Udemy courses covering HTML/CSS/Javascript, React.js, TypeScript, Next.js, React Native, and Three.js. Additionally, I completed the Harvard University online course CS50 Introduction to Computer Science. My language skills include JLPT 2 proficiency in Japanese, an English TOEIC score of 840, and native Spanish fluency. I love learning new technologies to improve my skills and staying current with industry trends.",
   contact: {
     phone: {
       text: "(+81) 070-4325-1645",
@@ -79,7 +79,7 @@ const en = {
         "M16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 01-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2 0-.68.06-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.923 7.923 0 019.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8.008 8.008 0 015.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.65 15.65 0 00-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0010 10 10 10 0 0010-10A10 10 0 0012 2z",
     },
     location: {
-      text: "Kawasaki, Japan",
+      text: "Yokohama, Japan",
       svgPath:
         "M12 11.5A2.5 2.5 0 019.5 9 2.5 2.5 0 0112 6.5 2.5 2.5 0 0114.5 9a2.5 2.5 0 01-2.5 2.5M12 2a7 7 0 00-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 00-7-7z",
     },
@@ -107,6 +107,8 @@ const en = {
     redux: "Redux",
     three: "Three.js",
     node: "Node.js",
+    express: "Express",
+    golang: "Golang",
   },
   languages: {
     spanish: { title: "Spanish", level: 5, levelLabel: "Native" },
@@ -151,7 +153,7 @@ const ja = {
   name: "栄口 パブロ マルティン",
   role: "WEB開発者",
   summary:
-    "川崎を拠点に活動する日系アルゼンチン人のウェブ開発者です。\nコーディングと継続的な学習に強い情熱を持っています。\n2022年初めにプログラミングを始め、\nHTML/CSS/JavaScript、React.js、TypeScript、\nNext.js、React Native、Three.jsのUdemy講座を修了しました。\nまた、ハーバード大学のオンライン講座\nCS50 Introduction to Computer Scienceも修了しています。\n日本語能力試験N2、TOEIC 840点、\n母語のスペイン語を含む語学力を活かし、\n常に新しい技術を学んでいます。",
+    "横浜を拠点に活動する日系アルゼンチン人のウェブ開発者です。\nコーディングと継続的な学習に強い情熱を持っています。\n2022年初めにプログラミングを始め、\nHTML/CSS/JavaScript、React.js、TypeScript、\nNext.js、React Native、Three.jsのUdemy講座を修了しました。\nまた、ハーバード大学のオンライン講座\nCS50 Introduction to Computer Scienceも修了しています。\n日本語能力試験N2、TOEIC 840点、\n母語のスペイン語を含む語学力を活かし、\n常に新しい技術を学んでいます。",
   contact: {
     ...en.contact,
     location: { ...en.contact.location, text: "横浜、日本" },

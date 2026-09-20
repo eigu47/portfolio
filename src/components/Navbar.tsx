@@ -30,7 +30,7 @@ export default function Navbar() {
           {PAGES.map(({ id, href }, i) => (
             <li key={i} className="relative flex gap-10 first:grow">
               <a
-                className={`after:bg-accent hover:text-text-hi relative p-3 capitalize after:absolute after:right-1/2 after:bottom-1 after:h-[2px] after:w-4/6 after:origin-center after:translate-x-1/2 after:scale-x-0 after:transition hover:after:scale-x-100 ${
+                className={`after:bg-accent hover:text-text-hi relative p-3 after:absolute after:right-1/2 after:bottom-1 after:h-[2px] after:w-4/6 after:origin-center after:translate-x-1/2 after:scale-x-0 after:transition hover:after:scale-x-100 ${
                   scrollPage === i ? "after:scale-x-100" : ""
                 }`}
                 href={href}
@@ -54,31 +54,32 @@ export default function Navbar() {
             </li>
           ))}
 
-          <li className="flex w-full justify-between px-3 sm:hidden">
-            <div className="flex gap-6">
-              {siteContent.contacts.map(({ label, href, icon: Icon }) => (
-                <a
-                  key={label}
-                  id={label}
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={label}
-                >
-                  <Icon className="stroke-text-lo hover:fill-accent focus:fill-accent h-6 w-6 transition hover:-translate-y-0.5 focus:-translate-y-0.5" />
-                </a>
-              ))}
-            </div>
-            <a
-              // className="text-text-lo hover:text-accent transition-colors"
-              className="hover:text-accent focus:text-accent font-mono text-xs tracking-wider transition hover:-translate-y-0.5 focus:-translate-y-0.5"
-
-              href={siteContent.mail.href}
-              onClick={() => setShowMenu(false)}
-            >
-              {siteContent.mail.label}
-            </a>
-          </li>
+          {showMenu && (
+            <li className="flex w-full justify-between px-3 sm:hidden">
+              <div className="flex gap-6">
+                {siteContent.contacts.map(({ label, href, icon: Icon }) => (
+                  <a
+                    key={label}
+                    id={label}
+                    href={href}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={label}
+                  >
+                    <Icon className="stroke-text-lo hover:fill-accent focus:fill-accent h-6 w-6 transition hover:-translate-y-0.5 focus:-translate-y-0.5" />
+                  </a>
+                ))}
+              </div>
+              <a
+                className="hover:text-accent focus:text-accent font-mono text-xs tracking-wider transition hover:-translate-y-0.5 focus:-translate-y-0.5"
+                href={siteContent.mail.href}
+                aria-label="Email"
+                onClick={() => setShowMenu(false)}
+              >
+                {siteContent.mail.label}
+              </a>
+            </li>
+          )}
         </ul>
       </nav>
 

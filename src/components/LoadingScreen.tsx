@@ -51,7 +51,7 @@ export default function LoadingScreen() {
       data-loading-overlay
       data-loading-phase={phase}
       role="status"
-      aria-label="Loading portfolio"
+      aria-label="loading portfolio"
       aria-live="polite"
     >
       <div className="flex w-3xs flex-col items-center">
@@ -64,7 +64,7 @@ export default function LoadingScreen() {
         <div
           className="bg-hairline h-0.5 w-full overflow-hidden rounded-full"
           role="progressbar"
-          aria-label="Loading assets"
+          aria-label="loading assets"
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={displayedPercentage.current}

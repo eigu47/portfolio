@@ -4,10 +4,19 @@
 
 **Blocked by:** 07 — Loading experience; 10 — JP PDF + locale toggle; 11 — Mobile behaviour.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Loader + fallback copy reads confident-minimal
-- [ ] Nav labels lowercase everywhere
-- [ ] Yokohama correct in resume contact row and all metadata
-- [ ] Backend stack present in resume skills (both locales)
-- [ ] No existing copy rewritten beyond the above; tests green; build clean
+- [x] Loader + fallback copy reads confident-minimal
+- [x] Nav labels lowercase everywhere
+- [x] Yokohama correct in resume contact row and all metadata
+- [x] Backend stack present in resume skills (both locales)
+- [x] No existing copy rewritten beyond the above; tests green; build clean
+
+## Notes
+
+- Loader and static fallback labels now use concise lowercase copy, with a direct
+  fallback message for reduced-motion and WebGL-unavailable visits.
+- Navigation no longer applies title casing; the closed mobile menu removes its
+  contact links from the DOM.
+- Resume and social metadata now use Yokohama, and the English backend skills
+  are inherited by the Japanese locale alongside Node.js.

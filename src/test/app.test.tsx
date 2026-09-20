@@ -43,6 +43,7 @@ describe("root app seam (WebGL stubbed)", () => {
     for (const name of ["hello", "about", "projects", "contact", "resume"]) {
       expect(getByRole("link", { name })).toBeInTheDocument();
     }
+    expect(getByRole("link", { name: "about" })).not.toHaveClass("capitalize");
     expect(document.querySelector("nav")).toHaveClass(
       "backdrop-blur-md",
       "shadow-chrome",
@@ -162,10 +163,10 @@ describe("root app seam (WebGL stubbed)", () => {
     const { getByRole } = renderApp();
 
     expect(
-      getByRole("status", { name: "Loading portfolio" }),
+      getByRole("status", { name: "loading portfolio" }),
     ).toBeInTheDocument();
     expect(
-      getByRole("progressbar", { name: "Loading assets" }),
+      getByRole("progressbar", { name: "loading assets" }),
     ).toHaveAttribute("aria-valuemax", "100");
 
     void act(() => {
@@ -186,7 +187,7 @@ describe("root app seam (WebGL stubbed)", () => {
     const { getByRole } = renderApp();
 
     expect(
-      getByRole("progressbar", { name: "Loading assets" }),
+      getByRole("progressbar", { name: "loading assets" }),
     ).toHaveAttribute("aria-valuenow", "25");
   });
 
@@ -197,7 +198,7 @@ describe("root app seam (WebGL stubbed)", () => {
       drei.useProgress.setState({ active: true, progress: 40 });
     });
     expect(
-      getByRole("progressbar", { name: "Loading assets" }),
+      getByRole("progressbar", { name: "loading assets" }),
     ).toHaveAttribute("aria-valuenow", "40");
 
     act(() => {
@@ -205,7 +206,7 @@ describe("root app seam (WebGL stubbed)", () => {
     });
 
     expect(
-      getByRole("progressbar", { name: "Loading assets" }),
+      getByRole("progressbar", { name: "loading assets" }),
     ).toHaveAttribute("aria-valuenow", "40");
   });
 });
@@ -224,7 +225,10 @@ describe("root app seam (WebGL unavailable)", () => {
     expect(getError()).toBeNull();
     expect(container.querySelector("canvas")).not.toBeInTheDocument();
     expect(container.querySelector("main")).toBeInTheDocument();
-    expect(container.textContent).toContain("Selected work");
+    expect(container.textContent).toContain("selected work");
+    expect(container.textContent).toContain(
+      "the scene is off. the work is here.",
+    );
     expect(
       within(container).getByRole("link", { name: "Playpool" }),
     ).toHaveAttribute("href", "https://playpool.vercel.app/");

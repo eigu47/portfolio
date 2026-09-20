@@ -34,6 +34,9 @@ export default function StaticPage({ onRetry }: { onRetry?: () => void }) {
             <p className="mt-10 text-xl leading-[1.35] whitespace-pre-line">
               {siteContent.about}
             </p>
+            <p className="text-text-lo mt-6 font-mono text-sm tracking-wide">
+              the scene is off. the work is here.
+            </p>
           </div>
           <section
             id="projects"
@@ -45,7 +48,7 @@ export default function StaticPage({ onRetry }: { onRetry?: () => void }) {
                 id="static-projects"
                 className="text-text-hi text-[clamp(1.875rem,3vw,3rem)] font-light tracking-tighter"
               >
-                Selected work
+                selected work
               </h2>
             </div>
             <ul className="list-none">
@@ -84,7 +87,7 @@ export default function StaticPage({ onRetry }: { onRetry?: () => void }) {
       </main>
       {onRetry && (
         <button className="text-accent mx-auto mb-8 block" onClick={onRetry}>
-          Try again
+          retry
         </button>
       )}
       <footer
