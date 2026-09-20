@@ -77,6 +77,23 @@ describe("device tilt", () => {
     expect(value.y).toBeCloseTo(0.5, 1);
   });
 
+  it("recenters on a later keyboard tap and uses the latest pose as neutral", async () => {
+    const user = userEvent.setup();
+    render(<TiltHarness />);
+
+    await user.click(screen.getByRole("button", { name: "Keyboard" }));
+    await dispatchOrientation(0, 0);
+    await dispatchOrientation(15, -15);
+    expect(getTiltValue().x).toBeCloseTo(0.5, 1);
+
+    await user.click(screen.getByRole("button", { name: "Keyboard" }));
+    expect(getTiltValue()).toEqual({ x: 0, y: 0 });
+
+    await dispatchOrientation(20, -20);
+    expect(getTiltValue().x).toBeCloseTo(1 / 6, 1);
+    expect(getTiltValue().y).toBeCloseTo(1 / 6, 1);
+  });
+
   it("keeps Android's forward-pitch Euler jump on the vertical axis", async () => {
     const user = userEvent.setup();
     render(<TiltHarness />);
@@ -121,7 +138,7 @@ describe("device tilt", () => {
     let permission: "denied" | "granted" = "denied";
     Object.defineProperty(window.DeviceOrientationEvent, "requestPermission", {
       configurable: true,
-      value: async () => permission,
+      value: () => Promise.resolve(permission),
     });
     const user = userEvent.setup();
     render(<TiltHarness />);

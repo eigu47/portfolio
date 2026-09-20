@@ -5,9 +5,8 @@ import { useFrame } from "@react-three/fiber";
 import type * as THREE from "three";
 import { Quaternion, Vector3 } from "three";
 
-import { getCameraParallax } from "~/components/canvas/cameraParallax";
-import type { TiltResponse } from "~/components/canvas/cameraParallax";
 import { usePage } from "~/components/canvas/Page";
+import { getCameraParallax, type TiltResponse } from "~/hooks/useDeviceTilt";
 import useScrollPos from "~/hooks/useScrollPos";
 import { useDebugStore } from "~/utils/debugStore";
 
@@ -63,7 +62,7 @@ export default function Camera({
       .addScaledVector(cameraRight, cameraParallax.x)
       .addScaledVector(cameraUp, cameraParallax.y);
     groupRef.current.worldToLocal(cameraWorldPosition);
-    camera.position.lerp(cameraWorldPosition, delta * 5.6);
+    camera.position.lerp(cameraWorldPosition, Math.min(1, delta * 5.6));
   });
 
   return (
