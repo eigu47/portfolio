@@ -3,8 +3,9 @@ import { useRef } from "react";
 import { PerspectiveCamera } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import type * as THREE from "three";
-import { Vector3 } from "three";
+import { Quaternion, Vector3 } from "three";
 
+import { getCameraParallax } from "~/components/canvas/cameraParallax";
 import { usePage } from "~/components/canvas/Page";
 import useScrollPos from "~/hooks/useScrollPos";
 import { useDebugStore } from "~/utils/debugStore";
@@ -13,6 +14,12 @@ const position = new Vector3();
 const rotation = new Vector3();
 const rotationLerp = new Vector3();
 const lookAt = new Vector3();
+const cameraBasePosition = new Vector3(0, 0, 5);
+const cameraWorldPosition = new Vector3();
+const cameraParallax = new Vector3();
+const cameraRight = new Vector3();
+const cameraUp = new Vector3();
+const cameraQuaternion = new Quaternion();
 
 export default function Camera({
   tilt = { x: 0, y: 0 },
@@ -38,6 +45,18 @@ export default function Camera({
         delta * 5.6,
       ),
     );
+
+    // Convert the normalized response from the camera's rendered axes into its parent space.
+    camera.getWorldQuaternion(cameraQuaternion);
+    groupRef.current.localToWorld(cameraWorldPosition.copy(cameraBasePosition));
+    cameraRight.set(1, 0, 0).applyQuaternion(cameraQuaternion);
+    cameraUp.set(0, 1, 0).applyQuaternion(cameraQuaternion);
+    getCameraParallax(tilt, cameraParallax);
+    cameraWorldPosition
+      .addScaledVector(cameraRight, cameraParallax.x)
+      .addScaledVector(cameraUp, cameraParallax.y);
+    groupRef.current.worldToLocal(cameraWorldPosition);
+    camera.position.lerp(cameraWorldPosition, delta * 5.6);
 
     rotation.lerpVectors(rotFrom, rotTo, scrollPos - scrollPage);
 
