@@ -2,7 +2,7 @@ import { lazy, Suspense, useRef, useState } from "react";
 
 import { PerformanceMonitor, Preload, useDetectGPU } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { EffectComposer, Bloom } from "@react-three/postprocessing";
+import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import type * as THREE from "three";
 
 import About from "~/components/canvas/About";
@@ -50,7 +50,13 @@ export default function Scene() {
         <Suspense fallback={<Hero />}>
           <Page page={0}>
             <Hero />
-            <Keyboard cableRef={cableRef} />
+            <Keyboard
+              cableRef={cableRef}
+              onClick={(event) => {
+                event.stopPropagation();
+                void tilt.enable();
+              }}
+            />
             <Cable cableRef={cableRef} />
           </Page>
 
@@ -89,25 +95,6 @@ export default function Scene() {
         <Suspense fallback={null}>
           <DebugPanel />
         </Suspense>
-      )}
-      {tilt.supported && !tilt.dismissed && (
-        <div className="fixed right-4 bottom-5 z-[3] flex items-center gap-2 rounded-full border border-[var(--color-hairline)] bg-[rgba(9,9,11,0.78)] px-3 py-2 text-xs backdrop-blur-md sm:right-6 sm:bottom-6">
-          <button
-            className="text-accent"
-            onClick={() => void tilt.enable()}
-            type="button"
-          >
-            Enable tilt
-          </button>
-          <button
-            aria-label="Dismiss tilt control"
-            className="text-text-faint hover:text-text-hi"
-            onClick={tilt.dismiss}
-            type="button"
-          >
-            ×
-          </button>
-        </div>
       )}
     </>
   );

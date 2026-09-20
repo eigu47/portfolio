@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import {
   Document,
   Font,
-  BlobProvider,
   Page,
   PDFDownloadLink,
   PDFViewer,
@@ -67,8 +66,8 @@ export default function Resume() {
   };
 
   return (
-    <div className="bg-bg-base text-text-lo min-h-screen pt-16">
-      <header className="border-hairline shadow-chrome fixed top-0 z-10 w-full border-b bg-[rgba(9,9,11,0.7)] backdrop-blur-[12px] backdrop-blur-md">
+    <div className="bg-bg-base text-text-lo flex min-h-dvh pt-16">
+      <header className="border-hairline shadow-chrome fixed top-0 z-10 w-full border-b bg-[rgba(9,9,11,0.7)] backdrop-blur-md">
         <nav
           aria-label="Resume actions"
           className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8"
@@ -86,7 +85,7 @@ export default function Resume() {
               aria-pressed={locale === "ja"}
               aria-label={locale === "ja" ? "English PDF" : "日本語 PDF"}
               onClick={switchLocale}
-              className="border-hairline bg-surface text-text-faint hover:border-accent space-between relative flex h-8 w-[4.5rem] items-center overflow-hidden rounded-full border p-1 text-[0.65rem] font-medium tracking-wide transition-colors"
+              className="border-hairline bg-surface text-text-faint hover:border-accent space-between relative flex h-8 w-18 items-center overflow-hidden rounded-full border p-1 text-xs font-medium tracking-wide transition-colors"
             >
               <span
                 className={`relative top-0.5 z-10 flex h-6 w-full items-center justify-center text-center ${
@@ -119,11 +118,12 @@ export default function Resume() {
                   ? "EiguchiPablo-ja.pdf"
                   : "EiguchiPablo.pdf"
               }
-              className="bg-accent text-bg-base hover:bg-text-hi inline-flex h-10 w-48 shrink-0 items-center justify-center gap-2 rounded-full font-medium whitespace-nowrap transition-colors"
+              className="bg-accent text-bg-base hover:bg-text-hi inline-flex h-10 w-40 shrink-0 items-center justify-center gap-2 rounded-full font-medium whitespace-nowrap transition-colors"
             >
               <HiOutlineDownload aria-hidden="true" />
               <span
                 className={`pt-1 ${documentLocale === "ja" ? "text-sm" : ""}`}
+                style={{ fontSize: 16 * getFontScale(locale) }}
               >
                 {documentLocale === "ja" ? "PDFをダウンロード" : "Download PDF"}
               </span>
@@ -141,25 +141,18 @@ export default function Resume() {
         </nav>
       </header>
 
-      <main className="mx-auto flex min-h-[calc(100dvh-4rem)] w-full max-w-7xl justify-center px-2 py-4 sm:px-6 sm:py-8 lg:px-8">
-        <BlobProvider
-          document={
+      <main className="mx-auto flex min-h-full w-full max-w-7xl justify-center px-2 py-4 sm:px-6 sm:py-8 lg:px-8">
+        {documentLocale === "en" ? (
+          <iframe
+            className="w-full"
+            title="Resume PDF"
+            src="/EiguchiPablo.pdf"
+          />
+        ) : (
+          <PDFViewer className="min-h-0 w-full" showToolbar>
             <MyDocument content={documentContent} locale={documentLocale} />
-          }
-        >
-          {({ url }) => (
-            <>
-              <iframe
-                className="h-[calc(100dvh-6rem)] w-full sm:hidden"
-                title="Resume PDF"
-                src={url ?? undefined}
-              />
-              <PDFViewer className="hidden min-h-0 w-full sm:block" showToolbar>
-                <MyDocument content={documentContent} locale={documentLocale} />
-              </PDFViewer>
-            </>
-          )}
-        </BlobProvider>
+          </PDFViewer>
+        )}
       </main>
     </div>
   );
@@ -181,7 +174,7 @@ export function MyDocument({
   content: ResumeContent;
   locale: Locale;
 }) {
-  const fontScale = locale == "ja" ? 5 / 6 : 1;
+  const fontScale = getFontScale(locale);
 
   return (
     <Document title="Eiguchi Pablo Martin.pdf" author="Eiguchi Pablo Martin">
@@ -277,4 +270,8 @@ export function Section({
       {children}
     </View>
   );
+}
+
+function getFontScale(locale: string) {
+  return locale == "ja" ? 5 / 6 : 1;
 }

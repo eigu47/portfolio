@@ -77,9 +77,9 @@
 }
 
 html {
-  @apply snap-y snap-proximity scroll-smooth;
+  @apply snap-y snap-mandatory scroll-smooth;
   overflow: overlay;
-  scroll-snap-type: y proximity;
+  scroll-snap-type: y mandatory;
   background: var(--color-bg-base);
   scrollbar-width: thin;
 }
@@ -95,7 +95,7 @@ html.static-mode * {
 }
 
 body {
-  @apply bg-bg-base text-text-lo min-h-screen;
+  @apply bg-bg-base text-text-lo min-h-dvh;
   overflow-x: clip;
   background-color: var(--color-bg-base);
   background-image: var(--page-background);
@@ -130,7 +130,7 @@ body:not(:has([data-loading-overlay])) [data-scene-shell] {
 }
 
 .noscript-page {
-  min-height: 100vh;
+  min-height: 100dvh;
   padding: 6rem 1.5rem;
   color: var(--color-text-lo);
   background: var(--color-bg-base);

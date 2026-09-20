@@ -23,7 +23,7 @@ export default function Navbar() {
         }`}
       >
         <ul
-          className={`container mx-auto my-6 flex flex-col items-center gap-10 px-4 duration-200 sm:translate-y-0 sm:flex-row sm:px-6 sm:transition-none lg:px-8 ${
+          className={`container mx-auto my-6 flex flex-col items-center gap-6 px-4 duration-200 sm:translate-y-0 sm:flex-row sm:gap-10 sm:px-6 sm:transition-none lg:px-8 ${
             showMenu ? "" : "-translate-y-[56px]"
           }`}
         >
@@ -36,7 +36,6 @@ export default function Navbar() {
                 href={href}
                 rel="noreferrer"
                 onClick={() => setShowMenu(false)}
-                // id={id || "home"}
               >
                 {i === 0 ? "hello" : id}
               </a>
@@ -54,41 +53,37 @@ export default function Navbar() {
               )}
             </li>
           ))}
+
+          <li className="flex w-full justify-between px-3 sm:hidden">
+            <div className="flex gap-6">
+              {siteContent.contacts.map(({ label, href, icon: Icon }) => (
+                <a
+                  key={label}
+                  id={label}
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={label}
+                >
+                  <Icon className="stroke-text-lo hover:fill-accent focus:fill-accent h-6 w-6 transition hover:-translate-y-0.5 focus:-translate-y-0.5" />
+                </a>
+              ))}
+            </div>
+            <a
+              // className="text-text-lo hover:text-accent transition-colors"
+              className="hover:text-accent focus:text-accent font-mono text-xs tracking-wider transition hover:-translate-y-0.5 focus:-translate-y-0.5"
+
+              href={siteContent.mail.href}
+              onClick={() => setShowMenu(false)}
+            >
+              {siteContent.mail.label}
+            </a>
+          </li>
         </ul>
       </nav>
 
-      {showMenu && (
-        <div className="border-hairline bg-bg-base/95 fixed inset-x-0 top-16 z-[9] flex flex-col gap-4 border-b px-6 py-5 backdrop-blur-md sm:hidden">
-          <span className="text-text-faint font-mono text-xs tracking-[0.14em] uppercase">
-            Find me
-          </span>
-          <div className="flex items-center gap-5">
-            {siteContent.contacts.map(({ label, href, icon: Icon }) => (
-              <a
-                key={label}
-                href={href}
-                target="_blank"
-                rel="noreferrer"
-                className="text-text-lo hover:text-accent inline-flex items-center gap-2 transition-colors"
-                onClick={() => setShowMenu(false)}
-              >
-                <Icon aria-hidden="true" className="h-5 w-5" />
-                {label}
-              </a>
-            ))}
-            <a
-              href={siteContent.mail.href}
-              className="text-text-lo hover:text-accent transition-colors"
-              onClick={() => setShowMenu(false)}
-            >
-              Email
-            </a>
-          </div>
-        </div>
-      )}
-
       <button
-        className="fixed top-0 right-2 z-10 p-3 sm:hidden"
+        className="fixed top-0 right-2 z-[12] p-3 sm:hidden"
         aria-label={showMenu ? "Close menu" : "Open menu"}
         onClick={() => setShowMenu((state) => !state)}
       >

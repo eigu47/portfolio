@@ -5,12 +5,10 @@ import LoadingScreen from "~/components/LoadingScreen";
 import Navbar from "~/components/Navbar";
 import StaticPage from "~/components/StaticPage";
 import { siteContent } from "~/content";
-import useViewportHeight from "~/hooks/useViewportHeight";
 import { PAGES } from "~/utils/config";
 
 export default function App() {
   const staticMode = shouldUseStaticPage();
-  useViewportHeight();
 
   if (staticMode) return <StaticPage />;
 
@@ -47,8 +45,7 @@ export default function App() {
           <section
             key={id}
             id={id}
-            className="w-full snap-start snap-always"
-            style={{ height: "var(--app-vh, 100dvh)" }}
+            className="h-dvh w-full snap-start snap-always"
           />
         ))}
       </main>

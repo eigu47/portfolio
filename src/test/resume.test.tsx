@@ -25,8 +25,6 @@ vi.mock("@react-pdf/renderer", async (importOriginal) => {
       showToolbar: _showToolbar,
       ...props
     }: PdfProps) => React.createElement("div", props),
-    BlobProvider: ({ children }: BlobProps) =>
-      children({ url: "#resume-blob", loading: false, error: null }),
   };
 });
 
@@ -39,14 +37,6 @@ type PdfProps = {
   fileName?: string;
   showToolbar?: boolean;
   [key: string]: unknown;
-};
-
-type BlobProps = {
-  children: (state: {
-    url: string;
-    loading: boolean;
-    error: Error | null;
-  }) => React.ReactNode;
 };
 
 afterEach(cleanup);
@@ -88,7 +78,10 @@ describe("resume route seam", () => {
     expect(
       getByRole("navigation", { name: "Resume actions" }),
     ).toBeInTheDocument();
-    expect(getByTitle("Resume PDF")).toHaveAttribute("src", "#resume-blob");
+    expect(getByTitle("Resume PDF")).toHaveAttribute(
+      "src",
+      "/EiguchiPablo.pdf",
+    );
     expect(getByRole("link", { name: /Download PDF/ })).toHaveAttribute(
       "download",
       "EiguchiPablo.pdf",

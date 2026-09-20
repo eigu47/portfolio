@@ -34,7 +34,7 @@ export default function Camera({
     const target = scrollDown ? position : groupRef.current.position;
     camera.lookAt(
       lookAt.lerp(
-        target.clone().add({ x: tilt.x * 0.2, y: tilt.y * 0.2, z: 0 }),
+        target.clone().add({ x: tilt.x * 0.75, y: tilt.y * 0.75, z: 0 }),
         delta * 5.6,
       ),
     );
