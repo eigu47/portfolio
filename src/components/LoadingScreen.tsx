@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useProgress } from "@react-three/drei";
 
@@ -8,10 +8,14 @@ const EXIT_DURATION_MS = 500;
 
 export default function LoadingScreen() {
   const { active, progress } = useProgress();
+  const percentage = Number.isFinite(progress)
+    ? Math.round(Math.min(100, Math.max(0, progress)))
+    : 0;
   const [startedAt] = useState(() => Date.now());
   const [phase, setPhase] = useState<"visible" | "exiting" | "hidden">(
     "visible",
   );
+  const displayedPercentage = useRef(percentage);
 
   useEffect(() => {
     if (active || progress < 100) return;
@@ -32,14 +36,17 @@ export default function LoadingScreen() {
     };
   }, [active, progress, startedAt]);
 
-  if (phase === "hidden") return null;
+  displayedPercentage.current = Math.max(
+    displayedPercentage.current,
+    percentage,
+  );
 
-  const percentage = Math.min(100, Math.max(0, Math.round(progress)));
+  if (phase === "hidden") return null;
 
   return (
     <div
       className={`bg-bg-base fixed inset-0 z-40 grid place-items-center [background-image:var(--page-background)] opacity-100 transition-[opacity,filter] duration-700 ease-in ${
-        phase === "exiting" ? "pointer-events-none opacity-0 blur-[10px]" : ""
+        phase === "exiting" ? "pointer-events-none opacity-0 blur-md" : ""
       }`}
       data-loading-overlay
       data-loading-phase={phase}
@@ -47,7 +54,7 @@ export default function LoadingScreen() {
       aria-label="Loading portfolio"
       aria-live="polite"
     >
-      <div className="flex w-[min(220px,calc(100vw-3rem))] flex-col items-center">
+      <div className="flex w-3xs flex-col items-center">
         <p
           className="text-text-hi mb-8 flex items-center font-mono text-6xl leading-none font-medium tracking-[-0.02em]"
           aria-hidden="true"
@@ -60,15 +67,15 @@ export default function LoadingScreen() {
           aria-label="Loading assets"
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-valuenow={percentage}
+          aria-valuenow={displayedPercentage.current}
         >
           <span
             className="to-accent block h-full rounded-full bg-gradient-to-r from-[rgba(52,211,153,0.5)] shadow-[0_0_12px_var(--color-accent-glow)] transition-[width] duration-[350ms] ease-out"
-            style={{ width: `${percentage}%` }}
+            style={{ width: `${displayedPercentage.current}%` }}
           />
         </div>
-        <p className="text-text-lo mt-4 self-end font-mono text-[13px] tracking-[0.15em] [font-variant-numeric:tabular-nums]">
-          loading {percentage}%
+        <p className="text-text-lo mt-4 self-end font-mono text-sm tracking-[0.15em] [font-variant-numeric:tabular-nums]">
+          loading {displayedPercentage.current}%
         </p>
       </div>
     </div>

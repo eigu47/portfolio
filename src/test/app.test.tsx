@@ -173,6 +173,41 @@ describe("root app seam (WebGL stubbed)", () => {
     });
     expect(document.querySelector('[role="status"]')).not.toBeInTheDocument();
   });
+
+  it("rounds the displayed loading progress", () => {
+    vi.spyOn(drei, "useProgress").mockReturnValue({
+      active: true,
+      errors: [],
+      item: "asset.glb",
+      loaded: 1,
+      progress: 25.4,
+      total: 4,
+    });
+    const { getByRole } = renderApp();
+
+    expect(
+      getByRole("progressbar", { name: "Loading assets" }),
+    ).toHaveAttribute("aria-valuenow", "25");
+  });
+
+  it("does not move backward when the loading manager starts another batch", () => {
+    const { getByRole } = renderApp();
+
+    act(() => {
+      drei.useProgress.setState({ active: true, progress: 40 });
+    });
+    expect(
+      getByRole("progressbar", { name: "Loading assets" }),
+    ).toHaveAttribute("aria-valuenow", "40");
+
+    act(() => {
+      drei.useProgress.setState({ active: true, progress: 0 });
+    });
+
+    expect(
+      getByRole("progressbar", { name: "Loading assets" }),
+    ).toHaveAttribute("aria-valuenow", "40");
+  });
 });
 
 describe("root app seam (WebGL unavailable)", () => {
