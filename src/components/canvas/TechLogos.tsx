@@ -1,14 +1,8 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import {
-  Center,
-  Decal,
-  Float,
-  Html,
-  Icosahedron,
-  useTexture,
-} from "@react-three/drei";
+import { Decal, Float, Html, Icosahedron, useTexture } from "@react-three/drei";
 import { type ThreeElements } from "@react-three/fiber";
+import { CanvasTexture, SRGBColorSpace } from "three";
 
 import {
   html,
@@ -27,9 +21,10 @@ export default function TechLogos() {
   const { mobile, width, height } = useViewport();
 
   const gap = (width * 0.8) / LOGOS.length;
+  const groupOffset = (-gap * (LOGOS.length - 1)) / 2;
 
   return (
-    <Center position={[0, -height * 0.25, 0]} disableZ disableY>
+    <group position={[groupOffset, -height * 0.2, 0]}>
       {LOGOS.map((ball, i) => (
         <Ball
           key={ball.name}
@@ -43,7 +38,7 @@ export default function TechLogos() {
           last={i === LOGOS.length - 1}
         />
       ))}
-    </Center>
+    </group>
   );
 }
 
@@ -56,10 +51,30 @@ function Ball({
   last: boolean;
 } & ThreeElements["group"]) {
   const debugOn = useDebugStore((state) => state.debugOn);
-  const texture = useTexture(src);
   const debug = useDebug();
   const [showModal, setModal] = useState(false);
   const { mobile } = useViewport();
+  const textureSrc = useTexture(src);
+  const texture = useMemo(() => {
+    const image = textureSrc.image as HTMLImageElement;
+    const canvas = document.createElement("canvas");
+    canvas.width = image.naturalWidth || image.width;
+    canvas.height = image.naturalHeight || image.height;
+
+    const context = canvas.getContext("2d");
+    if (!context) return textureSrc;
+
+    context.drawImage(image, 0, 0);
+    const nextTexture = new CanvasTexture(canvas);
+    nextTexture.colorSpace = SRGBColorSpace;
+    return nextTexture;
+  }, [textureSrc]);
+
+  useEffect(() => {
+    if (texture !== textureSrc) {
+      return () => texture.dispose();
+    }
+  }, [texture, textureSrc]);
 
   return (
     <group {...props} {...debug}>
@@ -77,10 +92,18 @@ function Ball({
             map={texture}
             position={[0, 0, 1]}
             rotation={[Math.PI * 2, 0, 0]}
-            scale={1.2 * scale}
+            scale={[scale, scale, 0.8]}
             debug={debugOn}
-            // flatShading
-          />
+          >
+            <meshBasicMaterial
+              map={texture}
+              alphaTest={0.01}
+              depthTest={false}
+              depthWrite={false}
+              toneMapped={false}
+              transparent
+            />
+          </Decal>
         </Icosahedron>
       </Float>
 
