@@ -152,6 +152,7 @@ body:not(:has([data-loading-overlay])) [data-scene-shell] {
   background: transparent;
 }
 
-.screen::-webkit-scrollbar {
-  width: 8px;
+.screen-wrapper > div,
+.screen-wrapper > div > div {
+  backface-visibility: hidden;
 }

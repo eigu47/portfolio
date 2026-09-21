@@ -5,16 +5,16 @@ Laptop by Poly by Google [CC-BY] (https://creativecommons.org/licenses/by/3.0/) 
 
 import { useRef } from "react";
 
-import { Html, Plane, useGLTF } from "@react-three/drei";
+import { Html, Plane, useGLTF, useTexture } from "@react-three/drei";
 import { useFrame, type ThreeElements } from "@react-three/fiber";
 import type * as THREE from "three";
-import { Vector3 } from "three";
+import { FrontSide, SRGBColorSpace, Vector3 } from "three";
 import { type GLTF } from "three-stdlib";
 
 import { useDebug } from "~/components/canvas/Debug";
 import useScrollPos from "~/hooks/useScrollPos";
 import useViewport from "~/hooks/useViewport";
-import { COLORS, PAGES } from "~/utils/config";
+import { PAGES } from "~/utils/config";
 
 const CONTACT_PAGE = PAGES.findIndex(({ id }) => id === "contact");
 const rotation = new Vector3();
@@ -23,6 +23,8 @@ const closedRot = new Vector3(Math.PI * 0.56, 0, 0);
 
 export default function Model(props: ThreeElements["group"]) {
   const { nodes, materials } = useGLTF("/laptop.glb") as unknown as GLTFResult;
+  const resumePreviewTexture = useTexture("/EiguchiPablo.jpg");
+  resumePreviewTexture.colorSpace = SRGBColorSpace;
   const { height, mobile } = useViewport();
   const { scrollPos } = useScrollPos();
   const monitorRef = useRef<THREE.Group>(null);
@@ -39,7 +41,7 @@ export default function Model(props: ThreeElements["group"]) {
   return (
     <group
       scale={mobile ? 0.15 : 0.2}
-      position={mobile ? [0, -height * 0.12, 0] : [0, -height * 0.2, 0]}
+      position={[0, -height * 0.12, 0]}
       rotation={[0.3, 0, 0]}
       dispose={null}
       {...props}
@@ -48,13 +50,14 @@ export default function Model(props: ThreeElements["group"]) {
       <mesh
         geometry={nodes["Laptop_01_Cube025-Mesh"].geometry}
         material={materials["1A1A1A"]}
+        material-color="#25252b"
         castShadow
         receiveShadow
       />
       <mesh
         geometry={nodes["Laptop_01_Cube025-Mesh_1"].geometry}
         material={materials["455A64"]}
-        material-color="#2c2c31"
+        material-color="#383842"
         castShadow
         receiveShadow
       />
@@ -64,28 +67,29 @@ export default function Model(props: ThreeElements["group"]) {
         rotation={closedRot.toArray()}
       >
         <group position={[0, 4.92, -1.08]} rotation={[-0.18, 0, 0]}>
-          <Plane scale={[12.56, 8.41, 1]}>
-            <meshBasicMaterial color={COLORS.slate900} toneMapped={false} />
+          <Plane position-z={1} scale={[12.56, 8.41, 1]}>
+            <meshBasicMaterial
+              map={resumePreviewTexture}
+              side={FrontSide}
+              toneMapped={false}
+            />
           </Plane>
 
           <Html
-            position-z={0.1}
+            position-z={0.2}
             transform
             occlude="blending"
-            className="screen h-[310px] w-[480px] overflow-y-scroll"
+            className="screen-link h-[310px] w-[480px]"
+            wrapperClass="screen-wrapper"
           >
             <a
-              className="hover:border-accent-glow-strong transition-[transform,color,border-color,background-color,box-shadow] duration-150 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_4px_20px_var(--color-accent-glow)]"
+              aria-label="Open resume PDF"
+              className="block h-full w-full transition-[transform,box-shadow] duration-150 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_4px_20px_var(--color-accent-glow)]"
               href="/EiguchiPablo.pdf"
               target="_blank"
               rel="noreferrer"
             >
-              <img
-                src="/EiguchiPablo.jpg"
-                alt="Eiguchi Pablo Martin"
-                width="480px"
-                height="310px"
-              />
+              <span className="sr-only">Open resume PDF</span>
             </a>
           </Html>
         </group>

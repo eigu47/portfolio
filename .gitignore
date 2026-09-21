@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 dev
+
+.scratch/laptop-rendering/current/

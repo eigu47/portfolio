@@ -14,3 +14,6 @@
 - **Camera parallax** — the screen-relative displacement of the camera position caused by tilt, with its X/Y axes inverted relative to the tilt response. _Avoid_: camera offset, camera movement, tilt translation.
 - **Floating tech logo object** — one of the seven 3D objects in the About scene that represents a technology through a visible logo mark. _Avoid_: techlogo, logo ball.
 - **Logo decal texture** — the SVG logo mark displayed on the front of a floating tech logo object. _Avoid_: texture when referring to the page grain or model materials.
+- **3D laptop model** — the dark laptop-shaped object displayed in the scene near the contact and resume sections. _Avoid_: laptop model when referring to the resume route.
+- **Resume preview** — the image representation of the resume displayed on the 3D laptop model’s monitor, distinct from the full resume route. _Avoid_: resume screen when referring to the route, PDF viewer, or downloadable document.
+- **Screen-attached preview** — the resume preview’s single placement on the front surface of the 3D laptop model’s monitor; showing through the monitor’s back is invalid. _Avoid_: floating resume, resume overlay.
