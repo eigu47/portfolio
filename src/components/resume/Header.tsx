@@ -1,18 +1,24 @@
 import { Image, Path, Svg, Text, View } from "@react-pdf/renderer";
 
-import type { ResumeSectionProps } from "~/components/resume/Section";
-import type { Locale } from "~/content";
+import { getFontScale } from "~/components/resume/fontScale";
+import type { Locale, ResumeContent } from "~/content";
 import { COLORS } from "~/utils/config";
 
+/**
+ * The document's locale is the single source of truth; the font scale derives
+ * from it (see getFontScale in fontScale.ts) rather than travelling as a
+ * parallel prop.
+ */
 export default function Header({
   content,
   locale,
-  fontScale,
   avatarSrc,
-}: ResumeSectionProps & {
+}: {
+  content: ResumeContent;
   locale: Locale;
   avatarSrc: string;
 }) {
+  const fontScale = getFontScale(locale);
   return (
     <View
       style={{

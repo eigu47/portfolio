@@ -1,11 +1,7 @@
-import {
-  Document,
-  Font,
-  Page,
-  View,
-} from "@react-pdf/renderer";
+import { Document, Font, Page, View } from "@react-pdf/renderer";
 
 import Certifications from "~/components/resume/Certifications";
+import { getFontScale } from "~/components/resume/fontScale";
 import Header from "~/components/resume/Header";
 import Interests from "~/components/resume/Interests";
 import Languages from "~/components/resume/Languages";
@@ -52,7 +48,7 @@ export function MyDocument({
           fontSize: 12 * fontScale,
         }}
       >
-        <Header content={content} locale={locale} fontScale={fontScale} avatarSrc={avatarSrc} />
+        <Header content={content} locale={locale} avatarSrc={avatarSrc} />
         <View
           style={{
             maxWidth: "100%",
@@ -96,8 +92,4 @@ export function MyDocument({
       </Page>
     </Document>
   );
-}
-
-export function getFontScale(locale: Locale) {
-  return locale === "ja" ? 5 / 6 : 1;
 }
