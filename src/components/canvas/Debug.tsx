@@ -29,10 +29,6 @@ import { useDebugStore } from "~/utils/debugStore";
 
 const cameraPos = new Vector3();
 const cameraDir = new Vector3();
-const perfEdgeOffset = {
-  top: "calc(2dvh + 0.75rem)",
-  left: "calc(2vw + 0.75rem)",
-};
 const Perf = lazy(() =>
   import("r3f-perf").then(({ Perf: DebugPerf }) => ({ default: DebugPerf })),
 );

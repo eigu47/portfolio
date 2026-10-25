@@ -1,6 +1,6 @@
-# TechLogos Rendering Research
+# Floating Tech Logo Object Rendering Research
 
-**Question:** Is the current `TechLogos` implementation standard?
+**Question:** Is the current floating tech logo object implementation standard?
 
 **Scope:** `src/components/canvas/TechLogos.tsx` as present on 2026-09-21. The repository uses Three.js `0.185.1`, React Three Fiber `9.7.0`, and Drei `10.7.8`.
 
@@ -54,9 +54,9 @@ The previous implementation's `<Center disableZ disableY>` was therefore standar
 
 ## `useMemo` and Resource Lifecycle
 
-R3F's performance guidance recommends `useMemo` for expensive Three objects such as geometries and materials so they are not recreated on each render. Using it to keep one `CanvasTexture` per `Ball` is consistent with that guidance. ([R3F performance pitfalls](https://r3f.docs.pmnd.rs/advanced/pitfalls))
+R3F's performance guidance recommends `useMemo` for expensive Three objects such as geometries and materials so they are not recreated on each render. Using it to keep one `CanvasTexture` per floating tech logo object is consistent with that guidance. ([R3F performance pitfalls](https://r3f.docs.pmnd.rs/advanced/pitfalls))
 
-`useMemo` provides stable creation during a component's lifetime; it does not dispose Three resources. Three's `Texture.dispose()` documentation says to call it when the texture is no longer used. The cleanup effect at [`TechLogos.tsx:73-77`](../../src/components/canvas/TechLogos.tsx#L73-L77) is therefore standard ownership for the newly created, per-ball canvas texture. ([Three `Texture` docs](https://threejs.org/docs/pages/Texture.html), [Three `Texture.js` at r185](https://github.com/mrdoob/three.js/blob/r185/src/textures/Texture.js))
+`useMemo` provides stable creation during a component's lifetime; it does not dispose Three resources. Three's `Texture.dispose()` documentation says to call it when the texture is no longer used. The cleanup effect at [`TechLogos.tsx:73-77`](../../src/components/canvas/TechLogos.tsx#L73-L77) is therefore standard ownership for the newly created, per-object canvas texture. ([Three `Texture` docs](https://threejs.org/docs/pages/Texture.html), [Three `Texture.js` at r185](https://github.com/mrdoob/three.js/blob/r185/src/textures/Texture.js))
 
 The cleanup correctly avoids disposing the `useTexture` result: Drei/R3F cache loaded textures, and those results may be shared. R3F's reconciler disposes declarative instances on removal, but the canvas texture here is an external object assigned as a material map rather than a declarative `<texture>` child; explicit cleanup makes that ownership clear. ([R3F `reconciler.tsx` at v9.7.0](https://github.com/pmndrs/react-three-fiber/blob/v9.7.0/packages/fiber/src/core/reconciler.tsx), [Drei `Texture.tsx` at v10.7.8](https://github.com/pmndrs/drei/blob/v10.7.8/src/core/Texture.tsx))
 

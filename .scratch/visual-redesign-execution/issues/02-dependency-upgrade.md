@@ -14,8 +14,8 @@
 
 ## Notes
 
-- Tailwind stayed on 3.4 (major not needed — no styling regressions; ticket 04
-  will rework the token table). Router went 6 → 7 (drop-in for
+- Tailwind upgraded 3.4 → v4 (4.3 via `@tailwindcss/postcss`; token table lives
+  in `src/global.css` `@theme` — see ticket 04). Router went 6 → 7 (drop-in for
   `createBrowserRouter`/`lazy`); explicit `HydrateFallback: () => null` keeps
   v7's initial-load rendering identical to v6 and silences its console warning.
 - `@react-three/postprocessing` bumped to v3 (required for fiber v9) with a

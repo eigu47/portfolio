@@ -20,3 +20,14 @@
 ## Answer
 
 The foundation is implemented in the global Tailwind v4 theme and shared CSS. DOM chrome now uses the shared surface, hairline, shadow, radius, focus, and hover treatments; the site background includes the approved gradient, counter-glow, and fixed grain overlay.
+
+## Comments
+
+- Post-review: the last ad-hoc hex literals in components migrated to the
+  `COLORS` token table (`src/utils/config.tsx`) — scene lighting
+  (`lightAmbientCool`, `lightKeyWarm`, `lightFillCool`, `lightAccentGlow`),
+  laptop materials (`laptopShell`, `laptopPanel`), and the floating tech logo
+  object base (`textLo`) in `Camera.tsx`, `Laptop.tsx`, `TechLogos.tsx`.
+- Post-review: the resume `fontScale` clump resolved — `fontScale` moved to
+  `src/components/resume/fontScale.ts` and the PDF `Header` now derives it from
+  `locale` instead of receiving both.
