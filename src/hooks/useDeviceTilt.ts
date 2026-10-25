@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { Euler, MathUtils, Quaternion, Vector3 } from "three";
+import { Euler, MathUtils, Quaternion } from "three";
 
 export type TiltResponse = { x: number; y: number };
 
@@ -16,7 +16,6 @@ const DEVICE_ORIENTATION_OFFSET = new Quaternion(
   0,
   Math.sqrt(0.5),
 );
-const CAMERA_PARALLAX_DISTANCE = 0.5;
 
 function orientationQuaternion({ alpha, beta, gamma }: Orientation) {
   return new Quaternion()
@@ -47,22 +46,6 @@ function relativeTilt(baseline: Quaternion, current: Quaternion): TiltResponse {
       Math.min(1, MathUtils.radToDeg(rotation.x) / TILT_RANGE_DEGREES),
     ),
   };
-}
-
-export function getCameraParallax(
-  { x, y }: TiltResponse,
-  target = new Vector3(),
-) {
-  const normalizedX = MathUtils.clamp(x, -1, 1);
-  const normalizedY = MathUtils.clamp(y, -1, 1);
-  const magnitude = Math.hypot(normalizedX, normalizedY);
-  const scale = magnitude > 1 ? 1 / magnitude : 1;
-
-  return target.set(
-    -normalizedX * scale * CAMERA_PARALLAX_DISTANCE,
-    -normalizedY * scale * CAMERA_PARALLAX_DISTANCE,
-    0,
-  );
 }
 
 export default function useDeviceTilt() {

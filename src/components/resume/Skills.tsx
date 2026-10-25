@@ -1,16 +1,9 @@
 import { Text, View } from "@react-pdf/renderer";
 
-import Section from "~/components/resume/Section";
-import type { ResumeContent } from "~/content";
+import Section, { type ResumeSectionProps } from "~/components/resume/Section";
 import { COLORS } from "~/utils/config";
 
-export default function Skills({
-  content,
-  fontScale,
-}: {
-  content: ResumeContent;
-  fontScale: number;
-}) {
+export default function Skills({ content, fontScale }: ResumeSectionProps) {
   return (
     <Section title={content.labels.skills} fontScale={fontScale}>
       <View

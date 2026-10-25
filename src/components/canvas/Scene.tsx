@@ -18,9 +18,8 @@ import Laptop from "~/components/canvas/Laptop";
 import Page from "~/components/canvas/Page";
 import TechLogos from "~/components/canvas/TechLogos";
 import useDeviceTilt from "~/hooks/useDeviceTilt";
+import { isDebugVisit } from "~/utils/debugStore";
 
-const isDebug =
-  new URLSearchParams(window.location.search).get("debug") != null;
 const DebugPanel = lazy(() => import("~/components/canvas/DebugPanel"));
 
 export default function Scene() {
@@ -89,10 +88,10 @@ export default function Scene() {
           </EffectComposer>
         )}
 
-        {isDebug && <Debug />}
+        {isDebugVisit && <Debug />}
       </Canvas>
       <div aria-hidden="true" className="scene-vignette" data-scene-vignette />
-      {isDebug && (
+      {isDebugVisit && (
         <Suspense fallback={null}>
           <DebugPanel />
         </Suspense>

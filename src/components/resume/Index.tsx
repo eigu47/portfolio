@@ -66,7 +66,7 @@ export default function Resume() {
 
   return (
     <div className="bg-bg-base text-text-lo flex min-h-dvh pt-16">
-      <header className="border-hairline shadow-chrome fixed top-0 z-10 w-full border-b bg-[rgba(9,9,11,0.7)] backdrop-blur-md">
+      <header className="border-hairline shadow-chrome fixed top-0 z-10 w-full border-b bg-overlay backdrop-blur-md">
         <nav
           aria-label="Resume actions"
           className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8"

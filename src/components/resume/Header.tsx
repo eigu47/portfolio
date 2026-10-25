@@ -1,6 +1,7 @@
 import { Image, Path, Svg, Text, View } from "@react-pdf/renderer";
 
-import type { Locale, ResumeContent } from "~/content";
+import type { ResumeSectionProps } from "~/components/resume/Section";
+import type { Locale } from "~/content";
 import { COLORS } from "~/utils/config";
 
 export default function Header({
@@ -8,10 +9,8 @@ export default function Header({
   locale,
   fontScale,
   avatarSrc,
-}: {
-  content: ResumeContent;
+}: ResumeSectionProps & {
   locale: Locale;
-  fontScale: number;
   avatarSrc: string;
 }) {
   return (

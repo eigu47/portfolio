@@ -2,17 +2,13 @@ import { Fragment } from "react";
 
 import { Path, Svg, Text, View } from "@react-pdf/renderer";
 
-import Section from "~/components/resume/Section";
-import type { ResumeContent } from "~/content";
+import Section, { type ResumeSectionProps } from "~/components/resume/Section";
 import { COLORS } from "~/utils/config";
 
 export default function Certifications({
   content,
   fontScale,
-}: {
-  content: ResumeContent;
-  fontScale: number;
-}) {
+}: ResumeSectionProps) {
   return (
     <Section title={content.labels.certifications} fontScale={fontScale}>
       <View style={{ width: "100%", flexDirection: "column", gap: 10 }}>

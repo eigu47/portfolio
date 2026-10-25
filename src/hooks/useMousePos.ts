@@ -31,14 +31,11 @@ export default function useMousePos({ reactive = true } = {}) {
   return {
     position: mousePos,
     client: { x: mousePos.current.clientX, y: mousePos.current.clientY },
-    page: { x: mousePos.current.pageX, y: mousePos.current.pageY },
-    relative: {
+    // A read, not a snapshot: with `reactive: false` no rerender updates the
+    // values above, so frame-driven callers call this to get fresh numbers.
+    relative: () => ({
       x: mousePos.current.pageX / window.innerWidth,
       y: mousePos.current.pageY / window.innerHeight,
-    },
-    coords: {
-      x: (mousePos.current.clientX / window.innerWidth) * 2 - 1,
-      y: -(mousePos.current.clientY / window.innerHeight) * 2 + 1,
-    },
+    }),
   };
 }

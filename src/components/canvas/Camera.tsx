@@ -3,14 +3,15 @@ import { useRef } from "react";
 import { PerspectiveCamera } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import type * as THREE from "three";
-import { Quaternion, Vector3 } from "three";
+import { Quaternion, Vector3, MathUtils } from "three";
 
 import { usePage } from "~/components/canvas/Page";
-import { getCameraParallax, type TiltResponse } from "~/hooks/useDeviceTilt";
+import type { TiltResponse } from "~/hooks/useDeviceTilt";
 import useScrollPos from "~/hooks/useScrollPos";
 import { useDebugStore } from "~/utils/debugStore";
 
 const CAMERA_POSITION = [0, 0, 5] as const;
+const CAMERA_PARALLAX_DISTANCE = 0.5;
 const position = new Vector3();
 const rotation = new Vector3();
 const rotationLerp = new Vector3();
@@ -21,6 +22,24 @@ const cameraParallax = new Vector3();
 const cameraRight = new Vector3();
 const cameraUp = new Vector3();
 const cameraQuaternion = new Quaternion();
+
+/**
+ * Converts the normalized tilt response into camera parallax: the X/Y axes
+ * are inverted relative to the tilt response (see CONTEXT.md) and the
+ * magnitude is capped so diagonal tilts don't overshoot the parallax distance.
+ */
+function getCameraParallax({ x, y }: TiltResponse, target = new Vector3()) {
+  const normalizedX = MathUtils.clamp(x, -1, 1);
+  const normalizedY = MathUtils.clamp(y, -1, 1);
+  const magnitude = Math.hypot(normalizedX, normalizedY);
+  const scale = magnitude > 1 ? 1 / magnitude : 1;
+
+  return target.set(
+    -normalizedX * scale * CAMERA_PARALLAX_DISTANCE,
+    -normalizedY * scale * CAMERA_PARALLAX_DISTANCE,
+    0,
+  );
+}
 
 export default function Camera({
   tilt = { x: 0, y: 0 },

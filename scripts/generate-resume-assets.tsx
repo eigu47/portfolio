@@ -10,10 +10,9 @@
  *   node .resume-gen/generate-resume-assets.js           # does the work
  */
 import { renderToBuffer } from "@react-pdf/renderer";
-import { pdf } from "pdf-to-img";
-
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
+import { pdf } from "pdf-to-img";
 
 import { MyDocument, registerCalibreFonts } from "~/components/resume/Document";
 import { resumeContent } from "~/content";

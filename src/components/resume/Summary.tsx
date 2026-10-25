@@ -1,15 +1,8 @@
 import { Text } from "@react-pdf/renderer";
 
-import Section from "~/components/resume/Section";
-import type { ResumeContent } from "~/content";
+import Section, { type ResumeSectionProps } from "~/components/resume/Section";
 
-export default function Summary({
-  content,
-  fontScale,
-}: {
-  content: ResumeContent;
-  fontScale: number;
-}) {
+export default function Summary({ content, fontScale }: ResumeSectionProps) {
   return (
     <Section title={content.labels.summary} fontScale={fontScale}>
       <Text

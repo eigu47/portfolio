@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useProgress } from "@react-three/drei";
 
@@ -15,7 +15,12 @@ export default function LoadingScreen() {
   const [phase, setPhase] = useState<"visible" | "exiting" | "hidden">(
     "visible",
   );
-  const displayedPercentage = useRef(percentage);
+  const [displayedPercentage, setDisplayedPercentage] = useState(percentage);
+  // Storing information from previous renders: re-render inline rather than
+  // mutating a ref during render, which is concurrency-unsafe in React 19.
+  if (percentage > displayedPercentage) {
+    setDisplayedPercentage(percentage);
+  }
 
   useEffect(() => {
     if (active || progress < 100) return;
@@ -35,11 +40,6 @@ export default function LoadingScreen() {
       if (exitTimer !== undefined) window.clearTimeout(exitTimer);
     };
   }, [active, progress, startedAt]);
-
-  displayedPercentage.current = Math.max(
-    displayedPercentage.current,
-    percentage,
-  );
 
   if (phase === "hidden") return null;
 
@@ -67,15 +67,15 @@ export default function LoadingScreen() {
           aria-label="loading assets"
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-valuenow={displayedPercentage.current}
+          aria-valuenow={displayedPercentage}
         >
           <span
-            className="to-accent block h-full rounded-full bg-gradient-to-r from-[rgba(52,211,153,0.5)] shadow-[0_0_12px_var(--color-accent-glow)] transition-[width] duration-[350ms] ease-out"
-            style={{ width: `${displayedPercentage.current}%` }}
+            className="to-accent block h-full rounded-full bg-gradient-to-r from-accent-half shadow-[0_0_12px_var(--color-accent-glow)] transition-[width] duration-[350ms] ease-out"
+            style={{ width: `${displayedPercentage}%` }}
           />
         </div>
         <p className="text-text-lo mt-4 self-end font-mono text-sm tracking-[0.15em] [font-variant-numeric:tabular-nums]">
-          loading {displayedPercentage.current}%
+          loading {displayedPercentage}%
         </p>
       </div>
     </div>

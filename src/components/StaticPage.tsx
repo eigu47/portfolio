@@ -87,7 +87,7 @@ export default function StaticPage() {
         </section>
       </main>
       <footer
-        className="border-hairline text-text-faint fixed right-0 bottom-0 left-0 z-10 gap-4 border-t bg-[rgba(9,9,11,0.86)] p-4 font-mono text-xs tracking-widest uppercase backdrop-blur-md"
+        className="border-hairline text-text-faint fixed right-0 bottom-0 left-0 z-10 gap-4 border-t bg-overlay-strong p-4 font-mono text-xs tracking-widest uppercase backdrop-blur-md"
         id="contact"
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-6">

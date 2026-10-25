@@ -1,6 +1,13 @@
 import { Text, View } from "@react-pdf/renderer";
 
+import type { ResumeContent } from "~/content";
 import { COLORS } from "~/utils/config";
+
+/** The props every resume section travels with; see ticket 04/15 clump note. */
+export type ResumeSectionProps = {
+  content: ResumeContent;
+  fontScale: number;
+};
 
 export default function Section({
   title,

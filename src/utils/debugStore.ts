@@ -11,6 +11,11 @@ export const TRANSFORM_MODES = [
 ] as const;
 let modeId: ValidIndex<typeof TRANSFORM_MODES> = 0;
 
+/** True when the page URL carries a `?debug` query parameter. */
+export const isDebugVisit = new URLSearchParams(
+  window.location.search,
+).has("debug");
+
 export const useDebugStore = create<{
   selectedObject: THREE.Object3D | null;
   debugOn: boolean;
@@ -28,7 +33,7 @@ export const useDebugStore = create<{
   setCamera: (camera: THREE.Camera) => void;
 }>((set) => ({
   selectedObject: null,
-  debugOn: new URLSearchParams(window.location.search).has("debug"),
+  debugOn: isDebugVisit,
   orbitControls: false,
   transformActive: false,
   transformMode: TRANSFORM_MODES[modeId],
