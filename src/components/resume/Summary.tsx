@@ -1,6 +1,6 @@
 import { Text } from "@react-pdf/renderer";
 
-import { Section } from "~/components/resume/Index";
+import Section from "~/components/resume/Section";
 import type { ResumeContent } from "~/content";
 
 export default function Summary({

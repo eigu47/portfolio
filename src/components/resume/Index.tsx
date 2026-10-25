@@ -1,29 +1,28 @@
 import { useEffect, useState } from "react";
 
-import {
-  Document,
-  Font,
-  Page,
-  PDFDownloadLink,
-  PDFViewer,
-  Text,
-  View,
-} from "@react-pdf/renderer";
+import { Font, PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import { HiOutlineDownload } from "react-icons/hi";
 import { HiArrowLeft } from "react-icons/hi2";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { calibre300, calibre400, calibre500 } from "~/assets/fonts";
-import Certifications from "~/components/resume/Certifications";
-import Header from "~/components/resume/Header";
-import Interests from "~/components/resume/Interests";
-import Languages from "~/components/resume/Languages";
-import QRCode from "~/components/resume/QRCode";
-import Skills from "~/components/resume/Skills";
-import Summary from "~/components/resume/Summary";
-import type { Locale, ResumeContent } from "~/content";
+import { getFontScale, MyDocument, registerCalibreFonts } from "~/components/resume/Document";
+import type { Locale } from "~/content";
 import { resumeContent } from "~/content";
-import { COLORS } from "~/utils/config";
+
+registerCalibreFonts([
+  { fontWeight: 300, src: calibre300 },
+  { fontWeight: 400, src: calibre400 },
+  { fontWeight: 500, src: calibre500 },
+]);
+
+/**
+ * PDFViewer forwards `title` to its underlying iframe at runtime but omits it
+ * from PDFViewerProps, so route the prop through this once-cast wrapper.
+ */
+const ResumeViewer = (
+  props: React.ComponentProps<typeof PDFViewer> & { title?: string },
+) => <PDFViewer {...(props as React.ComponentProps<typeof PDFViewer>)} />;
 
 export default function Resume() {
   const location = useLocation();
@@ -142,136 +141,10 @@ export default function Resume() {
       </header>
 
       <main className="mx-auto flex min-h-full w-full max-w-7xl justify-center px-2 py-4 sm:px-6 sm:py-8 lg:px-8">
-        {documentLocale === "en" ? (
-          <iframe
-            className="w-full"
-            title="Resume PDF"
-            src="/EiguchiPablo.pdf"
-          />
-        ) : (
-          <PDFViewer className="min-h-0 w-full" showToolbar>
-            <MyDocument content={documentContent} locale={documentLocale} />
-          </PDFViewer>
-        )}
+        <ResumeViewer className="min-h-0 w-full" showToolbar title="Resume PDF">
+          <MyDocument content={documentContent} locale={documentLocale} />
+        </ResumeViewer>
       </main>
     </div>
   );
-}
-
-Font.register({
-  family: "calibre",
-  fonts: [
-    { fontWeight: 300, src: calibre300 },
-    { fontWeight: 400, src: calibre400 },
-    { fontWeight: 500, src: calibre500 },
-  ],
-});
-
-export function MyDocument({
-  content,
-  locale,
-}: {
-  content: ResumeContent;
-  locale: Locale;
-}) {
-  const fontScale = getFontScale(locale);
-
-  return (
-    <Document title="Eiguchi Pablo Martin.pdf" author="Eiguchi Pablo Martin">
-      <Page
-        size="A4"
-        style={{
-          flexDirection: "column",
-          backgroundColor: "#ffffff",
-          width: "100%",
-          height: "100%",
-          fontFamily: locale === "ja" ? "notosans" : "calibre",
-          fontWeight: 400,
-          color: COLORS.slate800,
-          fontSize: 12 * fontScale,
-        }}
-      >
-        <Header content={content} locale={locale} fontScale={fontScale} />
-        <View
-          style={{
-            maxWidth: "100%",
-            flexGrow: 1,
-            flexDirection: "row",
-            gap: 30,
-            marginTop: 30,
-            marginRight: 30,
-            marginBottom: 26,
-            marginLeft: 30,
-          }}
-        >
-          <View
-            style={{
-              flex: 0.6,
-              flexDirection: "column",
-              gap: 24,
-            }}
-          >
-            <Summary content={content} fontScale={fontScale} />
-
-            <Certifications content={content} fontScale={fontScale} />
-
-            <QRCode fontScale={fontScale} />
-          </View>
-
-          <View
-            style={{
-              flex: 0.4,
-              flexDirection: "column",
-              gap: 24,
-            }}
-          >
-            <Skills content={content} fontScale={fontScale} />
-
-            <Languages content={content} fontScale={fontScale} />
-
-            <Interests content={content} fontScale={fontScale} />
-          </View>
-        </View>
-      </Page>
-    </Document>
-  );
-}
-
-export function Section({
-  title,
-  children,
-  fontScale,
-}: {
-  title: string;
-  children: React.ReactNode;
-  fontScale: number;
-}) {
-  return (
-    <View style={{ flexDirection: "column" }}>
-      <Text
-        style={{
-          fontWeight: 500,
-          fontSize: 13 * fontScale,
-          letterSpacing: 1.5,
-          color: COLORS.slate400,
-        }}
-      >
-        {title}
-      </Text>
-      <View
-        style={{
-          height: "1px",
-          backgroundColor: COLORS.emerald400,
-          borderRadius: 1,
-          marginTop: 5,
-          marginBottom: 10,
-        }}
-      />
-      {children}
-    </View>
-  );
-}
-
-function getFontScale(locale: string) {
-  return locale == "ja" ? 5 / 6 : 1;
 }

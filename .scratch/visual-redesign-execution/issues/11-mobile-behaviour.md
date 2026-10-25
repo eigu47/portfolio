@@ -12,3 +12,12 @@
 - [x] Mobile menu contains social/email links and is fully removed from the page when closed
 - [x] Phones render the resume PDF inline in a native iframe
 - [x] Tapping the 3D keyboard opts into gyro parallax; failures are silent and the gesture is non-invasive
+
+## Comments
+
+- Post-review decision change (ticket 15): the "native iframe embed of the
+  rebuilt static PDF" line above is superseded. PDFViewer is itself a native
+  iframe, but fed by the runtime-generated `MyDocument`, so phones always see
+  the latest resume instead of a hand-made static file that drifts stale. The
+  checkbox above is retained as the historical acceptance of the original
+  approach; `/resume` now renders PDFViewer for both locales.

@@ -10,6 +10,7 @@ export default tseslint.config(
     ignores: [
       "dist/**",
       "node_modules/**",
+      ".resume-gen/**",
       "src/.env.d.ts",
       "eslint.config.js",
       "**/*.{config,conf}.*",

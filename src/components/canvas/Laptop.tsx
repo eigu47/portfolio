@@ -106,7 +106,7 @@ export default function Model(props: ThreeElements["group"]) {
             position-z={0.2}
             transform
             occlude="blending"
-            className="screen h-[310px] w-[480px]"
+            className="screen-link h-[310px] w-[480px]"
             wrapperClass="screen-wrapper"
           >
             <a

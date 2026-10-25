@@ -92,10 +92,7 @@ describe("resume route seam", () => {
     expect(
       getByRole("navigation", { name: "Resume actions" }),
     ).toBeInTheDocument();
-    expect(getByTitle("Resume PDF")).toHaveAttribute(
-      "src",
-      "/EiguchiPablo.pdf",
-    );
+    expect(getByTitle("Resume PDF")).toBeInTheDocument();
     expect(getByRole("link", { name: /Download PDF/ })).toHaveAttribute(
       "download",
       "EiguchiPablo.pdf",

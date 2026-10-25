@@ -26,3 +26,4 @@ dist-ssr
 dev
 
 .scratch/laptop-rendering/current/
+.resume-gen/

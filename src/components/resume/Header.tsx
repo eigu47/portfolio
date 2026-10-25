@@ -7,10 +7,12 @@ export default function Header({
   content,
   locale,
   fontScale,
+  avatarSrc,
 }: {
   content: ResumeContent;
   locale: Locale;
   fontScale: number;
+  avatarSrc: string;
 }) {
   return (
     <View
@@ -104,7 +106,7 @@ export default function Header({
       </View>
 
       <Image
-        src="/avatar.jpg"
+        src={avatarSrc}
         style={{
           width: 100,
           height: 100,
