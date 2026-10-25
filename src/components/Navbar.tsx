@@ -24,7 +24,7 @@ export default function Navbar() {
         }`}
       >
         <ul
-          className={`container mx-auto my-6 flex flex-col items-center gap-6 px-4 duration-200 sm:translate-y-0 sm:flex-row sm:gap-10 sm:px-6 sm:transition-none lg:px-8 ${
+          className={`container mx-auto my-4 flex flex-col items-center gap-6 px-4 duration-200 sm:translate-y-0 sm:flex-row sm:gap-10 sm:px-6 sm:transition-none lg:px-8 ${
             showMenu ? "" : "-translate-y-[56px]"
           }`}
         >

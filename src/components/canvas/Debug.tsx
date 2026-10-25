@@ -1,26 +1,26 @@
 import {
   type ComponentProps,
-  useState,
   type ComponentRef,
-  useEffect,
   lazy,
   Suspense,
+  useEffect,
+  useState,
 } from "react";
 
 import {
   GizmoHelper,
   GizmoViewport,
+  Html,
   OrbitControls,
   PivotControls,
-  TransformControls,
   Plane,
+  TransformControls,
   useCursor,
-  Html,
 } from "@react-three/drei";
 import {
+  type ThreeElements,
   type ThreeEvent,
   useThree,
-  type ThreeElements,
 } from "@react-three/fiber";
 import { Vector3 } from "three";
 
@@ -29,6 +29,10 @@ import { useDebugStore } from "~/utils/debugStore";
 
 const cameraPos = new Vector3();
 const cameraDir = new Vector3();
+const perfEdgeOffset = {
+  top: "calc(2dvh + 0.75rem)",
+  left: "calc(2vw + 0.75rem)",
+};
 const Perf = lazy(() =>
   import("r3f-perf").then(({ Perf: DebugPerf }) => ({ default: DebugPerf })),
 );
@@ -61,7 +65,7 @@ export default function Debug() {
 
     return (
       <Suspense fallback={null}>
-        <Perf position="top-left" className="top-20" minimal />
+        <Perf position="top-left" minimal />
       </Suspense>
     );
   }
@@ -69,7 +73,7 @@ export default function Debug() {
   return (
     <>
       <Suspense fallback={null}>
-        <Perf position="top-left" className="m-3" />
+        <Perf position="top-left" style={{ top: "1em", left: "1em" }} />
       </Suspense>
       <OrbitControls
         makeDefault={orbitControls}
