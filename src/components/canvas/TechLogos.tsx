@@ -15,6 +15,7 @@ import {
 } from "~/assets/logos";
 import { useDebug } from "~/components/canvas/Debug";
 import useViewport from "~/hooks/useViewport";
+import { COLORS } from "~/utils/config";
 import { useDebugStore } from "~/utils/debugStore";
 
 export default function TechLogos() {
@@ -25,10 +26,10 @@ export default function TechLogos() {
 
   return (
     <group position={[groupOffset, -height * 0.2, 0]}>
-      {LOGOS.map((ball, i) => (
-        <Ball
-          key={ball.name}
-          ball={ball}
+      {LOGOS.map((logo, i) => (
+        <FloatingTechLogo
+          key={logo.name}
+          logo={logo}
           position={
             mobile
               ? [gap * i, i % 2 ? -gap * 2 : 0, 0]
@@ -42,12 +43,16 @@ export default function TechLogos() {
   );
 }
 
-function Ball({
-  ball: { name, src, scale },
+/**
+ * One floating tech logo object (CONTEXT.md): an icosahedron carrying a
+ * decal of the technology's logo mark, with a name tooltip on hover/tap.
+ */
+function FloatingTechLogo({
+  logo: { name, src, scale },
   last,
   ...props
 }: {
-  ball: (typeof LOGOS)[number];
+  logo: (typeof LOGOS)[number];
   last: boolean;
 } & ThreeElements["group"]) {
   const debugOn = useDebugStore((state) => state.debugOn);
@@ -87,7 +92,7 @@ function Ball({
           onPointerDown={() => setModal(true)}
           onPointerMissed={() => setModal(false)}
         >
-          <meshStandardMaterial color="#94a3b8" flatShading />
+          <meshStandardMaterial color={COLORS.textLo} flatShading />
           <Decal
             map={texture}
             position={[0, 0, 1]}

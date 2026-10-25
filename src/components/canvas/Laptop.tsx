@@ -32,7 +32,7 @@ const onWheel = (event: WheelEvent) => {
   }
 };
 
-export default function Model(props: ThreeElements["group"]) {
+export default function LaptopModel(props: ThreeElements["group"]) {
   const { nodes, materials } = useGLTF("/laptop.glb") as unknown as GLTFResult;
   const { height, mobile } = useViewport();
   const { scrollPos } = useScrollPos();
@@ -81,14 +81,14 @@ export default function Model(props: ThreeElements["group"]) {
       <mesh
         geometry={nodes["Laptop_01_Cube025-Mesh"].geometry}
         material={materials["1A1A1A"]}
-        material-color="#25252b"
+        material-color={COLORS.laptopShell}
         castShadow
         receiveShadow
       />
       <mesh
         geometry={nodes["Laptop_01_Cube025-Mesh_1"].geometry}
         material={materials["455A64"]}
-        material-color="#383842"
+        material-color={COLORS.laptopPanel}
         castShadow
         receiveShadow
       />
@@ -98,7 +98,7 @@ export default function Model(props: ThreeElements["group"]) {
         rotation={closedRot.toArray()}
       >
         <group position={[0, 4.92, -1.08]} rotation={[-0.18, 0, 0]}>
-          <Plane position-z={.19} scale={[12.56, 8.41, 1]}>
+          <Plane position-z={0.19} scale={[12.56, 8.41, 1]}>
             <meshBasicMaterial color={COLORS.slate900} toneMapped={false} />
           </Plane>
 
@@ -116,7 +116,10 @@ export default function Model(props: ThreeElements["group"]) {
               target="_blank"
               rel="noreferrer"
             >
-              <div ref={attachWheel} className="h-full w-full overflow-y-scroll">
+              <div
+                ref={attachWheel}
+                className="h-full w-full overflow-y-scroll"
+              >
                 <img
                   src="/EiguchiPablo.jpg"
                   alt="Eiguchi Pablo Martin"

@@ -8,6 +8,7 @@ import { Quaternion, Vector3, MathUtils } from "three";
 import { usePage } from "~/components/canvas/Page";
 import type { TiltResponse } from "~/hooks/useDeviceTilt";
 import useScrollPos from "~/hooks/useScrollPos";
+import { COLORS } from "~/utils/config";
 import { useDebugStore } from "~/utils/debugStore";
 
 const CAMERA_POSITION = [0, 0, 5] as const;
@@ -89,10 +90,10 @@ export default function Camera({
       <group ref={groupRef}>
         <PerspectiveCamera makeDefault fov={60} position={CAMERA_POSITION} />
       </group>
-      <ambientLight color="#bcc4d4" intensity={0.14} />
+      <ambientLight color={COLORS.lightAmbientCool} intensity={0.14} />
       <directionalLight
         castShadow
-        color="#fff4e5"
+        color={COLORS.lightKeyWarm}
         intensity={1.25}
         position={[5, 8, 5]}
         shadow-bias={-0.0005}
@@ -104,12 +105,12 @@ export default function Camera({
         shadow-mapSize={[1024, 1024]}
       />
       <directionalLight
-        color="#8a94a8"
+        color={COLORS.lightFillCool}
         intensity={0.35}
         position={[-6, 3, 6]}
       />
       <spotLight
-        color="#8ce5bd"
+        color={COLORS.lightAccentGlow}
         intensity={0.55}
         penumbra={0.7}
         angle={0.65}
@@ -117,7 +118,7 @@ export default function Camera({
         target-position={[0, -0.3, 0]}
       />
       <pointLight
-        color="#8ce5bd"
+        color={COLORS.lightAccentGlow}
         intensity={0.15}
         distance={12}
         position={[0, -2.2, 2]}

@@ -8,6 +8,15 @@ export const COLORS = {
   emerald400: "#34d399",
   emerald500: "#10b981",
   emeraldDeep: "#0a7a58",
+  // Scene lighting + material tokens (ticket 04): raw hex lives here, not
+  // inline in scene components.
+  textLo: "#94a3b8",
+  lightAmbientCool: "#bcc4d4",
+  lightKeyWarm: "#fff4e5",
+  lightFillCool: "#8a94a8",
+  lightAccentGlow: "#8ce5bd",
+  laptopShell: "#25252b",
+  laptopPanel: "#383842",
 } as const;
 
 export const PAGES = [
